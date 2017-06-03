@@ -1,5 +1,4 @@
 --global variables
-
 Global = {
     realW = 0,
     realH = 0,
@@ -57,3 +56,40 @@ Global = {
     bgcolor = {0.66,0.68,0.7,1},
     lockinput = false,
 };
+
+function ResetState()
+    Global.state = "";
+    Global.prevstate = "";
+    Global.substate = {
+        [PLAYER_1] = "",
+        [PLAYER_2] = "",
+    };
+    Global.allgroups = {};
+    Global.songgroup = "";
+    Global.songlist = {};
+    Global.song = "";
+    Global.selection = 1;
+    Global.level = 1;
+    Global.confirm = {
+        [PLAYER_1] = 0,
+        [PLAYER_2] = 0,
+    };
+    Global.mastersteps = nil;
+    Global.steps = {};
+    Global.pnsteps = {
+        [PLAYER_1] = 1,
+        [PLAYER_2] = 1,
+    };
+    Global.pnselection = {
+        [PLAYER_1] = 1,
+        [PLAYER_2] = 1,
+    };
+    Global.pncursteps = {
+        [PLAYER_1] = nil,
+        [PLAYER_2] = nil,
+    };
+    Global.pnskin = {
+        [PLAYER_1] = -1,
+        [PLAYER_2] = -1,
+    };
+end;
