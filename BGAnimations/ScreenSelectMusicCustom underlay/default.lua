@@ -1,5 +1,6 @@
 local t = Def.ActorFrame{
 	InitCommand=function(self) 
+		ResetState();
 		SetGroups(); 
 		SetSSM(); 
 	end;
@@ -74,22 +75,16 @@ t[#t+1] = LoadActor("assets/sound");
 t[#t+1] = LoadActor("assets/fulldisplay");
 t[#t+1] = LoadActor("assets/highscores");
 
-
-
-
-t[#t+1] = LoadActor("assets/groupselect");
-t[#t+1] = LoadActor("assets/notefield");
-
 if VersionBranch("5.0") then 
 	t[#t+1] = LoadActor("assets/noteskin");
 	t[#t+1] = LoadActor("assets/speedmods");
 else 
 	t[#t+1] = LoadActor("assets/newskin");
 	t[#t+1] = LoadActor("assets/speedprefs");
+	t[#t+1] = LoadActor("assets/notefield");
 end;
 
-
-
+t[#t+1] = LoadActor("assets/groupselect");
 t[#t+1] = LoadActor("assets/bannerwheel");
 t[#t+1] = LoadActor("assets/cursteps");
 t[#t+1] = LoadActor("assets/information");
