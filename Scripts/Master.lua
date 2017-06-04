@@ -123,7 +123,6 @@ function ToTitleMenu() if GAMESTATE:GetCoinMode() == 'CoinMode_Home' then return
 function ToSelectMusic() if GAMESTATE:GetCoinMode() == 'CoinMode_Home' then return "ScreenSelectMusicCustom" else return "ScreenExit" end; end;
 function ToSelectMusicFromGameplay() 
 	if GAMESTATE:GetCoinMode() == 'CoinMode_Home' then 
-
 		local master = GAMESTATE:GetMasterPlayerNumber();
 		if IsRoutine() then
 			return "ScreenUnjoin" 
