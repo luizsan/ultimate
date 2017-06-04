@@ -1,4 +1,6 @@
-local t = Def.ActorFrame{}
+local t = Def.ActorFrame{
+	OnCommand=cmd(stoptweening;diffusealpha,0;sleep,0.2;linear,0.15;diffusealpha,1);
+}
 
 local originY = SCREEN_TOP+52;
 local spacing = 79;

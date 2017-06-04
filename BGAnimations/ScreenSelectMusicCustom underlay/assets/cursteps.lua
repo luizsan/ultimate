@@ -46,6 +46,7 @@ end;
 for pn in ivalues(GAMESTATE:GetHumanPlayers()) do 
 		
 	t[#t+1] = Def.ActorFrame{
+		OnCommand=cmd(stoptweening;diffusealpha,0;sleep,0.5;linear,0.5;diffusealpha,1);
 		StateChangedMessageCommand=function(self)
 			self:visible(GAMESTATE:IsSideJoined(pn));
 			self:stoptweening();
