@@ -44,10 +44,10 @@ end;
 
 function HoldWeight()
 	if Game() == "Pump" then
-		if PREFSMAN:GetPreference("Allow_W1") == 'AllowW1_Everywhere' then
-			return 3
+		if PREFSMAN:GetPreference("AllowW1") == 'AllowW1_Never' then
+			return THEME:GetMetric("ScoreKeeperNormal", "PercentScoreWeightW2");
 		else
-			return 2
+			return THEME:GetMetric("ScoreKeeperNormal", "PercentScoreWeightW1");
 		end;
 	else
 		return 0
