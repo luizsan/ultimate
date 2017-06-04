@@ -5,7 +5,7 @@ local t = Def.ActorFrame{
 		SetSSM(); 
 	end;
 
-	OnCommand=cmd(sleep,0.1;queuecommand,"Unlock");
+	OnCommand=cmd(sleep,1;queuecommand,"Unlock");
 	UnlockCommand=function(self) 
 		Global.lockinput = false; 
 	end;
@@ -40,7 +40,7 @@ end;
 --//================================================================	
 
 function CodeController(self,param)
-	if GAMESTATE:IsSideJoined(param.PlayerNumber) then
+	if GAMESTATE:IsSideJoined(param.PlayerNumber) and not Global.lockinput then
 
 		if param.Name == "Back" then 
 			MESSAGEMAN:Broadcast("MenuInput", {  Input = "Cancel", Player = Global.master }); 
