@@ -1,6 +1,5 @@
 local function Update(self,dt)
 	MESSAGEMAN:Broadcast("Update");
-	--SCREENMAN:SystemMessage("Updating")
 end;
 
 local t = Def.ActorFrame {
@@ -16,7 +15,7 @@ local misses = 0;
 local all_dp = 0;
 local cur_dp = 0;
 
-local prevtns;
+local song = GAMESTATE:GetCurrentSong();
 
 local TNS_weights = {
 	["TapNoteScore_CheckpointMiss"] = THEME:GetMetric("ScoreKeeperNormal", "PercentScoreWeightCheckpointMiss"),
@@ -39,8 +38,29 @@ local HNS_weights = {
 };
 
 local function TNSToCombo(tns)
+	local multiplier = { 1, 1 };
+	local curbeat = GAMESTATE:GetSongBeat();
+	local master = GAMESTATE:GetMasterPlayerNumber();
+	local timing = GAMESTATE:GetCurrentSteps(master):GetTimingData(true);
+	local combos = timing:GetCombos(true);
+
+	if timing and combos and #combos > 1 then
+		for i=1,#combos do
+			local beat = combos[i][1];
+			local limit = math.huge;
+
+			if i+1 <= #combos then 
+				limit = combos[i+1][1]; 
+			end;
+
+			if(curbeat >= beat and curbeat < limit) then
+				multiplier = { combos[i][2], combos[i][3] };
+			end;
+		end;
+	end;
+
 	if tns == "TapNoteScore_Miss" or tns == "TapNoteScore_CheckpointMiss" then
-		misses = misses + 1;
+		misses = misses + multiplier[2];
 		hits = 0;
 	elseif tns == "TapNoteScore_W5" then
 		misses = 0;
@@ -48,10 +68,10 @@ local function TNSToCombo(tns)
 	elseif tns == ComboMaintain() then
 		hits = 0;
 	elseif tns == ComboContinue() then
-		hits = hits + 1;
+		hits = hits + multiplier[1];
 		misses = 0;
 	else
-		hits = hits + 1;
+		hits = hits + multiplier[1];
 		misses = 0;
 	end;
 end;
@@ -74,7 +94,7 @@ t[#t+1] = LoadFont("Common normal")..{
 			all_dp = 0;
 			self:visible(false);
 		end;
-		self:settext("Note count: "..notecount.."\nCombo: "..hits.."\nMisses:"..misses);
+		self:settext("Note count: "..notecount);
 	end;
 
 	JudgmentMessageCommand=function(self, param)
