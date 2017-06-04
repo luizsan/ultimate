@@ -14,8 +14,7 @@ local translit_subtitle;
 local translit_artist;
 
 local t = Def.ActorFrame{
-	InitCommand=cmd(playcommand,"MusicWheel");
-	OnCommand=cmd(stoptweening;diffusealpha,0;sleep,0.5;linear,0.2;diffusealpha,1);
+	OnCommand=cmd(stoptweening;diffusealpha,0;sleep,0.5;linear,0.2;diffusealpha,1;playcommand,"MusicWheel");
 	MusicWheelMessageCommand=function(self)
 
 		--time
