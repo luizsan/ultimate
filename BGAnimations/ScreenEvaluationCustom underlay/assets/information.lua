@@ -7,127 +7,122 @@ local translit_title;
 local translit_subtitle;
 local translit_artist;
 
-local titlezoom = 0.8;
-local artistzoom = 0.53;
-local subzoom = 0.475;
-local titlemaxwidth = 600;
+local maxwidth = 360;
 
-local originX = SCREEN_CENTER_X;
-local originY = SCREEN_TOP+80;
-
-local spacing = 272;
+local setTitle = cmd(settext,display_title,translit_title);
+local setArtist = cmd(settext,display_artist,translit_artist);
+local setPack = cmd(settext,"// "..Global.song:GetGroupName());
 
 local t = Def.ActorFrame{
     InitCommand=function()
-
-        display_fulltitle = Global.song:GetDisplayFullTitle();
-        display_title = Global.song:GetDisplayMainTitle();
-        display_subtitle = Global.song:GetDisplaySubTitle();
-        display_artist = Global.song:GetDisplayArtist();
-        translit_fulltitle = Global.song:GetTranslitFullTitle();
-        translit_title = Global.song:GetTranslitMainTitle();
-        translit_subtitle = Global.song:GetTranslitSubTitle();
-        translit_artist = Global.song:GetTranslitArtist();
-
+        display_fulltitle = Global.song:GetDisplayFullTitle()
+        display_title = Global.song:GetDisplayMainTitle()
+        display_subtitle = Global.song:GetDisplaySubTitle()
+        display_artist = Global.song:GetDisplayArtist()
+        translit_fulltitle = Global.song:GetTranslitFullTitle()
+        translit_title = Global.song:GetTranslitMainTitle()
+        translit_subtitle = Global.song:GetTranslitSubTitle()
+        translit_artist = Global.song:GetTranslitArtist()
     end;
-
 }
 
+--//================================================================
 
--- banner
+function LoadJacket(self,song)
+    local path;
+    --self:Load(nil);
+    path = song:GetJacketPath(); 
+    if path ~= nil --[[and FILEMAN:DoesFileExist(path)]] then
+        self:Load(path)
+    else
+        path = song:GetBannerPath(); 
+        if path ~= nil --[[and FILEMAN:DoesFileExist(path)]] then
+            self:LoadBanner(path)
+            --self:Load(path)
+        else
+            self:Load(THEME:GetPathG("Common fallback","banner"));  
+            --self:Load(THEME:GetPathG("Common fallback","banner"));
+        end;
+    end;
+end;
+
+--// CAPTION =================
+t[#t+1] = LoadFont("regen small")..{
+        InitCommand=cmd(x,SCREEN_CENTER_X;y,SCREEN_TOP+32;zoomx,0.32;zoomy,0.3;diffuse,0.66,0.66,0.66,0.75;diffusebottomedge,1,1,1,0.75;strokecolor,0.1,0.1,0.1,1);
+        OnCommand=cmd(settext,"RESULTS");
+}
+
+--// LEFT =================
 t[#t+1] = Def.ActorFrame{
-    InitCommand=cmd(x,SCREEN_CENTER_X;y,SCREEN_TOP+64;zoomx,0.8;zoomy,0.85);
+    InitCommand=cmd(x,SCREEN_CENTER_X-275;y,SCREEN_TOP+46);
+
     Def.Sprite{
-        InitCommand=cmd(LoadFromSongBanner,Global.song;scaletoclipped,256,80);
+        InitCommand=cmd(horizalign,left;vertalign,top);
+        OnCommand=function(self)
+            LoadJacket(self,Global.song);
+            self:scaletoclipped(48,48);
+        end;
     },
-    LoadActor(THEME:GetPathG("","bannerframe"))..{
-    }
 
+    Def.BitmapText{
+        Font = "roboto";
+        InitCommand=cmd(horizalign,left;vertalign,top;zoom,0.6;x,60;y,2;maxwidth,maxwidth/self:GetZoom();
+            strokecolor,0.2,0.2,0.2,1;shadowlength,1.25);
+        OnCommand=setTitle;
+    },
+
+    Def.BitmapText{
+        Font = "roboto";
+        InitCommand=cmd(horizalign,left;vertalign,top;zoom,0.475;x,60;y,20;maxwidth,maxwidth/self:GetZoom();
+            diffuse,HighlightColor();strokecolor,BoostColor(HighlightColor(),0.2);shadowlength,1.25);
+        OnCommand=setArtist;
+    },
+
+    Def.BitmapText{
+        Font = "roboto";
+        InitCommand=cmd(horizalign,left;vertalign,top;zoom,0.475;x,60;y,36;maxwidth,maxwidth/self:GetZoom();
+            diffuse,0.75,0.75,0.75,1;strokecolor,0.2,0.2,0.2,1;shadowlength,1.25);
+        OnCommand=setPack;
+    },
+};
+
+--// RIGHT =================
+t[#t+1] = Def.ActorFrame{
+    InitCommand=cmd(x,SCREEN_CENTER_X+275;y,SCREEN_TOP+52);
+
+    --[[
+    Def.BitmapText{
+        Font = "roboto";
+        InitCommand=cmd(horizalign,right;vertalign,top;zoom,0.45;x,-12;y,0;
+            strokecolor,0.2,0.2,0.2,1;shadowlength,1.25);
+        OnCommand=cmd(settext,"Music Rate: "..GAMESTATE:GetSongOptionsObject("ModsLevel_Current"):MusicRate().."x");
+    },
+    ]]--
+
+    Def.BitmapText{
+        Font = "roboto";
+        InitCommand=cmd(horizalign,right;vertalign,top;zoom,0.6;x,-12;y,-4;
+            strokecolor,0.2,0.2,0.2,1;shadowlength,1.25);
+        OnCommand=cmd(settext,"Stage "..GAMESTATE:GetCurrentStageIndex()+1);
+    },
+
+    Def.BitmapText{
+        Font = "roboto";
+        InitCommand=cmd(horizalign,right;vertalign,top;zoom,0.45;x,-12;y,16;
+            strokecolor,0.2,0.2,0.2,1;shadowlength,1.25);
+        OnCommand=cmd(settext,"Timing Difficulty: "..GetTimingDifficulty());
+    },
+
+    Def.BitmapText{
+        Font = "roboto";
+        InitCommand=cmd(horizalign,right;vertalign,top;zoom,0.4;x,-12;y,32;
+            strokecolor,0.2,0.2,0.2,1;shadowlength,1.25);
+        OnCommand=cmd(settext,"Life Difficulty: "..GetLifeDifficulty());
+    },
+};
+
+t[#t+1] = Def.Quad{
+    InitCommand=cmd(zoomto,560,1;diffuse,1,1,1,0.2;x,SCREEN_CENTER_X;y,SCREEN_TOP+106);
 }
-
-
---// ARTIST =================
-t[#t+1] = Def.ActorFrame{
-    InitCommand=cmd(x,originX;y,originY;zoomx,0.975);
-
-        Def.BitmapText{
-            Font = "roboto";
-            InitCommand=cmd(x,-1;y,-1;vertalign,top;zoom,artistzoom;diffuse,BoostColor(HighlightColor(),0.25);strokecolor,BoostColor(HighlightColor(),0.25);
-                maxwidth,500/self:GetZoom();vertspacing,-16;shadowcolor,BoostColor(HighlightColor(),0.25);shadowlengthx,2.2;shadowlengthy,2.2);
-            OnCommand=function(self)
-                self:settext(display_artist,translit_artist);
-            end;
-        },
-
-        Def.BitmapText{
-            Font = "roboto";
-            InitCommand=cmd(vertalign,top;zoom,artistzoom;diffuse,BoostColor(HighlightColor(),0.25);strokecolor,BoostColor(HighlightColor(),0.25);
-                maxwidth,500/self:GetZoom();vertspacing,-16;shadowcolor,BoostColor(HighlightColor(),0.25);shadowlengthx,1.2;shadowlengthy,1.2);
-            OnCommand=function(self)
-                self:settext(display_artist,translit_artist);
-            end;
-        },
-
-        Def.BitmapText{
-            Font = "roboto";
-            InitCommand=cmd(x,-1;y,-1;vertalign,top;zoom,artistzoom;diffuse,BoostColor(HighlightColor(),1.0);strokecolor,BoostColor(HighlightColor(),0.3);
-                maxwidth,500/self:GetZoom();vertspacing,-16;shadowcolor,BoostColor(HighlightColor(),0.25);shadowlengthx,1;shadowlengthy,1);
-            OnCommand=function(self)
-                self:settext(display_artist,translit_artist);
-            end;
-        },
-};
-
-t[#t+1] = Def.ActorFrame{
-    InitCommand=cmd(x,originX;y,originY+16;zoomx,0.98);
-
-    Def.BitmapText{
-        Font = "roboto";
-        InitCommand=cmd(vertalign,top;x,-1;y,-1;zoom,titlezoom;diffuse,0.25,0.25,0.25,1;strokecolor,0.25,0.25,0.25,1;
-            maxwidth,titlemaxwidth/self:GetZoom();vertspacing,-2;shadowcolor,0.25,0.25,0.25,0.75;shadowlengthx,2.5;shadowlengthy,2.5);
-        OnCommand=function(self)
-            self:settext(display_fulltitle,translit_fulltitle);
-        end;
-    },
-
-    Def.BitmapText{
-        Font = "roboto";
-        InitCommand=cmd(vertalign,top;zoom,titlezoom;diffuse,0.3,0.25,0.25,1;strokecolor,0.25,0.25,0.25,1;
-            maxwidth,titlemaxwidth/self:GetZoom();vertspacing,-2;shadowcolor,0.25,0.25,0.25,0.8;shadowlengthx,1.2;shadowlengthy,1.2);
-        OnCommand=function(self)
-            self:settext(display_fulltitle,translit_fulltitle);
-        end;
-    },
-
-    Def.BitmapText{
-        Font = "roboto";
-        InitCommand=cmd(x,-1;y,-1;vertalign,top;zoom,titlezoom;strokecolor,0.275,0.275,0.275,1;
-            maxwidth,titlemaxwidth/self:GetZoom();vertspacing,-2);
-        OnCommand=function(self)
-            self:settext(display_fulltitle,translit_fulltitle);
-
-            local index;
-
-            if self:GetText() == display_fulltitle then
-                index = string.utf8len(display_title)
-            elseif self:GetText() == translit_fulltitle then
-                index = string.utf8len(translit_title)
-            end;
-            
-            self:AddAttribute(
-                index,{
-                Length = -1;
-                --Diffuse = {1,0.925,0.5,1}; --fuck SAO
-                Diffuse = BoostColor({1,1,1,1},0.7);
-                }
-            );
-
-        end;
-    },
-
-};
-
-
-
 
 return t;

@@ -6,12 +6,12 @@ local t = Def.ActorFrame{
     
     MenuUpP1MessageCommand=function(self) MESSAGEMAN:Broadcast("MenuInput", {  Input = "Back", Player = PLAYER_1 }); end; 
     MenuUpP2MessageCommand=function(self) MESSAGEMAN:Broadcast("MenuInput", {  Input = "Back", Player = PLAYER_2 }); end; 
-    MenuDownP1MessageCommand=function(self) MESSAGEMAN:Broadcast("MenuInput", { Input = "Back", Player = PLAYER_1  }); end; 
-    MenuDownP2MessageCommand=function(self) MESSAGEMAN:Broadcast("MenuInput", { Input = "Back", Player = PLAYER_2  }); end; 
-    MenuLeftP1MessageCommand=function(self) MESSAGEMAN:Broadcast("MenuInput", {  Input = "Prev", Player = PLAYER_1  }); end;
+    MenuDownP1MessageCommand=function(self) MESSAGEMAN:Broadcast("MenuInput", { Input = "Back", Player = PLAYER_1 }); end; 
+    MenuDownP2MessageCommand=function(self) MESSAGEMAN:Broadcast("MenuInput", { Input = "Back", Player = PLAYER_2 }); end; 
+    MenuLeftP1MessageCommand=function(self) MESSAGEMAN:Broadcast("MenuInput", {  Input = "Prev", Player = PLAYER_1 }); end;
     MenuLeftP2MessageCommand=function(self) MESSAGEMAN:Broadcast("MenuInput", {  Input = "Prev", Player = PLAYER_2 }); end; 
-    MenuRightP1MessageCommand=function(self) MESSAGEMAN:Broadcast("MenuInput", { Input = "Next", Player = PLAYER_1  }); end; 
-    MenuRightP2MessageCommand=function(self) MESSAGEMAN:Broadcast("MenuInput", { Input = "Next", Player = PLAYER_2  }); end; 
+    MenuRightP1MessageCommand=function(self) MESSAGEMAN:Broadcast("MenuInput", { Input = "Next", Player = PLAYER_1 }); end; 
+    MenuRightP2MessageCommand=function(self) MESSAGEMAN:Broadcast("MenuInput", { Input = "Next", Player = PLAYER_2 }); end; 
     MouseScrollUpMessageCommand=function(self) MESSAGEMAN:Broadcast("MenuInput", { Input = "Prev", Player = master }); end; 
     MouseScrollDownMessageCommand=function(self) MESSAGEMAN:Broadcast("MenuInput", { Input = "Next", Player = master  }); end; 
     MenuInputMessageCommand=function(self,param) if not Global.lockinput then InputController(self,param) end; end; 
@@ -58,6 +58,6 @@ t[#t+1] = LoadActor("assets/fulldisplay");
 t[#t+1] = LoadActor("assets/information");
 t[#t+1] = LoadActor("assets/scores");
 t[#t+1] = LoadActor("assets/menu");
-t[#t+1] = LoadActor("assets/sound");
+--t[#t+1] = LoadActor("assets/sound");
 
 return t;

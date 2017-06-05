@@ -17,7 +17,7 @@ t[#t+1] = Def.Sprite{
         self:y(SCREEN_TOP+20);
 
         self:linear(0.3);
-        self:diffuse(1,1,1,0.5);
+        self:diffuse(0.2,0.2,0.2,0.8);
 
         self:cropbottom(0.15);
         self:fadebottom(0.05);
