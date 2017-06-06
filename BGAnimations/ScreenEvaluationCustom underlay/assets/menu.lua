@@ -1,4 +1,6 @@
-local t = Def.ActorFrame{}
+local t = Def.ActorFrame{
+    InitCommand=cmd(diffusealpha,0);
+}
 
 local originX = SCREEN_CENTER_X;
 local originY = SCREEN_CENTER_Y + 100;

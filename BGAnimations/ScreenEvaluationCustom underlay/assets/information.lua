@@ -54,7 +54,7 @@ t[#t+1] = LoadFont("regen small")..{
 
 --// LEFT =================
 t[#t+1] = Def.ActorFrame{
-    InitCommand=cmd(x,SCREEN_CENTER_X-275;y,SCREEN_TOP+46);
+    InitCommand=cmd(x,SCREEN_CENTER_X-275;y,SCREEN_TOP+48);
 
     Def.Sprite{
         InitCommand=cmd(horizalign,left;vertalign,top);
@@ -88,7 +88,7 @@ t[#t+1] = Def.ActorFrame{
 
 --// RIGHT =================
 t[#t+1] = Def.ActorFrame{
-    InitCommand=cmd(x,SCREEN_CENTER_X+275;y,SCREEN_TOP+52);
+    InitCommand=cmd(x,SCREEN_CENTER_X+275;y,SCREEN_TOP+54);
 
     --[[
     Def.BitmapText{
