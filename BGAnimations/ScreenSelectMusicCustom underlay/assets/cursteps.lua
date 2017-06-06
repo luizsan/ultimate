@@ -46,6 +46,7 @@ end;
 for pn in ivalues(GAMESTATE:GetHumanPlayers()) do 
 		
 	t[#t+1] = Def.ActorFrame{
+		InitCommand=cmd(x,SCREEN_CENTER_X + 260 * pnSide(pn);y,SCREEN_BOTTOM-64);
 		OnCommand=cmd(stoptweening;diffusealpha,0;sleep,0.5;linear,0.5;diffusealpha,1);
 		StateChangedMessageCommand=function(self)
 			self:visible(GAMESTATE:IsSideJoined(pn));
@@ -59,19 +60,20 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 		end;
 
 		LoadActor(THEME:GetPathG("","dim"))..{
-			InitCommand=cmd(zoomto,364,96;y,originY-2;diffuse,BoostColor(Global.bgcolor,0.75);fadeleft,0.66666;faderight,0.66666;playcommand,"SetX");
-			SetXCommand=function(self) self:x(SCREEN_CENTER_X+((spacing-30)*pnSide(pn))); end;
+			InitCommand=cmd(zoomto,364,96;diffuse,BoostColor(Global.bgcolor,0.75);fadeleft,0.66666;faderight,0.66666;x,64 + pnSide(pn));
 		};
 		
 		LoadActor(THEME:GetPathG("","separator"))..{
-			InitCommand=cmd(zoom,0.45;y,originY-5;diffuse,0,0,0,0.5;playcommand,"SetX");
-			SetXCommand=function(self) self:x(SCREEN_CENTER_X+((spacing+1)*pnSide(pn))); end;
+			InitCommand=cmd(zoom,0.45;x,24;diffuse,0,0,0,0.5);
 		};
 
-		LoadFont("regen silver")..{
-				InitCommand=cmd(zoom,0.5;y,originY-2;strokecolor,0.15,0.15,0.15,1;playcommand,"SetX";playcommand,"MusicWheel");
-				SetXCommand=function(self) if pn == PLAYER_1 then self:x(SCREEN_CENTER_X-spacing-8-17); elseif pn == PLAYER_2 then self:x(SCREEN_CENTER_X+spacing+10+17); end; end;
-				StepsChangedMessageCommand=function(self)
+		-- meter
+		Def.BitmapText{
+				Font = "regen silver";
+				InitCommand=cmd(zoom,0.5;strokecolor,0.15,0.15,0.15,1);
+				OnCommand=cmd(playcommand,"Refresh");
+				StepsChangedMessageCommand=cmd(playcommand,"Refresh");
+				RefreshCommand=function(self)
 					if Global.pncursteps[pn] and GAMESTATE:IsSideJoined(pn) then
 						local value = FormatMeter(Global.pncursteps[pn]:GetMeter());
 						self:settext(value);		
@@ -79,10 +81,13 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 				end;
 		};
 		
-		LoadFont("regen silver")..{
-				InitCommand=cmd(vertalign,bottom;zoom,0.33;y,originY-10;strokecolor,0.2,0.2,0.2,1;vertspacing,-30.9;playcommand,"SetX");--;playcommand,"MusicWheel");
-				SetXCommand=function(self) if pn == PLAYER_1 then self:x(SCREEN_CENTER_X-spacing-8-18); elseif pn == PLAYER_2 then self:x(SCREEN_CENTER_X+spacing+10+17); end; end;
-				StepsChangedMessageCommand=function(self)
+		-- stepstype
+		Def.BitmapText{
+				Font = "regen silver";
+				InitCommand=cmd(vertalign,bottom;zoom,0.33;strokecolor,0.2,0.2,0.2,1;y,-8);
+				OnCommand=cmd(playcommand,"Refresh");
+				StepsChangedMessageCommand=cmd(playcommand,"Refresh");
+				RefreshCommand=function(self)
 					if Global.pncursteps[pn] and GAMESTATE:IsSideJoined(pn) then
 						self:settext(string.lower(PureType(Global.pncursteps[pn])));
 					
@@ -109,10 +114,13 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 				end;
 		};
 		
-		LoadFont("neotech")..{
-				InitCommand=cmd(horizalign,left;zoom,0.4;y,originY-13;strokecolor,0.2,0.2,0.2,1;maxwidth,560;playcommand,"SetX";playcommand,"MusicWheel");
-				SetXCommand=function(self) if pn == PLAYER_1 then self:x(SCREEN_CENTER_X-spacing+8); self:horizalign(left); elseif pn == PLAYER_2 then self:x(SCREEN_CENTER_X+spacing-10); self:horizalign(right); end; end;
-				StepsChangedMessageCommand=function(self)
+		-- maker
+		Def.BitmapText{
+				Font = "neotech";
+				InitCommand=cmd(horizalign,pnAlign(pn);x,34;y,-11;zoom,0.4;strokecolor,0.2,0.2,0.2,1;maxwidth,560);
+				OnCommand=cmd(playcommand,"Refresh");
+				StepsChangedMessageCommand=cmd(playcommand,"Refresh");
+				RefreshCommand=function(self)
 					if Global.pncursteps[pn] and GAMESTATE:IsSideJoined(pn) then
 						local maker = Global.pncursteps[pn]:GetAuthorCredit()
 						maker = FilterStepmaker(maker);
@@ -128,10 +136,13 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 				end;
 		};
 		
-		LoadFont("neotech")..{
-				InitCommand=cmd(horizalign,left;zoom,0.4;y,originY;diffuse,BoostColor(PlayerColor(pn),0.95);strokecolor,BoostColor(PlayerColor(pn),0.25);maxwidth,560;playcommand,"SetX";playcommand,"MusicWheel");
-				SetXCommand=function(self) if pn == PLAYER_1 then self:x(SCREEN_CENTER_X-spacing+8); self:horizalign(left); elseif pn == PLAYER_2 then self:x(SCREEN_CENTER_X+spacing-10); self:horizalign(right); end; end;
-				StepsChangedMessageCommand=function(self)
+		-- notes
+		Def.BitmapText{
+				Font = "neotech";
+				InitCommand=cmd(horizalign,pnAlign(pn);x,34;y,3;zoom,0.4;diffuse,BoostColor(PlayerColor(pn),0.95);strokecolor,BoostColor(PlayerColor(pn),0.25);maxwidth,560);
+				OnCommand=cmd(playcommand,"Refresh");
+				StepsChangedMessageCommand=cmd(playcommand,"Refresh");
+				RefreshCommand=function(self)
 					if Global.pncursteps[pn] and GAMESTATE:IsSideJoined(pn) then
 						--self:settext("Avg. notes/sec: "..AvgNotesSec(steps,pn));
 						self:settext("Total notes: "..TotalNotes(Global.pncursteps[pn],pn));
