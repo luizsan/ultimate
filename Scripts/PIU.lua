@@ -1,4 +1,4 @@
-function PIUScoring(param)
+function PIUScoring(param, beat)
     if param.HoldNoteScore then return 0 end;
 
     local judge_table = {
@@ -41,9 +41,9 @@ function PIUScoring(param)
         
         if judge_table[param.TapNoteScore].Bonus then
             if notes_in_row > 2 then
-                note_row_bonus = (1000 * (notes_in_row-2)) * note_double_multiplier;
+                note_row_bonus = (1000 * (notes_in_row-2));
             end;
-            if combo >= 51 then
+            if combo + BeatToCombo(beat, param.Player)[1] >= 51 then
                 note_combo_bonus = 1000;
             end;
         end;
@@ -52,7 +52,7 @@ function PIUScoring(param)
 
     note_final_value = ( note_base_value + note_combo_bonus + note_row_bonus ) * note_level_multiplier * note_double_multiplier;
 
-    SCREENMAN:SystemMessage(notes_in_row.."\n"..note_final_value.."\nScore: "..Global.piuscoring[param.Player]); 
+    SCREENMAN:SystemMessage(notes_in_row.."\n"..note_final_value.."\nScore: "..Global.piuscoring[param.Player].."\nCombo: "..combo); 
     return note_final_value;
 end;
 
@@ -79,6 +79,7 @@ function PIUGrading(pn)
 
 end;
 
+-- return the scoring rounded down + the final bonuses 
 function PostProcessPIUScores(pn)
     local final_score = Global.piuscoring[pn];
     local grade_bonuses = {
@@ -90,4 +91,29 @@ function PostProcessPIUScores(pn)
     final_score = final_score + grade_bonuses[PIUGrading(pn)];
     final_score = final_score - Global.piuscoring[pn] % 100;
     return final_score;
+end;
+
+-- get the combo value at a certain beat for the current steps
+function BeatToCombo(curbeat, pn)
+    local multiplier = { 1, 1 };
+    local player = pn or GAMESTATE:GetMasterPlayerNumber();
+    local timing = GAMESTATE:GetCurrentSteps(player):GetTimingData(true);
+    local combos = timing:GetCombos(true);
+
+    if timing and combos and #combos > 1 then
+        for i=1,#combos do
+            local beat = combos[i][1];
+            local limit = math.huge;
+
+            if i+1 <= #combos then 
+                limit = combos[i+1][1]; 
+            end;
+
+            if(curbeat >= beat and curbeat < limit) then
+                multiplier = { combos[i][2], combos[i][3] };
+            end;
+        end;
+    end;
+
+    return multiplier;
 end;

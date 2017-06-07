@@ -29,7 +29,8 @@ local t = Def.ActorFrame{
 		if param.Player and param.TapNoteScore then pulse(self); end;
 
 		if IsGame("pump") then
-			local value = PIUScoring(param);
+			local beat = GAMESTATE:GetSongBeat();
+			local value = PIUScoring(param, beat);
 			Global.piuscoring[player] = Global.piuscoring[player] + value;
 			Global.piuscoring[player] = clamp(Global.piuscoring[player],0,math.huge);
 		end;
