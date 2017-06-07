@@ -21,8 +21,8 @@ function PIUScoring(param)
     local combo = STATSMAN:GetCurStageStats():GetPlayerStageStats(param.Player):GetCurrentCombo();
 
     local note_base_value = 0;
-    local note_combo_value = 0;
-    local note_row_value = 0;
+    local note_combo_bonus = 0;
+    local note_row_bonus = 0;
 
     local notes_in_row = 0;
     if param.Notes then
@@ -34,7 +34,6 @@ function PIUScoring(param)
     local note_level_multiplier = steps:GetMeter() > 10 and steps:GetMeter()/10 or 1;
     local note_double_multiplier = PureType(steps) == "Double" and 1.2 or 1;
 
-
     ---
 
     if judge_table[param.TapNoteScore] then
@@ -42,16 +41,16 @@ function PIUScoring(param)
         
         if judge_table[param.TapNoteScore].Bonus then
             if notes_in_row > 2 then
-                note_row_value = 1000 * (notes_in_row-2);
+                note_row_bonus = (1000 * (notes_in_row-2)) * note_double_multiplier;
             end;
             if combo >= 51 then
-                note_combo_value = 1000;
+                note_combo_bonus = 1000;
             end;
         end;
 
     end;
 
-    note_final_value = ( note_base_value + note_combo_value + note_row_value ) * note_level_multiplier * note_double_multiplier;
+    note_final_value = ( note_base_value + note_combo_bonus + note_row_bonus ) * note_level_multiplier * note_double_multiplier;
 
     SCREENMAN:SystemMessage(notes_in_row.."\n"..note_final_value.."\nScore: "..Global.piuscoring[param.Player]); 
     return note_final_value;

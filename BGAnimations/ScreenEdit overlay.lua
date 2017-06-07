@@ -16,6 +16,7 @@ local all_dp = 0;
 local cur_dp = 0;
 
 local song = GAMESTATE:GetCurrentSong();
+local oldbeat = 0;
 
 local TNS_weights = {
 	["TapNoteScore_CheckpointMiss"] = THEME:GetMetric("ScoreKeeperNormal", "PercentScoreWeightCheckpointMiss"),
@@ -81,20 +82,30 @@ local function ValueOrNil(val)
 	return val;
 end;
 
+local function ResetTrackers()
+	notecount = 0;
+	hits = 0;
+	misses = 0;
+	all_dp = 0;
+	cur_dp = 0;
+	oldbeat = GAMESTATE:GetSongBeat();
+end;
+
 t[#t+1] = LoadFont("Common normal")..{
 	InitCommand=cmd(diffuse,1,1,1,1;strokecolor,0.1,0.1,0.1,1;zoom,0.75;x,SCREEN_LEFT+20;y,SCREEN_TOP+3;horizalign,left;vertalign,top);
 	UpdateMessageCommand=function(self)
 		if SCREENMAN:GetTopScreen():GetScreenType() == "ScreenType_Gameplay" then
 			self:visible(true);
+			if GAMESTATE:GetSongBeat() < oldbeat then
+				ResetTrackers();
+			end;
 		else
-			notecount = 0;
-			hits = 0;
-			misses = 0;
-			cur_dp = 0;
-			all_dp = 0;
+			ResetTrackers();
 			self:visible(false);
 		end;
+
 		self:settext("Note count: "..notecount);
+		
 	end;
 
 	JudgmentMessageCommand=function(self, param)
