@@ -11,7 +11,7 @@ local maxwidth = 360;
 
 local setTitle = cmd(settext,display_title,translit_title);
 local setArtist = cmd(settext,display_artist,translit_artist);
-local setPack = cmd(settext,"// "..Global.song:GetGroupName());
+local setPack = cmd(settext,Global.song and Global.song:GetGroupName() or GAMESTATE:GetCurrentSong():GetGroupName());
 
 local t = Def.ActorFrame{
     InitCommand=function()

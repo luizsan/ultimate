@@ -49,6 +49,15 @@ Global = {
         [PLAYER_1] = -1,
         [PLAYER_2] = -1,
     },
+    piuscoring = {
+        [PLAYER_1] = 0,
+        [PLAYER_2] = 0,
+    },
+    life = {
+        ["Master"] = 0,
+        [PLAYER_1] = 0,
+        [PLAYER_2] = 0,
+    },
     blocksteps = false,
     blockjoin = true,
     prevstate = "",
@@ -92,4 +101,14 @@ function ResetState()
         [PLAYER_1] = -1,
         [PLAYER_2] = -1,
     };
+    Global.piuscoring = {
+        [PLAYER_1] = 0,
+        [PLAYER_2] = 0,
+    };
+    Global.life = {
+        ["Master"] = 0,
+        [PLAYER_1] = 0,
+        [PLAYER_2] = 0,
+    };
+
 end;

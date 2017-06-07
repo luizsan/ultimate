@@ -20,33 +20,33 @@ local function FetchStatsForPlayer(pn)
 
     local stats;
     local curstats; 
-    local playerstats; 
+    local pss; 
     local dp; 
 
     if GAMESTATE:IsSideJoined(pn) then
         curstats = STATSMAN:GetCurStageStats();
-        playerstats = curstats:GetPlayerStageStats(pn);
-        curdp = playerstats:GetActualDancePoints();
-        maxdp = playerstats:GetCurrentPossibleDancePoints();
+        pss = curstats:GetPlayerStageStats(pn);
+        curdp = pss:GetActualDancePoints();
+        maxdp = pss:GetCurrentPossibleDancePoints();
         dp = curdp / clamp(maxdp,1,maxdp);
 
         stats = {
             ["Percent"]  = string.format("%.2f",dp*100), 
-            ["Score"]    = playerstats:GetScore(), 
-            ["Combo"]    = playerstats:MaxCombo(), 
-            ["W1"]       = playerstats:GetTapNoteScores('TapNoteScore_W1'),
-            ["W2"]       = playerstats:GetTapNoteScores('TapNoteScore_W2'), 
-            ["W3"]       = playerstats:GetTapNoteScores('TapNoteScore_W3'), 
-            ["W4"]       = playerstats:GetTapNoteScores('TapNoteScore_W4'), 
-            ["W5"]       = playerstats:GetTapNoteScores('TapNoteScore_W5'),
-            ["Miss"]     = playerstats:GetTapNoteScores('TapNoteScore_Miss'), 
-            ["Hold"]     = playerstats:GetTapNoteScores('TapNoteScore_CheckpointHit'),
-            ["HoldMiss"] = playerstats:GetTapNoteScores('TapNoteScore_CheckpointMiss'), 
-            ["Mines"]    = playerstats:GetTapNoteScores('TapNoteScore_HitMine'), 
-            ["Avoided"]  = playerstats:GetTapNoteScores('TapNoteScore_AvoidMine'), 
-            ["LetGo"]    = playerstats:GetHoldNoteScores('HoldNoteScore_LetGo'), 
-            ["Held"]     = playerstats:GetHoldNoteScores('HoldNoteScore_Held'),
-            ["MissHold"] = playerstats:GetHoldNoteScores('HoldNoteScore_MissedHold'),
+            ["Score"]    = IsGame("pump") and PostProcessPIUScores(pn) or pss:GetScore(), 
+            ["Combo"]    = pss:MaxCombo(), 
+            ["W1"]       = pss:GetTapNoteScores('TapNoteScore_W1'),
+            ["W2"]       = pss:GetTapNoteScores('TapNoteScore_W2'), 
+            ["W3"]       = pss:GetTapNoteScores('TapNoteScore_W3'), 
+            ["W4"]       = pss:GetTapNoteScores('TapNoteScore_W4'), 
+            ["W5"]       = pss:GetTapNoteScores('TapNoteScore_W5'),
+            ["Miss"]     = pss:GetTapNoteScores('TapNoteScore_Miss'), 
+            ["Hold"]     = pss:GetTapNoteScores('TapNoteScore_CheckpointHit'),
+            ["HoldMiss"] = pss:GetTapNoteScores('TapNoteScore_CheckpointMiss'), 
+            ["Mines"]    = pss:GetTapNoteScores('TapNoteScore_HitMine'), 
+            ["Avoided"]  = pss:GetTapNoteScores('TapNoteScore_AvoidMine'), 
+            ["LetGo"]    = pss:GetHoldNoteScores('HoldNoteScore_LetGo'), 
+            ["Held"]     = pss:GetHoldNoteScores('HoldNoteScore_Held'),
+            ["MissHold"] = pss:GetHoldNoteScores('HoldNoteScore_MissedHold'),
             ["Digits"]   = 0,
         };
     else
@@ -93,7 +93,6 @@ local function FetchStatsForPlayer(pn)
 
     stats["Miss"] = stats["Miss"] + stats["HoldMiss"];
     stats["Miss"] = stats["Miss"] + stats["MissHold"];
-
     return stats;
 end;
 
@@ -161,6 +160,7 @@ for n=1,#dance_grade do
             end;
         },
 
+        -- label
         Def.BitmapText{
             Font = "regen strong";
             InitCommand=cmd(zoom,0.875);
@@ -281,7 +281,11 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
             InitCommand=cmd(strokecolor,0.2,0.2,0.2,0.8;zoomy,0.55;zoomx,0.65;skewx,-0.15);
             OnCommand=function(self)
                 if pss[pn] then 
-                    self:settext(FormatGrade(pss[pn]:GetGrade()));
+                    if IsGame("pump") then
+                        self:settext(FormatGradePIU(PIUGrading(pn)));
+                    else
+                        self:settext(FormatGrade(pss[pn]:GetGrade()));
+                    end;
                     self:diffuse(PlayerColor(pn));
                     self:strokecolor(BoostColor(PlayerColor(pn),0.25)); 
                 end;

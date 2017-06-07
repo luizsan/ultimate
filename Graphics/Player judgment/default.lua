@@ -17,14 +17,24 @@ if PREFSMAN:GetPreference("AllowW1") == "AllowW1_Never" then
 	TNSFrames.TapNoteScore_CheckpointHit = 1;
 end;
 
-
 local t = Def.ActorFrame{
-	InitCommand=function(self) self:draworder(501) end;
-	JudgmentMessageCommand=function(self,param) 
-		if param.TapNoteScore == "TapNoteScore_HitMine" or param.TapNoteScore == "TapNoteScore_AvoidMine" then return end;
-		if param.Player and param.TapNoteScore then pulse(self); end; 
+	InitCommand=function(self) 
+		self:draworder(501); 
+		Global.piuscoring[player] = 0;
 	end;
 
+	JudgmentMessageCommand=function(self,param) 
+
+		if param.TapNoteScore == "TapNoteScore_HitMine" or param.TapNoteScore == "TapNoteScore_AvoidMine" then return end;
+		if param.Player and param.TapNoteScore then pulse(self); end;
+
+		if IsGame("pump") then
+			local value = PIUScoring(param);
+			Global.piuscoring[player] = Global.piuscoring[player] + value;
+			Global.piuscoring[player] = clamp(Global.piuscoring[player],0,math.huge);
+		end;
+
+	end;
 
 	LoadActor("Judgment")..{
 		OnCommand=cmd(vertalign,bottom;zoom,0.445;animate,false;y,15;diffusealpha,0);
@@ -39,7 +49,7 @@ local t = Def.ActorFrame{
 				return 
 			end;
 		end;
-	};
+	}
 };
 
 
