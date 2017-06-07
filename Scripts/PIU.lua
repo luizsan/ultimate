@@ -65,16 +65,19 @@ function PIUGrading(pn)
 
     misscount = pss:GetTapNoteScores('TapNoteScore_Miss') + pss:GetTapNoteScores('TapNoteScore_CheckpointMiss');
 
-    if pss:FullComboOfScore('TapNoteScore_W1') then return "Grade_Tier01"
-    elseif pss:FullComboOfScore('TapNoteScore_W2') then return "Grade_Tier01";
-    elseif pss:FullComboOfScore('TapNoteScore_W3') then return "Grade_Tier02"
-    elseif misscount == 0 and dp >= 0.75 then return "Grade_Tier02"
-    elseif dp >= 0.8 then return "Grade_Tier04"
-    elseif dp >= 0.7 then return "Grade_Tier05"
-    elseif dp >= 0.6 then return "Grade_Tier06"
-    elseif dp >= 0.5 then return "Grade_Tier07"
-    else return "Grade_Tier08"
+    if not pss:GetFailed() then
+        if pss:FullComboOfScore('TapNoteScore_W1') then return "Grade_Tier01"
+        elseif pss:FullComboOfScore('TapNoteScore_W2') then return "Grade_Tier01";
+        elseif pss:FullComboOfScore('TapNoteScore_W3') then return "Grade_Tier02"
+        elseif misscount == 0 and dp >= 0.75 then return "Grade_Tier02"
+        elseif dp >= 0.8 then return "Grade_Tier04"
+        elseif dp >= 0.7 then return "Grade_Tier05"
+        elseif dp >= 0.6 then return "Grade_Tier06"
+        elseif dp >= 0.5 then return "Grade_Tier07"
+        else return "Grade_Tier08"
+        end;
     end;
+    
     return "Grade_Failed";
 
 end;
@@ -88,7 +91,11 @@ function PostProcessPIUScores(pn)
         ["Grade_Tier03"] = 100000, -- silver S
     };
 
-    final_score = final_score + grade_bonuses[PIUGrading(pn)];
+    local grade = PIUGrading(pn);
+    if grade_bonuses[grade] then
+        final_score = final_score + grade_bonuses[grade];
+    end;
+
     final_score = final_score - Global.piuscoring[pn] % 100;
     return final_score;
 end;
