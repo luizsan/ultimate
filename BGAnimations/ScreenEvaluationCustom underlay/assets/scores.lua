@@ -26,7 +26,10 @@ local function FetchStatsForPlayer(pn)
     if GAMESTATE:IsSideJoined(pn) then
         curstats = STATSMAN:GetCurStageStats();
         playerstats = curstats:GetPlayerStageStats(pn);
-        dp = playerstats:GetActualDancePoints()/playerstats:GetCurrentPossibleDancePoints();
+        curdp = playerstats:GetActualDancePoints();
+        maxdp = playerstats:GetCurrentPossibleDancePoints();
+        dp = curdp / clamp(maxdp,1,maxdp);
+
         stats = {
             ["Percent"]  = string.format("%.2f",dp*100), 
             ["Score"]    = playerstats:GetScore(), 
@@ -46,20 +49,6 @@ local function FetchStatsForPlayer(pn)
             ["MissHold"] = playerstats:GetHoldNoteScores('HoldNoteScore_MissedHold'),
             ["Digits"]   = 0,
         };
-
-        local digits = string.len(
-            math.max(
-                stats["Combo"],
-                stats["W1"],
-                stats["W2"],
-                stats["W3"],
-                stats["W4"],
-                stats["W5"],
-                stats["Miss"]
-            )
-        );
-
-        stats["Digits"] = math.max(3,digits);
     else
         stats = {
             ["Percent"]  = 0,
@@ -87,6 +76,20 @@ local function FetchStatsForPlayer(pn)
     else
         stats["W1"] = stats["W1"] + stats["Hold"];
     end;
+
+    local digits = string.len(
+        math.max(
+            stats["Combo"],
+            stats["W1"],
+            stats["W2"],
+            stats["W3"],
+            stats["W4"],
+            stats["W5"],
+            stats["Miss"]
+        )
+    );
+
+    stats["Digits"] = math.max(3,digits);
 
     stats["Miss"] = stats["Miss"] + stats["HoldMiss"];
     stats["Miss"] = stats["Miss"] + stats["MissHold"];
