@@ -16,6 +16,9 @@ local digits = 0;
 local tablestats = {};
 local labelstats = {};
 
+local number_zoom = 0.5;
+
+
 local function FetchStatsForPlayer(pn)
 
     local stats;
@@ -119,7 +122,6 @@ local dance_grade = {
 local sub_sections = {
     { Label = "Accuracy",   Key = "Percent",   Enabled = true },
     { Label = "OK  /  NG",  Key = "Held",      Enabled = ShowHoldJudgments()  },
-    --{ Label = "Mines Hit",  Key = "Mines",     Enabled = true },
 };
 
 if(PREFSMAN:GetPreference("AllowW1") == "AllowW1_Never") then
@@ -137,9 +139,10 @@ local t = Def.ActorFrame{
     end
 };
 
-local labels = Def.ActorFrame{ InitCommand=cmd(y,SCREEN_CENTER_Y - 122); }
-local numbers = Def.ActorFrame{ InitCommand=cmd(y,SCREEN_CENTER_Y - 122); }
-local subdata = Def.ActorFrame{ InitCommand=cmd(y,SCREEN_CENTER_Y - 122); }
+local originY = SCREEN_CENTER_Y-122;
+local labels = Def.ActorFrame{ InitCommand=cmd(y,originY); }
+local numbers = Def.ActorFrame{ InitCommand=cmd(y,originY); }
+local subdata = Def.ActorFrame{ InitCommand=cmd(y,originY); }
 
 local labelspacing = 24;
 local numberspacing = 72;
@@ -195,9 +198,10 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
         numbers[#numbers+1] = Def.ActorFrame{
         InitCommand=cmd(x,SCREEN_CENTER_X;y,labelspacing * (n-1));
         OnCommand=cmd(diffusealpha,0;sleep,n/10;linear,0.3;diffusealpha,1);
+
             Def.RollingNumbers{
-                Font = "regen strong";
-                InitCommand=cmd(zoom,0.525;x,numberspacing*pnSide(pn);horizalign,pnAlign(OtherPlayer[pn]);strokecolor,0.175,0.175,0.175,0.5);
+                Font = "eval numbers";
+                InitCommand=cmd(zoom,number_zoom;x,numberspacing*pnSide(pn);horizalign,pnAlign(OtherPlayer[pn]);strokecolor,0.15,0.15,0.15,0.5);
                 OnCommand=function(self)
                     self:set_chars_wide(math.max(stats[PLAYER_1]["Digits"],stats[PLAYER_2]["Digits"]));
                     self:set_leading_attribute{Diffuse= color("#777777FF")};
@@ -214,6 +218,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
                 end;
             }
         }
+
     end;
 
     -- accuracy
@@ -225,7 +230,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
             Def.BitmapText{
                 Name = "SUB LABEL";
                 Font = "regen strong";
-                InitCommand=cmd(vertalign,bottom;strokecolor,0.2,0.2,0.2,0.8;zoomy,0.3;zoomx,0.32;y,-15;shadowlength,1);
+                InitCommand=cmd(vertalign,bottom;strokecolor,0.2,0.2,0.2,0.8;zoomy,0.3;zoomx,0.32;y,-18;shadowlength,1);
                 OnCommand=function(self)
                     self:settext(string.upper(sub_sections[n].Label));
 
@@ -241,8 +246,8 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 
             Def.BitmapText{
                 Name = "SUB";
-                Font = "regen strong";
-                InitCommand=cmd(vertalign,bottom;strokecolor,0.2,0.2,0.2,0.5;zoom,0.5;shadowlength,1);
+                Font = "eval numbers";
+                InitCommand=cmd(vertalign,bottom;strokecolor,0.2,0.2,0.2,0.5;zoom,number_zoom;shadowlength,1);
                 OnCommand=function(self)
                     if pss[pn] then 
                         local substats = FetchSubStats(pn);
