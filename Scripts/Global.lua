@@ -58,6 +58,7 @@ Global = {
         [PLAYER_1] = 0,
         [PLAYER_2] = 0,
     },
+    volume = 1,
     blocksteps = false,
     blockjoin = true,
     prevstate = "",
@@ -110,5 +111,6 @@ function ResetState()
         [PLAYER_1] = 0,
         [PLAYER_2] = 0,
     };
+    Global.volume = 1;
 
 end;
