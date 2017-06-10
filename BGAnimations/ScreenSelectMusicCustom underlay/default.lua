@@ -79,9 +79,9 @@ if VersionBranch("5.0") then
 	t[#t+1] = LoadActor("assets/noteskin");
 	t[#t+1] = LoadActor("assets/speedmods");
 else 
+	t[#t+1] = LoadActor("assets/notefield");
 	t[#t+1] = LoadActor("assets/newskin");
 	t[#t+1] = LoadActor("assets/speedprefs");
-	t[#t+1] = LoadActor("assets/notefield");
 end;
 
 t[#t+1] = LoadActor("assets/groupselect");

@@ -107,11 +107,13 @@ end;
 
 --//================================================================
 
-local function GetPreferredNoteskin(pn)
+function GetPreferredNoteskin(pn)
 	local g = GAMESTATE:GetCurrentGame()
 	local st = GAMEMAN:GetFirstStepsTypeForGame(g)
 	return PROFILEMAN:GetProfile(pn):get_preferred_noteskin(st)
 end;
+
+--//================================================================
 
 local function SetNoteskin(pn, ns)
 	local g = GAMESTATE:GetCurrentGame()
