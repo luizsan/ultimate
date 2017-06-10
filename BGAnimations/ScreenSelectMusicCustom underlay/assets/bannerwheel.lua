@@ -39,6 +39,7 @@ function WheelController(self,param)
 		Global.song = Global.songlist[Global.selection]; 
 		Global.steps = FilterSteps(Global.song) 
 		MESSAGEMAN:Broadcast("MusicWheel",{Direction="Prev",Anim=true}); 
+		MESSAGEMAN:Broadcast("StepsChanged"); 
 	end
 
 	if param.Input == "Next" then 
@@ -51,6 +52,7 @@ function WheelController(self,param)
 		Global.song = Global.songlist[Global.selection]; 
 		Global.steps = FilterSteps(Global.song) 
 		MESSAGEMAN:Broadcast("MusicWheel",{Direction="Next",Anim=true}); 
+		MESSAGEMAN:Broadcast("StepsChanged"); 
 	end;
 
 	if param.Input == "Cancel" or param.Input == "Back" and Global.level == 2 then 
@@ -61,7 +63,7 @@ function WheelController(self,param)
 		MESSAGEMAN:Broadcast("Return");
 	end;
 
-	MESSAGEMAN:Broadcast("StepsChanged"); 
+	
 
 end;
 
@@ -140,11 +142,8 @@ local t = Def.ActorFrame{
 			minIndex = 1;
 			maxIndex = 15;
 
-			Global.steps = FilterSteps(Global.song);
-			Global.pnsteps[PLAYER_1] = GetEntry(GAMESTATE:GetCurrentSteps(PLAYER_1));
-			Global.pnsteps[PLAYER_2] = GetEntry(GAMESTATE:GetCurrentSteps(PLAYER_2));
-			Global.pncursteps[PLAYER_1] = Global.steps[Global.pnsteps[PLAYER_1]];
-			Global.pncursteps[PLAYER_2] = Global.steps[Global.pnsteps[PLAYER_2]];
+			GetWheelSteps();
+			
 			--steps ok
 			MESSAGEMAN:Broadcast("Reload",{Reload=true});
 			MESSAGEMAN:Broadcast("StepsChanged");
@@ -161,12 +160,7 @@ local t = Def.ActorFrame{
 		end;
 
 		MusicWheelMessageCommand=function(self,param)
-			Global.steps = FilterSteps(Global.song);
-			Global.pnsteps[PLAYER_1] = 1;
-			Global.pnsteps[PLAYER_2] = 1;
-			Global.pncursteps[PLAYER_1] = Global.steps[1];
-			Global.pncursteps[PLAYER_2] = Global.steps[1];
-
+			SetWheelSteps();
 
 					if param then
 						if param.Direction == "Prev" then

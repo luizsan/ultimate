@@ -97,6 +97,7 @@ function SelectFolder()
 		MESSAGEMAN:Broadcast("BuildMusicList"); 
 		MESSAGEMAN:Broadcast("StateChanged"); 
 		MESSAGEMAN:Broadcast("MusicWheel",{ silent = true });
+		SetWheelSteps();
 
 	end;
 end;

@@ -116,6 +116,26 @@ end;
 
 --//================================================================
 
+function SetWheelSteps()
+    Global.steps = FilterSteps(Global.song);
+    Global.pnsteps[PLAYER_1] = 1;
+    Global.pnsteps[PLAYER_2] = 1;
+    Global.pncursteps[PLAYER_1] = Global.steps[1];
+    Global.pncursteps[PLAYER_2] = Global.steps[1];
+end;
+
+--//================================================================
+
+function GetWheelSteps()
+    Global.steps = FilterSteps(Global.song);
+    Global.pnsteps[PLAYER_1] = GetEntry(GAMESTATE:GetCurrentSteps(PLAYER_1));
+    Global.pnsteps[PLAYER_2] = GetEntry(GAMESTATE:GetCurrentSteps(PLAYER_2));
+    Global.pncursteps[PLAYER_1] = Global.steps[Global.pnsteps[PLAYER_1]];
+    Global.pncursteps[PLAYER_2] = Global.steps[Global.pnsteps[PLAYER_2]];
+end;
+
+--//================================================================
+
 function FilterSteps(song)
     local filter = {};
     local steplist = StepsList(song);
