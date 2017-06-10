@@ -22,8 +22,17 @@ local function UpdateTime(self, delta)
 end
 
 local t = Def.ActorFrame{
-    InitCommand=function(self)
-        self:SetUpdateFunction(UpdateTime);
+    InitCommand=function(self) self:SetUpdateFunction(UpdateTime); self:diffusealpha(0); end;
+    StateChangedMessageCommand=function(self)
+        self:stoptweening();
+        self:linear(0.15);
+        if Global.state == "SelectSteps" or
+           Global.state == "SpeedMods" or
+           Global.state == "Noteskins" then
+           self:diffusealpha(1);
+        else
+            self:diffusealpha(0);
+        end;
     end;
 } 
 
@@ -39,8 +48,6 @@ local tex = Def.ActorFrameTexture{
 
 -- <Kyzentun> Luizsan: Yeah, it's touchy about the order.  I tried to make it less 
 -- touchy in the notefield_targets branch, but good luck finding someone to build that.
-
-
 for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 
     tex[#tex+1] = Def.NoteField{
@@ -69,14 +76,14 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
                 local bpm = Global.song:GetDisplayBpms()[2];
 
                 local st = PureType(steps);
-                if st == "Double" or st == "Routine" then
+                if (st == "Double" or st == "Routine") or GAMESTATE:GetNumSidesJoined() == 1 then
                     self:set_base_values{
                         transform_pos_x = _screen.cx, 
                         transform_pos_y = _screen.cy,
                     }
                 else
                     self:set_base_values{
-                        transform_pos_x = _screen.cx + (_screen.w * 0.25 * pnSide(pn)), 
+                        transform_pos_x = _screen.cx + (_screen.w * 0.2 * pnSide(pn)), 
                         transform_pos_y = _screen.cy,
                     }
                 end;
@@ -97,12 +104,16 @@ end;
 
 t[#t+1] = tex;
 
+t[#t+1] = Def.Quad{
+    InitCommand=cmd(diffuse,0,0,0,0.5;vertalign,top;xy,_screen.cx,_screen.cy-177;zoomto,500,247;fadeleft,0.2;faderight,0.2);
+};
+
 t[#t+1] = Def.Sprite{
     Texture = "notefield_overlay";
-    InitCommand=cmd(zoom,0.5;xy,_screen.cx,_screen.cy-48;diffusealpha,0);
+    InitCommand=cmd(zoom,0.515;xy,_screen.cx,_screen.cy-177;vertalign,top;diffusealpha,0);
     OnCommand=cmd(playcommand,"Reload");
     MusicWheelMessageCommand=cmd(playcommand,"Reload");
-    ReloadCommand=cmd(stoptweening;diffusealpha,0;sleep,0.6;linear,0.25;diffusealpha,0.75);
+    ReloadCommand=cmd(stoptweening;diffusealpha,0;sleep,0.6;linear,0.25;diffusealpha,1);
 }
 
 
