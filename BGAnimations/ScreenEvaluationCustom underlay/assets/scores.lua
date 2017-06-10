@@ -329,7 +329,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
         };
         
         LoadActor(THEME:GetPathG("","separator"))..{
-            InitCommand=cmd(zoom,0.45;x,24;diffuse,0,0,0,0.5);
+            InitCommand=cmd(zoom,0.45;x,24 * -pnSide(pn);diffuse,0,0,0,0.5);
         };
 
         -- meter
@@ -378,7 +378,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
         -- maker
         Def.BitmapText{
             Font = "neotech";
-            InitCommand=cmd(horizalign,pnAlign(pn);x,34;y,-11;zoom,0.4;strokecolor,0.2,0.2,0.2,1;maxwidth,560);
+            InitCommand=cmd(horizalign,pnAlign(pn);x,34* -pnSide(pn);y,-11;zoom,0.4;strokecolor,0.2,0.2,0.2,1;maxwidth,560);
             OnCommand=function(self)
                 if Global.pncursteps[pn] and GAMESTATE:IsSideJoined(pn) then
                     local maker = Global.pncursteps[pn]:GetAuthorCredit()
@@ -398,7 +398,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
         -- notes
         Def.BitmapText{
             Font = "neotech";
-            InitCommand=cmd(horizalign,pnAlign(pn);x,34;y,3;zoom,0.4;diffuse,BoostColor(PlayerColor(pn),0.95);strokecolor,BoostColor(PlayerColor(pn),0.25);maxwidth,560);
+            InitCommand=cmd(horizalign,pnAlign(pn);x,34 * -pnSide(pn);y,3;zoom,0.4;diffuse,BoostColor(PlayerColor(pn),0.95);strokecolor,BoostColor(PlayerColor(pn),0.25);maxwidth,560);
             OnCommand=function(self)
                 if Global.pncursteps[pn] and GAMESTATE:IsSideJoined(pn) then
                     --self:settext("Avg. notes/sec: "..AvgNotesSec(steps,pn));

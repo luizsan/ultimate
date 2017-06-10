@@ -345,8 +345,9 @@ t[#t+1] = LoadFont("regen strong")..{
 		StateChangedMessageCommand=function(self)
 			local g = string.gsub(Global.songgroup, "~", "-");
 			local attr = { Length = -1; Diffuse = color("#FFFFFFAA"); };
-			self:settext(string.upper("group:  ".. g));
-			self:AddAttribute(6, attr);
+			local prefix = "group: ";
+			self:settext(string.upper(prefix .. g));
+			self:AddAttribute(string.len(prefix), attr);
 			self:diffusealpha(0.75);
 		end;
 
