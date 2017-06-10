@@ -50,7 +50,7 @@ function PIUScoring(pn, param, beat)
 
     note_final_value = ( note_base_value + note_combo_bonus + note_row_bonus ) * note_level_multiplier * note_double_multiplier;
     --SCREENMAN:SystemMessage(notes_in_row.."\n"..note_final_value.."\nScore: "..Global.piuscoring[pn].."\nCombo: "..combo); 
-    SCREENMAN:SystemMessage(Global.piuscoring[PLAYER_1].."\n"..Global.piuscoring[PLAYER_2]); 
+    --SCREENMAN:SystemMessage(Global.piuscoring[PLAYER_1].."\n"..Global.piuscoring[PLAYER_2]); 
     return note_final_value;
 end;
 
