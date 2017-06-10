@@ -26,11 +26,11 @@ local t = Def.ActorFrame{
 	JudgmentMessageCommand=function(self,param) 
 
 		if param.TapNoteScore == "TapNoteScore_HitMine" or param.TapNoteScore == "TapNoteScore_AvoidMine" then return end;
-		if param.Player and param.TapNoteScore then pulse(self); end;
+		if param.Player == player and param.TapNoteScore then pulse(self); end;
 
-		if IsGame("pump") then
+		if IsGame("pump") and player == param.Player then
 			local beat = GAMESTATE:GetSongBeat();
-			local value = PIUScoring(param, beat);
+			local value = PIUScoring(player, param, beat);
 			Global.piuscoring[player] = Global.piuscoring[player] + value;
 			Global.piuscoring[player] = clamp(Global.piuscoring[player],0,math.huge);
 		end;

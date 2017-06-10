@@ -1,6 +1,4 @@
-function PIUScoring(param, beat)
-    if param.HoldNoteScore then return 0 end;
-
+function PIUScoring(pn, param, beat)
     local judge_table = {
         ["TapNoteScore_W1"]                 = { Bonus = true,   Value =  1000 }, -- superb
         ["TapNoteScore_W2"]                 = { Bonus = true,   Value =  1000 }, -- perfect
@@ -17,8 +15,8 @@ function PIUScoring(param, beat)
     local superb_timing = PREFSMAN:GetPreference("AllowW1") ~= "AllowW1_Never";
     judge_table["TapNoteScore_CheckpointHit"] = superb_timing and judge_table["TapNoteScore_W1"] or judge_table["TapNoteScore_W2"];
 
-    local steps = Global.pncursteps[param.Player] or GAMESTATE:GetCurrentSteps(param.Player);
-    local combo = STATSMAN:GetCurStageStats():GetPlayerStageStats(param.Player):GetCurrentCombo();
+    local steps = Global.pncursteps[pn] or GAMESTATE:GetCurrentSteps(pn);
+    local combo = STATSMAN:GetCurStageStats():GetPlayerStageStats(pn):GetCurrentCombo();
 
     local note_base_value = 0;
     local note_combo_bonus = 0;
@@ -43,7 +41,7 @@ function PIUScoring(param, beat)
             if notes_in_row > 2 then
                 note_row_bonus = (1000 * (notes_in_row-2));
             end;
-            if combo + BeatToCombo(beat, param.Player)[1] >= 51 then
+            if combo + BeatToCombo(beat, pn)[1] >= 51 then
                 note_combo_bonus = 1000;
             end;
         end;
@@ -51,8 +49,8 @@ function PIUScoring(param, beat)
     end;
 
     note_final_value = ( note_base_value + note_combo_bonus + note_row_bonus ) * note_level_multiplier * note_double_multiplier;
-
-    SCREENMAN:SystemMessage(notes_in_row.."\n"..note_final_value.."\nScore: "..Global.piuscoring[param.Player].."\nCombo: "..combo); 
+    --SCREENMAN:SystemMessage(notes_in_row.."\n"..note_final_value.."\nScore: "..Global.piuscoring[pn].."\nCombo: "..combo); 
+    SCREENMAN:SystemMessage(Global.piuscoring[PLAYER_1].."\n"..Global.piuscoring[PLAYER_2]); 
     return note_final_value;
 end;
 
@@ -77,7 +75,7 @@ function PIUGrading(pn)
         else return "Grade_Tier08"
         end;
     end;
-    
+
     return "Grade_Failed";
 
 end;

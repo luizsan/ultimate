@@ -7,7 +7,7 @@ local t = Def.ActorFrame{
 	InitCommand=function(self) self:draworder(500); end;
 	JudgmentMessageCommand=function(self,param) 
 		if param.TapNoteScore == "TapNoteScore_HitMine" or param.TapNoteScore == "TapNoteScore_AvoidMine" then return end;
-		if param.Player and param.TapNoteScore then pulse(self); end; 
+		if param.Player == player and param.TapNoteScore then pulse(self); end; 
 	end;
 
 
