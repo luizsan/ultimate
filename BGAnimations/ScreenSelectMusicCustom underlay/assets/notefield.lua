@@ -55,6 +55,14 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
         StepsChangedMessageCommand=cmd(playcommand,"Refresh");
         SpeedChangedMessageCommand=cmd(playcommand,"Refresh");
         FolderChangedMessageCommand=cmd(playcommand,"Refresh");
+        NoteskinChangedMessageCommand=function(self,param)
+            if param and param.noteskin then
+                self:set_skin(param.noteskin, {});
+            end;
+        end;
+        StateChangedMessageCommand=function(self)
+            if Global.state == "Noteskins" then self:playcommand("Refresh"); end;
+        end;
         RefreshCommand=function(self)
             if GAMESTATE:IsSideJoined(pn) then
                 local steps = Global.pncursteps[pn] or GAMESTATE:GetCurrentSteps(pn);

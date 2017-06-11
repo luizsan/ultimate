@@ -52,7 +52,8 @@ function NoteskinController(self,param)
 		MESSAGEMAN:Broadcast("Deselect");
 		if playerchoices[param.Player]["Noteskin"] > 1 then
 			playerchoices[param.Player]["Noteskin"] = playerchoices[param.Player]["Noteskin"]-1;
-			MESSAGEMAN:Broadcast("NoteskinChanged", { Player = param.Player, direction = "Prev"});
+			local choice = noteskins[param.Player][playerchoices[param.Player]["Noteskin"]]
+			MESSAGEMAN:Broadcast("NoteskinChanged", { Player = param.Player, direction = "Prev", noteskin = choice; });
 		end;
 	end;
 
@@ -61,7 +62,8 @@ function NoteskinController(self,param)
 		MESSAGEMAN:Broadcast("Deselect");
 		if playerchoices[param.Player]["Noteskin"] < #noteskins[param.Player] then
 			playerchoices[param.Player]["Noteskin"] = playerchoices[param.Player]["Noteskin"]+1;
-			MESSAGEMAN:Broadcast("NoteskinChanged", { Player = param.Player, direction = "Next"});
+			local choice = noteskins[param.Player][playerchoices[param.Player]["Noteskin"]]
+			MESSAGEMAN:Broadcast("NoteskinChanged", { Player = param.Player, direction = "Next", noteskin = choice; });
 		end;
 	end;
 
