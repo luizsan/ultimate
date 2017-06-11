@@ -105,7 +105,7 @@ end;
 t[#t+1] = tex;
 
 t[#t+1] = Def.Quad{
-    InitCommand=cmd(diffuse,0,0,0,0.5;vertalign,top;xy,_screen.cx,_screen.cy-177;zoomto,500,247;fadeleft,0.2;faderight,0.2);
+    InitCommand=cmd(diffuse,0.25,0.25,0.25,0.75;vertalign,top;xy,_screen.cx,_screen.cy-177;zoomto,520,247;fadeleft,0.2;faderight,0.2);
 };
 
 t[#t+1] = Def.Sprite{
