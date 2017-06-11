@@ -1,26 +1,28 @@
 local t = Def.ActorFrame{}
+local spacing = 290;
 
 --=======================================================================================================================
 --DECORATIONS (LITERALLY)
 --=======================================================================================================================
+
 	t[#t+1] = LoadActor(THEME:GetPathG("","border"))..{
 			InitCommand=cmd(CenterX;y,SCREEN_TOP+32;zoom,-0.445;vertalign,top;diffuse,0.8,0.8,0.8,1);
 	};
 	t[#t+1] = LoadActor(THEME:GetPathG("","footer"))..{
 			InitCommand=cmd(CenterX;y,SCREEN_BOTTOM+8);
 	};
---=======================================================================================================================
---HEADER SHIT
---=======================================================================================================================
 
 	-- version
 	t[#t+1] = LoadFont("regen small")..{
-			InitCommand=cmd(horizalign,right;x,SCREEN_CENTER_X+320-16;y,SCREEN_TOP+20;zoom,0.33);
+			InitCommand=cmd(horizalign,left;x,SCREEN_CENTER_X-spacing;y,SCREEN_TOP+20;zoomx,0.317;zoomy,0.305);
 			OnCommand=function(self)
 					self:diffuse(0.66,0.66,0.66,0.5);
-					self:diffusebottomedge(1,1,1,0.5);
 					self:strokecolor(0.1,0.1,0.1,1);
-					self:settext(string.upper(ProductVersion()));
+
+					local ver = ProductVersion();
+					ver = string.gsub(string.lower(ver), "-unknown", "-test");
+
+					self:settext(string.upper("Stepmania "..ver));
 
 				--[[
 				local online = IsNetConnected() 
@@ -40,6 +42,30 @@ local t = Def.ActorFrame{}
 				]]--
 			end;
 			
+	};
+
+
+	-- date and time
+	t[#t+1] = LoadFont("regen small")..{
+			InitCommand=cmd(horizalign,right;x,SCREEN_CENTER_X+spacing;y,SCREEN_TOP+20;zoomx,0.317;zoomy,0.305);
+			OnCommand=function(self)
+				self:diffuse(0.66,0.66,0.66,0.5);
+				self:strokecolor(0.1,0.1,0.1,1);
+			end;
+
+			UpdateMessageCommand=function(self)
+				local hour = CapDigits(Hour(), 0, 2);
+				local min = CapDigits(Minute(), 0, 2);
+				local sec = CapDigits(Second(), 0, 2);
+				local time = hour..":"..min..":"..sec;
+
+				local month = CapDigits(MonthOfYear()+1, 0, 2);
+				local day = CapDigits(DayOfMonth(), 0, 2);
+
+				local date = Year().."-"..month.."-"..day;
+
+				self:settext(date.."     "..time);
+			end;	
 	};
 
 
@@ -68,7 +94,7 @@ t[#t+1] = Def.Quad{InitCommand=cmd(zoomto,1,SCREEN_HEIGHT;CenterY;x,SCREEN_CENTE
 t[#t+1] = Def.Quad{InitCommand=cmd(zoomto,1,SCREEN_HEIGHT;CenterY;x,SCREEN_CENTER_X-320;diffusealpha,0.25);}; --left 4:3 line
 t[#t+1] = Def.Quad{InitCommand=cmd(zoomto,1,SCREEN_HEIGHT;CenterY;x,SCREEN_CENTER_X;diffusealpha,0.25);}; --center vertical line
 t[#t+1] = Def.Quad{InitCommand=cmd(zoomto,SCREEN_WIDTH,1;CenterY;x,SCREEN_CENTER_X;diffusealpha,0.25);}; --center horizontal line
-]]--
+]]
 
 --=======================================================================================================================
 --CONTROLS

@@ -29,6 +29,15 @@ end;
 
 --//================================================================
 
+function CapDigits(num, cap, digits)
+    local len = string.len(num)
+    local rep = clamp(digits - len, 0, digits)
+    return string.rep(tostring(cap), rep) .. tostring(num);
+
+end;
+
+--//================================================================
+
 function FormatDate(date)
     local temp = tostring(date);
     temp = string.gsub(temp,"-","/")
@@ -115,3 +124,12 @@ function FormatAward(award)
 end;
 
 --//================================================================
+
+function FormatFailType(fail)
+    if fail == "FailType_Immediate" then return "Immediate";
+    elseif fail == "FailType_ImmediateContinue" then return "Delayed"
+    elseif fail == "FailType_EndOfSong" then return "End of song"
+    elseif fail == "FailType_Off" then return "Off";
+    else return "" end;
+end;
+
