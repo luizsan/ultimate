@@ -7,7 +7,16 @@ local adjust = 0;
 t[#t+1] = Def.Sprite{
 
 	InitCommand=cmd(Center;diffusealpha,0;valign,0);
-	OnCommand=cmd(sleep,0.2;playcommand,"MusicWheel");
+
+	OnCommand=function(self)
+		self:sleep(0.2);
+
+		local scr = SCREENMAN:GetTopScreen():GetName();
+		if scr == "ScreenSelectMusicCustom" then self:playcommand("MusicWheel");
+		elseif scr == "ScreenEvaluationCustom" then self:playcommand("Eval"); 
+		end;
+	end;
+
 	MusicWheelMessageCommand=function(self)
 		self:stoptweening();
 		self:linear(0.2);
@@ -16,6 +25,31 @@ t[#t+1] = Def.Sprite{
 		self:sleep(0.2);
 		self:queuecommand("Load");
 	end;
+
+	EvalCommand=function(self)
+
+        LoadBackground(self,Global.song);
+        self:stoptweening();
+        self:diffuse(0.2,0.2,0.2,0);
+        self:cropbottom(0.15);
+        self:fadebottom(0.05);
+
+        ratio = self:GetWidth()/self:GetHeight();
+        adjust = ((16/9) - ratio)/4;
+        
+        self:fadeleft(adjust);
+        self:faderight(adjust);
+
+        self:stretchto(0,0,SCREEN_HEIGHT*ratio,SCREEN_HEIGHT);
+        self:x(SCREEN_CENTER_X);
+        self:y(SCREEN_TOP+20);
+
+        self:linear(0.3);
+        self:diffuse(0.2,0.2,0.2,0.8);
+
+
+        MESSAGEMAN:Broadcast("UpdateOverlay");
+    end;
 	
 	UnloadMessageCommand=cmd(Load,nil);
 	LoadCommand=function(self)

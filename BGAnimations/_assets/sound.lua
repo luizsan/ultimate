@@ -6,7 +6,14 @@ local _volume = 1.0;
 --=======================================================================================================================
 
 t[#t+1] = Def.Actor{
-	OnCommand=cmd(sleep,0.535;queuecommand,"PreviewStart");
+	OnCommand=function(self)
+		self:sleep(0.535);
+
+		local scr = SCREENMAN:GetTopScreen():GetName();
+		if scr == "ScreenSelectMusicCustom" then self:queuecommand("PreviewStart");
+		end;
+	end;
+
 	MusicWheelMessageCommand=function(self)
 		self:stoptweening(); 
 		self:playcommand("Volume", { volume = 1 });

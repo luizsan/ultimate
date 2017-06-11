@@ -8,6 +8,7 @@ local t = Def.ActorFrame{
 	OnCommand=cmd(sleep,1;queuecommand,"Unlock");
 	UnlockCommand=function(self) 
 		Global.lockinput = false; 
+		MESSAGEMAN:Broadcast("Unlock");
 	end;
 	
 	MenuUpP1MessageCommand=function(self) MESSAGEMAN:Broadcast("MenuInput", {  Input = "Back", Player = PLAYER_1 }); end; 
@@ -71,9 +72,9 @@ end;
 --//================================================================	
 
 --the order is important, do not change
-t[#t+1] = LoadActor("assets/sound");
-t[#t+1] = LoadActor("assets/fulldisplay");
-t[#t+1] = LoadActor("assets/highscores");
+t[#t+1] = LoadActor(THEME:GetPathB("","_assets/sound"));
+t[#t+1] = LoadActor(THEME:GetPathB("","_assets/fulldisplay"));
+
 
 if VersionBranch("5.0") then 
 	t[#t+1] = LoadActor("assets/noteskin");
@@ -84,13 +85,14 @@ else
 	t[#t+1] = LoadActor("assets/speedprefs");
 end;
 
+t[#t+1] = LoadActor("assets/highscores");
 t[#t+1] = LoadActor("assets/groupselect");
 t[#t+1] = LoadActor("assets/bannerwheel");
-t[#t+1] = LoadActor("assets/cursteps");
 t[#t+1] = LoadActor("assets/information");
 t[#t+1] = LoadActor("assets/stepslist");
 t[#t+1] = LoadActor("assets/mainmenu");	
-t[#t+1] = LoadActor("assets/transition");
+t[#t+1] = LoadActor(THEME:GetPathB("","_assets/cursteps"));
+t[#t+1] = LoadActor(THEME:GetPathB("","_assets/transition"));
 
 --[[
 --BPM DISPLAY

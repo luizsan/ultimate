@@ -1,7 +1,9 @@
 local t = Def.ActorFrame{
-    OnCommand=cmd(sleep,0.1;queuecommand,"Unlock");
+    InitCommand=function(self) Global.lockinput = true; end;
+    OnCommand=cmd(sleep,2.5;queuecommand,"Unlock");
     UnlockCommand=function(self) 
         Global.lockinput = false; 
+        MESSAGEMAN:Broadcast("Unlock");
     end;
     
     MenuUpP1MessageCommand=function(self) MESSAGEMAN:Broadcast("MenuInput", {  Input = "Back", Player = PLAYER_1 }); end; 
@@ -54,10 +56,12 @@ function CodeController(self,param)
 
 end;
 
-t[#t+1] = LoadActor("assets/fulldisplay");
+t[#t+1] = LoadActor(THEME:GetPathB("","_assets/fulldisplay"));
 t[#t+1] = LoadActor("assets/information");
 t[#t+1] = LoadActor("assets/scores");
 t[#t+1] = LoadActor("assets/menu");
---t[#t+1] = LoadActor("assets/sound");
+
+t[#t+1] = LoadActor(THEME:GetPathB("","_assets/cursteps"));
+t[#t+1] = LoadActor(THEME:GetPathB("","_assets/sound"));
 
 return t;
