@@ -88,7 +88,7 @@ function FormatGrade(grade)
     elseif grade == "Grade_Tier06" then return "C"
     elseif grade == "Grade_Tier07" then return "D"
     elseif grade == "Grade_Tier08" then return "F"
-    elseif grade == "Grade_Failed" then return "F"
+    elseif grade == "Grade_Failed" then return "Failed"
     else return "--"
     end;
 end;
@@ -97,14 +97,14 @@ end;
 
 function FormatGradePIU(grade)
     if grade == "Grade_Tier01" then return "SS"
-    elseif grade == "Grade_Tier02" then return "S"
+    elseif grade == "Grade_Tier02" then return "S+"
     elseif grade == "Grade_Tier03" then return "S"
     elseif grade == "Grade_Tier04" then return "A"
     elseif grade == "Grade_Tier05" then return "B"
     elseif grade == "Grade_Tier06" then return "C"
     elseif grade == "Grade_Tier07" then return "D"
     elseif grade == "Grade_Tier08" then return "F"
-    elseif grade == "Grade_Failed" then return "F"
+    elseif grade == "Grade_Failed" then return "Failed"
     else return "--"
     end;
 end;

@@ -9,6 +9,21 @@ JudgmentColor = {
     ["Miss"]    = color("1.0, 0.1, 0.1, 1"),
 }
 
+local _GradeColor = {
+    ["SS"]      = color("1.00, 0.85, 0.25, 1"),
+    ["S+"]      = color("1.00, 0.85, 0.25, 1"),
+    ["S"]       = color("1.00, 1.00, 1.00, 1"),
+    ["AAAA"]    = color("0.50, 1.00, 1.00, 1"),
+    ["AAA"]     = color("0.40, 0.90, 1.00, 1"),
+    ["AA"]      = color("0.30, 0.80, 1.00, 1"),
+    ["A"]       = color("0.20, 0.70, 1.00, 1"),
+    ["B"]       = color("0.25, 1.00, 0.50, 1"),
+    ["C"]       = color("1.00, 0.75, 0.50, 1"),
+    ["D"]       = color("0.80, 0.40, 1.00, 1"),
+    ["F"]       = color("1.00, 0.25, 0.25, 1"),
+    ["Failed"]  = color("1.00, 0.10, 0.10, 1"),
+}
+
 --//================================================================
 
 function HighlightColor() 
@@ -39,3 +54,11 @@ function PlayerColor(pn,alpha)
 end
 
 --//================================================================
+
+function GradeColor(letter)
+    if _GradeColor[letter] ~= nil then
+        return _GradeColor[letter];
+    else 
+        return color("1,1,1,1");
+    end;
+end;

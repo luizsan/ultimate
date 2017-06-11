@@ -23,37 +23,38 @@ local function FetchStatsForPlayer(pn)
 
     local stats;
     local curstats; 
-    local pss; 
     local dp; 
 
     if GAMESTATE:IsSideJoined(pn) then
         curstats = STATSMAN:GetCurStageStats();
-        pss = curstats:GetPlayerStageStats(pn);
-        curdp = pss:GetActualDancePoints();
-        maxdp = pss:GetCurrentPossibleDancePoints();
+        pss[pn] = curstats:GetPlayerStageStats(pn);
+        curdp = pss[pn]:GetActualDancePoints();
+        maxdp = pss[pn]:GetCurrentPossibleDancePoints();
         dp = curdp / clamp(maxdp,1,maxdp);
 
         stats = {
             ["Percent"]  = string.format("%.2f",dp*100), 
-            ["Score"]    = IsGame("pump") and PostProcessPIUScores(pn) or pss:GetScore(), 
-            ["Combo"]    = pss:MaxCombo(), 
-            ["W1"]       = pss:GetTapNoteScores('TapNoteScore_W1'),
-            ["W2"]       = pss:GetTapNoteScores('TapNoteScore_W2'), 
-            ["W3"]       = pss:GetTapNoteScores('TapNoteScore_W3'), 
-            ["W4"]       = pss:GetTapNoteScores('TapNoteScore_W4'), 
-            ["W5"]       = pss:GetTapNoteScores('TapNoteScore_W5'),
-            ["Miss"]     = pss:GetTapNoteScores('TapNoteScore_Miss'), 
-            ["Hold"]     = pss:GetTapNoteScores('TapNoteScore_CheckpointHit'),
-            ["HoldMiss"] = pss:GetTapNoteScores('TapNoteScore_CheckpointMiss'), 
-            ["Mines"]    = pss:GetTapNoteScores('TapNoteScore_HitMine'), 
-            ["Avoided"]  = pss:GetTapNoteScores('TapNoteScore_AvoidMine'), 
-            ["LetGo"]    = pss:GetHoldNoteScores('HoldNoteScore_LetGo'), 
-            ["Held"]     = pss:GetHoldNoteScores('HoldNoteScore_Held'),
-            ["MissHold"] = pss:GetHoldNoteScores('HoldNoteScore_MissedHold'),
+            ["Score"]    = IsGame("pump") and PostProcessPIUScores(pn) or pss[pn]:GetScore(), 
+            ["Grade"]    = IsGame("pump") and FormatGradePIU(PIUGrading(pn)) or FormatGrade(pss[pn]:GetGrade());
+            ["Combo"]    = pss[pn]:MaxCombo(), 
+            ["W1"]       = pss[pn]:GetTapNoteScores('TapNoteScore_W1'),
+            ["W2"]       = pss[pn]:GetTapNoteScores('TapNoteScore_W2'), 
+            ["W3"]       = pss[pn]:GetTapNoteScores('TapNoteScore_W3'), 
+            ["W4"]       = pss[pn]:GetTapNoteScores('TapNoteScore_W4'), 
+            ["W5"]       = pss[pn]:GetTapNoteScores('TapNoteScore_W5'),
+            ["Miss"]     = pss[pn]:GetTapNoteScores('TapNoteScore_Miss'), 
+            ["Hold"]     = pss[pn]:GetTapNoteScores('TapNoteScore_CheckpointHit'),
+            ["HoldMiss"] = pss[pn]:GetTapNoteScores('TapNoteScore_CheckpointMiss'), 
+            ["Mines"]    = pss[pn]:GetTapNoteScores('TapNoteScore_HitMine'), 
+            ["Avoided"]  = pss[pn]:GetTapNoteScores('TapNoteScore_AvoidMine'), 
+            ["LetGo"]    = pss[pn]:GetHoldNoteScores('HoldNoteScore_LetGo'), 
+            ["Held"]     = pss[pn]:GetHoldNoteScores('HoldNoteScore_Held'),
+            ["MissHold"] = pss[pn]:GetHoldNoteScores('HoldNoteScore_MissedHold'),
             ["Digits"]   = 0,
         };
     else
         stats = {
+            ["Grade"]    = "",
             ["Percent"]  = 0,
             ["Score"]    = 0,
             ["Combo"]    = 0,
@@ -102,7 +103,7 @@ end;
 local function FetchSubStats(pn)
     local table = {
         ["Percent"] = stats[pn]["Percent"] .. "%",
-        ["Held"] = stats[pn]["Held"] .. " / " .. stats[pn]["LetGo"],
+        ["Held"] = stats[pn]["Held"] .. " / " .. ( stats[pn]["Held"] + stats[pn]["LetGo"] + stats[pn]["MissHold"]) ,
         ["Mines"] = stats[pn]["Mines"] .. " / " .. (stats[pn]["Mines"] + stats[pn]["Avoided"]),
     };
     return table;
@@ -121,7 +122,7 @@ local dance_grade = {
 
 local sub_sections = {
     { Label = "Accuracy",   Key = "Percent",   Enabled = true },
-    { Label = "OK  /  NG",  Key = "Held",      Enabled = ShowHoldJudgments()  },
+    { Label = "Held",  Key = "Held",      Enabled = ShowHoldJudgments()  },
 };
 
 if(PREFSMAN:GetPreference("AllowW1") == "AllowW1_Never") then
@@ -224,13 +225,13 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
     -- sub data
     for n=1,#sub_sections do
         subdata[#subdata+1] = Def.ActorFrame{
-            InitCommand=cmd(y,100 + (n-1) * 40;x,SCREEN_CENTER_X + (210*pnSide(pn)));
+            InitCommand=cmd(y,108 + (n-1) * 40;x,SCREEN_CENTER_X + (210*pnSide(pn)));
             OnCommand=cmd(diffusealpha,0;sleep,1 + (n/10);linear,0.3;diffusealpha,1);
 
             Def.BitmapText{
                 Name = "SUB LABEL";
                 Font = "regen strong";
-                InitCommand=cmd(vertalign,bottom;strokecolor,0.2,0.2,0.2,0.8;zoomy,0.3;zoomx,0.32;y,-18;shadowlength,1);
+                InitCommand=cmd(vertalign,bottom;strokecolor,0.2,0.2,0.2,0.8;zoomy,0.3;zoomx,0.32;y,-17;shadowlength,1);
                 OnCommand=function(self)
                     self:settext(string.upper(sub_sections[n].Label));
 
@@ -277,29 +278,65 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 
     -- grade
     subdata[#subdata+1] = Def.ActorFrame{
-        InitCommand=cmd(y,20;x,SCREEN_CENTER_X + (210*pnSide(pn)));
-        OnCommand=cmd(diffusealpha,0;zoom,2;sleep,2;linear,0.15;diffusealpha,1;zoom,1);
+        InitCommand=cmd(y,30;x,SCREEN_CENTER_X + (210*pnSide(pn)));
 
-        Def.BitmapText{
-            Name = "GRADE";
-            Font = "bebas neue";
-            InitCommand=cmd(strokecolor,0.2,0.2,0.2,0.8;zoomy,0.55;zoomx,0.65;skewx,-0.15);
+        Def.Sprite{
+            Name = "SPRITE";
+            InitCommand=cmd(zoom,0.4;y,-4;diffusealpha,0);
             OnCommand=function(self)
                 if pss[pn] then 
-                    if IsGame("pump") then
-                        self:settext(FormatGradePIU(PIUGrading(pn)));
-                    else
-                        self:settext(FormatGrade(pss[pn]:GetGrade()));
-                    end;
-                    self:diffuse(PlayerColor(pn));
-                    self:strokecolor(BoostColor(PlayerColor(pn),0.25)); 
+                    local path = "";
+                    local grade = string.gsub(stats[pn]["Grade"], "+", "");
+                    path = THEME:GetPathG("","eval/"..grade.."_normal");
+                    self:Load(path);
+                    self:diffuse(GradeColor(stats[pn]["Grade"]));
+                    self:diffusetopedge(1,1,1,1);
+                end;
+            end;
+
+            BeginCommand=cmd(sleep,2.125;diffusealpha,1;);
+        },
+
+        Def.Sprite{
+            Name = "GLOW";
+            InitCommand=cmd(zoom,0.4;y,-4;diffusealpha,0;blend,Blend.Add);
+            OnCommand=function(self)
+                if pss[pn] then 
+                    local path = "";
+                    local grade = string.gsub(stats[pn]["Grade"], "+", "");
+                    path = THEME:GetPathG("","eval/"..grade.."_glow");
+                    self:Load(path);
+                end;
+                self:queuecommand("Animate");
+            end;
+
+            AnimateCommand=function(self) 
+                self:zoom(1.2):sleep(2):accelerate(0.125):diffusealpha(1):zoom(0.4):sleep(0.5);
+                if FormatGrade(pss[pn]:GetGrade()) ~= "AAAA" or not IsGame("pump") then
+                    self:decelerate(0.5);
+                    self:diffusealpha(0);
                 end;
             end;
         },
+
+        Def.Sprite{
+            Name = "SHINE";
+            InitCommand=cmd(zoom,0.5;y,-4;diffusealpha,0;blend,Blend.Add);
+            OnCommand=cmd(Load,THEME:GetPathG("","eval/shine"));
+            BeginCommand=cmd(sleep,2.05;linear,0.125;diffusealpha,1;zoom,0.75;accelerate,1;zoom,0.4;diffusealpha,0);
+        },
+
+        Def.Sprite{
+            Name = "WAVE";
+            InitCommand=cmd(zoom,0.25;y,-4;diffusealpha,0;blend,Blend.Add);
+            OnCommand=cmd(Load,THEME:GetPathG("","eval/wave"));
+            BeginCommand=cmd(sleep,2.15;diffusealpha,1;zoom,0.25;decelerate,1;zoom,0.5;diffusealpha,0);
+        },
+
         Def.BitmapText{
             Name = "AWARD";
             Font = "neotech";
-            InitCommand=cmd(strokecolor,0.2,0.2,0.2,0.8;zoom,0.4;y,24);
+            InitCommand=cmd(strokecolor,0.2,0.2,0.2,0.8;zoom,0.4;y,32;diffusealpha,0);
             OnCommand=function(self)
                 if pss[pn] then 
                     self:settext(FormatAward(pss[pn]:GetStageAward()));
@@ -309,13 +346,10 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
                     self:effectperiod(0.5);
                     self:strokecolor(BoostColor(PlayerColor(pn),0.25)); 
                 end;
+                self:queuecommand("Animate");
             end;
+            AnimateCommand=cmd(stoptweening;sleep,2;linear,0.125;diffusealpha,1);
         },
-    }
-
-    -- separator 1
-    t[#t+1] = Def.Quad{
-        InitCommand=cmd(zoomto,560,1;diffuse,1,1,1,0.2;x,SCREEN_CENTER_X;y,297);
     }
 
 end;
@@ -359,12 +393,24 @@ local soptions = Def.ActorFrame{
     },
 }
 
-
-
 t[#t+1] = labels;
 t[#t+1] = numbers;
 t[#t+1] = subdata;
 t[#t+1] = soptions;
+
+
+
+-- top separator
+t[#t+1] = Def.Quad{
+    InitCommand=cmd(zoomto,560,1;diffuse,1,1,1,0.2;x,SCREEN_CENTER_X;y,SCREEN_TOP+106;cropleft,0.5;cropright,0.5);
+    OnCommand=cmd(sleep,0.25;decelerate,0.5;;cropleft,0;cropright,0);
+}
+
+-- bottom separator
+t[#t+1] = Def.Quad{
+    InitCommand=cmd(zoomto,560,1;diffuse,1,1,1,0.2;x,SCREEN_CENTER_X;y,297;cropleft,0.5;cropright,0.5);
+    OnCommand=cmd(sleep,0.25;decelerate,0.5;;cropleft,0;cropright,0);
+}
 
 
 

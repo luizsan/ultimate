@@ -64,15 +64,15 @@ function PIUGrading(pn)
     misscount = pss:GetTapNoteScores('TapNoteScore_Miss') + pss:GetTapNoteScores('TapNoteScore_CheckpointMiss');
 
     if not pss:GetFailed() then
-        if pss:FullComboOfScore('TapNoteScore_W1') then return "Grade_Tier01"
-        elseif pss:FullComboOfScore('TapNoteScore_W2') then return "Grade_Tier01";
-        elseif pss:FullComboOfScore('TapNoteScore_W3') then return "Grade_Tier02"
-        elseif misscount == 0 and dp >= 0.75 then return "Grade_Tier02"
-        elseif dp >= 0.8 then return "Grade_Tier04"
-        elseif dp >= 0.7 then return "Grade_Tier05"
-        elseif dp >= 0.6 then return "Grade_Tier06"
-        elseif dp >= 0.5 then return "Grade_Tier07"
-        else return "Grade_Tier08"
+        if pss:FullComboOfScore('TapNoteScore_W1') then return "Grade_Tier01" -- SSS
+        elseif pss:FullComboOfScore('TapNoteScore_W2') then return "Grade_Tier01" -- SS
+        elseif pss:FullComboOfScore('TapNoteScore_W3') then return "Grade_Tier02" -- gold S
+        elseif misscount == 0 and dp >= 0.75 then return "Grade_Tier03" -- silver S
+        elseif dp >= 0.8 then return "Grade_Tier04" -- A
+        elseif dp >= 0.7 then return "Grade_Tier05" -- B
+        elseif dp >= 0.6 then return "Grade_Tier06" -- C
+        elseif dp >= 0.5 then return "Grade_Tier07" -- D
+        else return "Grade_Tier08" -- F
         end;
     end;
 
