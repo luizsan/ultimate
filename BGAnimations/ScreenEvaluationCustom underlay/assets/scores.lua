@@ -137,7 +137,7 @@ local t = Def.ActorFrame{
             pss[pn] = stagestats:GetPlayerStageStats(pn);
             stats[pn] = FetchStatsForPlayer(pn);
         end
-    end
+    end;
 };
 
 local originY = SCREEN_CENTER_Y-122;
@@ -261,6 +261,8 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
                             self:diffuse(PlayerColor(pn));
                             self:strokecolor(BoostColor(PlayerColor(pn),0.25));
                         else
+                            self:zoom(number_zoom*0.8);
+                            self:y(-3);
                             if sub_sections[n].Enabled then
                                 self:diffuse(1,1,1,1);
                                 self:strokecolor(0.25,0.25,0.25,1);
@@ -321,16 +323,16 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 
         Def.Sprite{
             Name = "SHINE";
-            InitCommand=cmd(zoom,0.5;y,-4;diffusealpha,0;blend,Blend.Add);
+            InitCommand=cmd(zoom,0.5;diffusealpha,0;blend,Blend.Add);
             OnCommand=cmd(Load,THEME:GetPathG("","eval/shine"));
-            BeginCommand=cmd(sleep,2.05;linear,0.125;diffusealpha,1;zoom,0.75;accelerate,1;zoom,0.4;diffusealpha,0);
+            BeginCommand=cmd(sleep,2.05;linear,0.125;diffusealpha,1;zoom,0.75;accelerate,0.75;zoom,0.4;diffusealpha,0);
         },
 
         Def.Sprite{
             Name = "WAVE";
-            InitCommand=cmd(zoom,0.25;y,-4;diffusealpha,0;blend,Blend.Add);
+            InitCommand=cmd(zoom,0.25;diffusealpha,0;blend,Blend.Add);
             OnCommand=cmd(Load,THEME:GetPathG("","eval/wave"));
-            BeginCommand=cmd(sleep,2.15;diffusealpha,1;zoom,0.25;decelerate,1;zoom,0.5;diffusealpha,0);
+            BeginCommand=cmd(sleep,2.15;diffusealpha,1;zoom,0.25;decelerate,0.75;zoom,0.5;diffusealpha,0);
         },
 
         Def.BitmapText{
@@ -339,12 +341,21 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
             InitCommand=cmd(strokecolor,0.2,0.2,0.2,0.8;zoom,0.4;y,32;diffusealpha,0);
             OnCommand=function(self)
                 if pss[pn] then 
-                    self:settext(FormatAward(pss[pn]:GetStageAward()));
-                    self:diffuseshift();
-                    self:effectcolor1(PlayerColor(pn));
-                    self:effectcolor2(1,1,1,1);
-                    self:effectperiod(0.5);
-                    self:strokecolor(BoostColor(PlayerColor(pn),0.25)); 
+                    if pss[pn]:IsDisqualified() or Global.disqualified then
+                        self:settext("Disqualified!");
+                        self:diffuseshift();
+                        self:effectcolor1(1,0,0,1);
+                        self:effectcolor2(1,0.25,0.25,1);
+                        self:effectperiod(0.5);
+                        self:strokecolor(0.25,0,0,1); 
+                    else
+                        self:settext(FormatAward(pss[pn]:GetStageAward()));
+                        self:diffuseshift();
+                        self:effectcolor1(PlayerColor(pn));
+                        self:effectcolor2(1,1,1,1);
+                        self:effectperiod(0.5);
+                        self:strokecolor(BoostColor(PlayerColor(pn),0.25)); 
+                    end;
                 end;
                 self:queuecommand("Animate");
             end;

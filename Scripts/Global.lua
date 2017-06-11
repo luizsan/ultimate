@@ -65,6 +65,7 @@ Global = {
     toggle = false,
     bgcolor = {0.66,0.68,0.7,1},
     lockinput = false,
+    disqualify = false,
 };
 
 function ResetState()
@@ -112,5 +113,6 @@ function ResetState()
         [PLAYER_2] = 0,
     };
     Global.volume = 1;
+    Global.disqualify = false;
 
 end;
