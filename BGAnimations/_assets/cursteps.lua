@@ -63,7 +63,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 		};
 		
 		LoadActor(THEME:GetPathG("","separator"))..{
-			InitCommand=cmd(zoom,0.45;x,24 * -pnSide(pn);diffuse,0,0,0,0.5);
+			InitCommand=cmd(zoom,0.45;x,24 * -pnSide(pn);y,-2;diffuse,0,0,0,0.5);
 		};
 
 		-- meter

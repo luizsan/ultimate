@@ -413,13 +413,13 @@ t[#t+1] = soptions;
 
 -- top separator
 t[#t+1] = Def.Quad{
-    InitCommand=cmd(zoomto,560,1;diffuse,1,1,1,0.2;x,SCREEN_CENTER_X;y,SCREEN_TOP+106;cropleft,0.5;cropright,0.5);
+    InitCommand=cmd(zoomto,SCREEN_WIDTH-64,1;diffuse,1,1,1,0.2;x,SCREEN_CENTER_X;y,SCREEN_TOP+106;cropleft,0.5;cropright,0.5);
     OnCommand=cmd(sleep,0.25;decelerate,0.5;;cropleft,0;cropright,0);
 }
 
 -- bottom separator
 t[#t+1] = Def.Quad{
-    InitCommand=cmd(zoomto,560,1;diffuse,1,1,1,0.2;x,SCREEN_CENTER_X;y,297;cropleft,0.5;cropright,0.5);
+    InitCommand=cmd(zoomto,SCREEN_WIDTH-64,1;diffuse,1,1,1,0.2;x,SCREEN_CENTER_X;y,297;cropleft,0.5;cropright,0.5);
     OnCommand=cmd(sleep,0.25;decelerate,0.5;;cropleft,0;cropright,0);
 }
 

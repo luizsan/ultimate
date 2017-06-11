@@ -86,7 +86,7 @@ t[#t+1] = Def.ActorFrame{
 
 --// RIGHT =================
 t[#t+1] = Def.ActorFrame{
-    InitCommand=cmd(x,SCREEN_CENTER_X+275;y,SCREEN_TOP+54);
+    InitCommand=cmd(x,SCREEN_CENTER_X+284;y,SCREEN_TOP+54);
 
     --[[
     Def.BitmapText{
