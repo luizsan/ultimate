@@ -88,6 +88,10 @@ function ReadyDecision(param)
 			end;
 		else
 
+			-- apply same failtype for both players
+			local fail = GAMESTATE:GetPlayerState(Global.master):GetPlayerOptions("ModsLevel_Current"):FailSetting();
+			GAMESTATE:GetPlayerState(OtherPlayer[Global.master]):GetPlayerOptions("ModsLevel_Current"):FailSetting(fail);
+
 			GAMESTATE:SetCurrentSteps(PLAYER_1,Global.pncursteps[PLAYER_1]);
 			GAMESTATE:SetCurrentSteps(PLAYER_2,Global.pncursteps[PLAYER_2]);
 

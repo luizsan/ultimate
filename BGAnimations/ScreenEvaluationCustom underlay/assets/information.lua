@@ -9,12 +9,8 @@ local translit_artist;
 
 local maxwidth = 360;
 
-local setTitle = cmd(settext,display_title,translit_title);
-local setArtist = cmd(settext,display_artist,translit_artist);
-local setPack = cmd(settext,Global.song and Global.song:GetGroupName() or GAMESTATE:GetCurrentSong():GetGroupName());
-
 local t = Def.ActorFrame{
-    InitCommand=function()
+    InitCommand=function(self)
         display_fulltitle = Global.song:GetDisplayFullTitle()
         display_title = Global.song:GetDisplayMainTitle()
         display_subtitle = Global.song:GetDisplaySubTitle()
@@ -23,7 +19,9 @@ local t = Def.ActorFrame{
         translit_title = Global.song:GetTranslitMainTitle()
         translit_subtitle = Global.song:GetTranslitSubTitle()
         translit_artist = Global.song:GetTranslitArtist()
+        self:diffusealpha(0);
     end;
+    OnCommand=cmd(stoptweening;sleep,0.1;linear,0.2;diffusealpha,1);
 }
 
 --//================================================================
@@ -68,21 +66,21 @@ t[#t+1] = Def.ActorFrame{
         Font = "roboto";
         InitCommand=cmd(horizalign,left;vertalign,top;zoom,0.6;x,60;y,2;maxwidth,maxwidth/self:GetZoom();
             strokecolor,0.2,0.2,0.2,1;shadowlength,1.25);
-        OnCommand=setTitle;
+        OnCommand=cmd(settext,display_title,translit_title);
     },
 
     Def.BitmapText{
         Font = "roboto";
         InitCommand=cmd(horizalign,left;vertalign,top;zoom,0.475;x,60;y,20;maxwidth,maxwidth/self:GetZoom();
             diffuse,HighlightColor();strokecolor,BoostColor(HighlightColor(),0.2);shadowlength,1.25);
-        OnCommand=setArtist;
+        OnCommand=cmd(settext,display_artist,translit_artist);
     },
 
     Def.BitmapText{
         Font = "roboto";
         InitCommand=cmd(horizalign,left;vertalign,top;zoom,0.475;x,60;y,36;maxwidth,maxwidth/self:GetZoom();
             diffuse,0.75,0.75,0.75,1;strokecolor,0.2,0.2,0.2,1;shadowlength,1.25);
-        OnCommand=setPack;
+        OnCommand=cmd(settext,Global.song and Global.song:GetGroupName() or GAMESTATE:GetCurrentSong():GetGroupName());
     },
 };
 
@@ -121,8 +119,5 @@ t[#t+1] = Def.ActorFrame{
     },
 };
 
-t[#t+1] = Def.Quad{
-    InitCommand=cmd(zoomto,560,1;diffuse,1,1,1,0.2;x,SCREEN_CENTER_X;y,SCREEN_TOP+106);
-}
 
 return t;

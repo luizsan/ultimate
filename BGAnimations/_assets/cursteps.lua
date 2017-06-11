@@ -1,8 +1,7 @@
 local t = Def.ActorFrame{}
 
-local spacing = 244;
-local originY = SCREEN_BOTTOM-70+10;
-
+local spacing = 266;
+local originY = SCREEN_BOTTOM-64
 
 --//================================================================
 -- filter words 
@@ -46,7 +45,7 @@ end;
 for pn in ivalues(GAMESTATE:GetHumanPlayers()) do 
 		
 	t[#t+1] = Def.ActorFrame{
-		InitCommand=cmd(x,SCREEN_CENTER_X + 260 * pnSide(pn);y,SCREEN_BOTTOM-64);
+		InitCommand=cmd(x,SCREEN_CENTER_X + spacing * pnSide(pn);y,originY);
 		OnCommand=cmd(stoptweening;diffusealpha,0;sleep,0.5;linear,0.5;diffusealpha,1);
 		StateChangedMessageCommand=function(self)
 			self:visible(GAMESTATE:IsSideJoined(pn));
