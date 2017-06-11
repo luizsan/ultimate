@@ -12,7 +12,8 @@ local options = {
     {
         Name = "Continue",
         Action = function(param)
-            SCREENMAN:SetNewScreen("ScreenProfileSave")
+            SCREENMAN:GetTopScreen():SetNextScreenName("ScreenProfileSave");
+            SCREENMAN:GetTopScreen():StartTransitioningScreen("SM_BeginFadingOut");
         end;
     },
     {
