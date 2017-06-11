@@ -1,5 +1,6 @@
 local t = Def.ActorFrame{
     InitCommand=cmd(diffusealpha,0);
+    UnlockMessageCommand=cmd(stoptweening;linear,0.2;diffusealpha,1);
 }
 
 local originX = SCREEN_CENTER_X;

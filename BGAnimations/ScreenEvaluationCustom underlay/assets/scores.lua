@@ -154,7 +154,7 @@ for n=1,#dance_grade do
     OnCommand=cmd(diffusealpha,0;sleep,n/10;linear,0.3;diffusealpha,1);
 
         Def.Quad{
-            InitCommand=cmd(zoomto,640,44;diffuse,BoostColor(dance_grade[n].Color,0.25);fadeleft,0.5;faderight,0.5);
+            InitCommand=cmd(zoomto,720,44;diffuse,BoostColor(dance_grade[n].Color,0.15);fadeleft,0.5;faderight,0.5);
             OnCommand=function(self)
                 if n == #dance_grade then
                     self:diffuse(0,0,0,1);
@@ -201,7 +201,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 
             Def.RollingNumbers{
                 Font = "eval numbers";
-                InitCommand=cmd(zoom,number_zoom;x,numberspacing*pnSide(pn);horizalign,pnAlign(OtherPlayer[pn]);strokecolor,0.15,0.15,0.15,0.5);
+                InitCommand=cmd(zoom,number_zoom;x,numberspacing*pnSide(pn);horizalign,pnAlign(OtherPlayer[pn]);strokecolor,0.125,0.125,0.125,0.5);
                 OnCommand=function(self)
                     self:set_chars_wide(math.max(stats[PLAYER_1]["Digits"],stats[PLAYER_2]["Digits"]));
                     self:set_leading_attribute{Diffuse= color("#777777FF")};
@@ -221,10 +221,10 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 
     end;
 
-    -- accuracy
+    -- sub data
     for n=1,#sub_sections do
         subdata[#subdata+1] = Def.ActorFrame{
-            InitCommand=cmd(y,96 + (n-1) * 40;x,SCREEN_CENTER_X + (210*pnSide(pn)));
+            InitCommand=cmd(y,100 + (n-1) * 40;x,SCREEN_CENTER_X + (210*pnSide(pn)));
             OnCommand=cmd(diffusealpha,0;sleep,1 + (n/10);linear,0.3;diffusealpha,1);
 
             Def.BitmapText{
@@ -318,103 +318,54 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
         InitCommand=cmd(zoomto,560,1;diffuse,1,1,1,0.2;x,SCREEN_CENTER_X;y,297);
     }
 
-
-    -- meter & st
-    t[#t+1] = Def.ActorFrame{
-        InitCommand=cmd(x,SCREEN_CENTER_X + 260 * pnSide(pn);y,SCREEN_BOTTOM-64);
-        OnCommand=cmd(stoptweening;diffusealpha,0;sleep,0.5;linear,0.5;diffusealpha,1);
-
-        LoadActor(THEME:GetPathG("","dim"))..{
-            InitCommand=cmd(zoomto,364,96;diffuse,BoostColor(Global.bgcolor,0.75);fadeleft,0.66666;faderight,0.66666;x,64 + pnSide(pn));
-        };
-        
-        LoadActor(THEME:GetPathG("","separator"))..{
-            InitCommand=cmd(zoom,0.45;x,24 * -pnSide(pn);diffuse,0,0,0,0.5);
-        };
-
-        -- meter
-        Def.BitmapText{
-            Font = "regen silver";
-            InitCommand=cmd(zoom,0.5;strokecolor,0.15,0.15,0.15,1);
-            OnCommand=function(self)
-                if Global.pncursteps[pn] and GAMESTATE:IsSideJoined(pn) then
-                    local value = FormatMeter(Global.pncursteps[pn]:GetMeter());
-                    self:settext(value);        
-                end;
-            end;
-        };
-        
-        -- stepstype
-        Def.BitmapText{
-            Font = "regen silver";
-            InitCommand=cmd(vertalign,bottom;zoom,0.33;strokecolor,0.2,0.2,0.2,1;y,-8);
-            OnCommand=function(self)
-                if Global.pncursteps[pn] and GAMESTATE:IsSideJoined(pn) then
-                    self:settext(string.lower(PureType(Global.pncursteps[pn])));
-                
-                    local tint;
-                    local steps = Global.pncursteps[pn];
-
-                    if PureType(steps) == "Single" then
-                        tint = {0.95,0.75,0.1,1};               
-                    elseif PureType(steps) == "Double" then
-                        tint = {0.2,0.9,0.2,1}; 
-                    elseif PureType(steps) == "Halfdouble" then
-                        self:settext("halfdb");
-                        tint = {0.8,0.1,0.6,1}; 
-                    elseif PureType(steps) == "Routine" then
-                        tint = {0.3,0.85,1,1};
-                    elseif PureType(steps) == "Solo" or PureType(steps) == "Couple" then
-                        tint = {1,0.5,0.5,1};
-                    end
-                    
-                    self:diffuse(tint);
-                    self:diffusetopedge(BoostColor(tint,8));
-                    self:strokecolor(BoostColor(tint,0.2));
-                end;
-            end;
-        };
-        
-        -- maker
-        Def.BitmapText{
-            Font = "neotech";
-            InitCommand=cmd(horizalign,pnAlign(pn);x,34* -pnSide(pn);y,-11;zoom,0.4;strokecolor,0.2,0.2,0.2,1;maxwidth,560);
-            OnCommand=function(self)
-                if Global.pncursteps[pn] and GAMESTATE:IsSideJoined(pn) then
-                    local maker = Global.pncursteps[pn]:GetAuthorCredit()
-                    maker = FilterStepmaker(maker);
-                    
-                    if tostring(maker)=="" then
-                        self:settext("<Unknown Step Author>");
-                        self:diffuse(0.7,0.7,0.7,0.8);
-                    else
-                        self:settext("Steps by "..maker);
-                        self:diffuse(1,1,1,1);
-                    end
-                end;
-            end;
-        };
-        
-        -- notes
-        Def.BitmapText{
-            Font = "neotech";
-            InitCommand=cmd(horizalign,pnAlign(pn);x,34 * -pnSide(pn);y,3;zoom,0.4;diffuse,BoostColor(PlayerColor(pn),0.95);strokecolor,BoostColor(PlayerColor(pn),0.25);maxwidth,560);
-            OnCommand=function(self)
-                if Global.pncursteps[pn] and GAMESTATE:IsSideJoined(pn) then
-                    --self:settext("Avg. notes/sec: "..AvgNotesSec(steps,pn));
-                    self:settext("Total notes: "..TotalNotes(Global.pncursteps[pn],pn));
-                end;
-            end;
-        };
-        
-    };
-
-
 end;
+
+local o_zoom = 0.3175;
+local soptions = Def.ActorFrame{
+    InitCommand=cmd(y,SCREEN_CENTER_Y + 64;x,SCREEN_CENTER_X);
+    OnCommand=cmd(stoptweening;diffusealpha,0;sleep,0.75;linear,0.5;diffusealpha,0.5);
+
+    -- rate
+    Def.BitmapText{
+        Font = "regen strong";
+        InitCommand=cmd(horizalign,left;vertalign,top;zoom,o_zoom;x,-274;
+            strokecolor,0.2,0.2,0.2,1;shadowlength,1.25);
+        OnCommand=function(self)
+            local s_options = GAMESTATE:GetSongOptionsObject("ModsLevel_Current");
+            self:settext(string.upper("Music Rate: " .. math.round(s_options:MusicRate()*100).."%"));
+        end;
+    },
+
+    -- failtype
+    Def.BitmapText{
+        Font = "regen strong";
+        InitCommand=cmd(horizalign,right;vertalign,top;zoom,o_zoom;x,274;
+            strokecolor,0.2,0.2,0.2,1;shadowlength,1.25);
+        OnCommand=function(self)
+            local p_options = GAMESTATE:GetPlayerState(Global.master):GetPlayerOptions("ModsLevel_Current");
+            self:settext(string.upper("Fail Type: " .. FormatFailType(p_options:FailSetting())));
+        end;
+    },
+
+    -- gamemode
+    Def.BitmapText{
+        Font = "regen strong";
+        InitCommand=cmd(vertalign,top;zoom,o_zoom;
+            strokecolor,0.2,0.2,0.2,1;shadowlength,1.25);
+        OnCommand=function(self)
+            local game = GAMESTATE:GetCurrentGame():GetName();
+            self:settext(string.upper("Game: " .. game));
+        end;
+    },
+}
+
+
 
 t[#t+1] = labels;
 t[#t+1] = numbers;
 t[#t+1] = subdata;
+t[#t+1] = soptions;
+
 
 
 

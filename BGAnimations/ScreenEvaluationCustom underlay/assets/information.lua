@@ -101,14 +101,14 @@ t[#t+1] = Def.ActorFrame{
 
     Def.BitmapText{
         Font = "roboto";
-        InitCommand=cmd(horizalign,right;vertalign,top;zoom,0.6;x,-12;y,-4;
+        InitCommand=cmd(horizalign,right;vertalign,top;zoom,0.6;x,-12;y,-2;
             strokecolor,0.2,0.2,0.2,1;shadowlength,1.25);
         OnCommand=cmd(settext,"Stage "..GAMESTATE:GetCurrentStageIndex()+1);
     },
 
     Def.BitmapText{
         Font = "roboto";
-        InitCommand=cmd(horizalign,right;vertalign,top;zoom,0.45;x,-12;y,16;
+        InitCommand=cmd(horizalign,right;vertalign,top;zoom,0.4;x,-12;y,18;
             strokecolor,0.2,0.2,0.2,1;shadowlength,1.25);
         OnCommand=cmd(settext,"Timing Difficulty: "..GetTimingDifficulty());
     },
