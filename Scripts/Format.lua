@@ -16,13 +16,15 @@ end;
 --//================================================================
 
 function FormatMeter(s)
-    if s >= 50 or s <= 0 then
+    if s >= 50 then
         return "??"
+    elseif s <= 0 then
+        return "--"
     else
         if s < 10 then
-        return "0"..s;
+            return "0"..s;
         else
-        return s;
+            return s;
         end
     end
 end;

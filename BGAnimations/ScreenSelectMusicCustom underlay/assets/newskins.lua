@@ -153,7 +153,7 @@ function SelectNoteskin(param)
 	Global.confirm[param.Player] = 1;
 	n = noteskins[param.Player][playerchoices[param.Player]["Noteskin"]];
 	SetNoteskin(param.Player, n)
-	MESSAGEMAN:Broadcast("NoteskinSelected");
+	MESSAGEMAN:Broadcast("NoteskinSelected", { Player = param.Player });
 
 	if Global.confirm[PLAYER_1] + Global.confirm[PLAYER_2] >= GAMESTATE:GetNumSidesJoined() then
 		Global.level = 1; 

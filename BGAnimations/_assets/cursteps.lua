@@ -73,42 +73,38 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 				OnCommand=cmd(playcommand,"Refresh");
 				StepsChangedMessageCommand=cmd(playcommand,"Refresh");
 				RefreshCommand=function(self)
-					if Global.pncursteps[pn] and GAMESTATE:IsSideJoined(pn) then
-						local value = FormatMeter(Global.pncursteps[pn]:GetMeter());
-						self:settext(value);		
+					if GAMESTATE:IsSideJoined(pn) then
+						local steps = Global.pncursteps[pn] or GAMESTATE:GetCurrentSteps(pn);
+						if TotalNotes(steps,pn) == 0 then
+							self:settext("00");
+						else
+							local value = FormatMeter(steps:GetMeter());
+							self:settext(FormatMeter(steps:GetMeter()));
+						end		
 					end;
 				end;
 		};
 		
 		-- stepstype
 		Def.BitmapText{
-				Font = "regen silver";
-				InitCommand=cmd(vertalign,bottom;zoom,0.33;strokecolor,0.2,0.2,0.2,1;y,-8);
+				Font = "regen strong";
+				InitCommand=cmd(vertalign,bottom;zoom,0.3;strokecolor,0.2,0.2,0.2,0.5;y,-10;x,-1);
 				OnCommand=cmd(playcommand,"Refresh");
 				StepsChangedMessageCommand=cmd(playcommand,"Refresh");
 				RefreshCommand=function(self)
-					if Global.pncursteps[pn] and GAMESTATE:IsSideJoined(pn) then
-						self:settext(string.lower(PureType(Global.pncursteps[pn])));
+					if GAMESTATE:IsSideJoined(pn) then
+						local steps = Global.pncursteps[pn] or GAMESTATE:GetCurrentSteps(pn);
+						self:settext(string.upper(PureType(steps)));
 					
-						local tint;
-						local steps = Global.pncursteps[pn];
+						local tint = StepsColor(steps);
 
-						if PureType(steps) == "Single" then
-							tint = {0.95,0.75,0.1,1};				
-						elseif PureType(steps) == "Double" then
-							tint = {0.2,0.9,0.2,1};	
-						elseif PureType(steps) == "Halfdouble" then
+						if PureType(steps) == "Halfdouble" then
 							self:settext("halfdb");
-							tint = {0.8,0.1,0.6,1};	
-						elseif PureType(steps) == "Routine" then
-							tint = {0.3,0.85,1,1};
-						elseif PureType(steps) == "Solo" or PureType(steps) == "Couple" then
-							tint = {1,0.5,0.5,1};
 						end
 						
 						self:diffuse(tint);
 						self:diffusetopedge(BoostColor(tint,8));
-						self:strokecolor(BoostColor(tint,0.2));
+						self:strokecolor(BoostColor(tint,0.3));
 					end;
 				end;
 		};
@@ -120,8 +116,9 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 				OnCommand=cmd(playcommand,"Refresh");
 				StepsChangedMessageCommand=cmd(playcommand,"Refresh");
 				RefreshCommand=function(self)
-					if Global.pncursteps[pn] and GAMESTATE:IsSideJoined(pn) then
-						local maker = Global.pncursteps[pn]:GetAuthorCredit()
+					if GAMESTATE:IsSideJoined(pn) then
+						local steps = Global.pncursteps[pn] or GAMESTATE:GetCurrentSteps(pn);
+						local maker = steps:GetAuthorCredit()
 						maker = FilterStepmaker(maker);
 						
 						if tostring(maker)=="" then
@@ -142,9 +139,11 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 				OnCommand=cmd(playcommand,"Refresh");
 				StepsChangedMessageCommand=cmd(playcommand,"Refresh");
 				RefreshCommand=function(self)
-					if Global.pncursteps[pn] and GAMESTATE:IsSideJoined(pn) then
-						--self:settext("Avg. notes/sec: "..AvgNotesSec(steps,pn));
-						self:settext("Total notes: "..TotalNotes(Global.pncursteps[pn],pn));
+					if GAMESTATE:IsSideJoined(pn) then
+						local steps = Global.pncursteps[pn] or GAMESTATE:GetCurrentSteps(pn);
+						self:settext("Avg. notes/sec: "..AvgNotesSec(steps,pn));
+						--self:settext("Total notes: "..TotalNotes(steps,pn));
+						--self:settext("Predicted meter: "..steps:PredictMeter());
 					end;
 				end;
 		};

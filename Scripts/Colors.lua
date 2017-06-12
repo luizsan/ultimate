@@ -62,3 +62,25 @@ function GradeColor(letter)
         return color("1,1,1,1");
     end;
 end;
+
+--//================================================================
+
+function StepsColor(steps)
+    local tint = {1,1,1,1}; 
+
+    if steps then
+        if PureType(steps) == "Single" then
+            tint = {0.95,0.75,0.1,1};               
+        elseif PureType(steps) == "Double" then
+            tint = {0.2,0.9,0.2,1}; 
+        elseif PureType(steps) == "Halfdouble" then
+            tint = {0.8,0.1,0.6,1}; 
+        elseif PureType(steps) == "Routine" then
+            tint = {0.3,0.85,1,1};
+        elseif PureType(steps) == "Solo" or PureType(steps) == "Couple" or PureType(steps) == "Real" then
+            tint = {1,0.5,0.5,1};
+        end;
+    end;    
+
+    return tint;
+end;

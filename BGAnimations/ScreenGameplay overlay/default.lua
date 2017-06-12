@@ -2,15 +2,15 @@ local style;
 local master;
 local source;
 
-	if (Var "LoadingScreen") == "ScreenThemeSettings" then
-		source = PLAYER_2;
-		style = 'TwoPlayersTwoSides';
-		master = PLAYER_2;
-	else
-		source = GAMESTATE:GetHumanPlayers();
-		style = GAMESTATE:GetCurrentStyle():GetStyleType();
-		master = GAMESTATE:GetMasterPlayerNumber();
-	end;
+if (Var "LoadingScreen") == "ScreenThemeSettings" then
+	source = PLAYER_2;
+	style = 'TwoPlayersTwoSides';
+	master = PLAYER_2;
+else
+	source = GAMESTATE:GetHumanPlayers();
+	style = GAMESTATE:GetCurrentStyle():GetStyleType();
+	master = GAMESTATE:GetMasterPlayerNumber();
+end;
 
 local posY = SCREEN_CENTER_Y+(THEME:GetMetric("Player","ReceptorArrowsYStandard"))-46;
 
@@ -20,8 +20,10 @@ local lifeMaster = 0.5
 
 
 local t = Def.ActorFrame{
-	OnCommand=function(self)
+	InitCommand=cmd(SetUpdateFunction,UpdateGameplay);
 
+	OnCommand=function(self)
+		Global.disqualified = false;
 		if IsRoutine() then
 			if Global.master == PLAYER_1 then
 				find_pactor_in_gameplay(SCREENMAN:GetTopScreen(), PLAYER_2):hibernate(math.huge);
@@ -30,7 +32,8 @@ local t = Def.ActorFrame{
 			end;
 		end;
 	end;
-
+	
+	PausedMessageCommand=function(self) Global.disqualified = true; end;
 	LifeChangedMessageCommand=function(self,params)
 	
 		if params.Player == PLAYER_1 then
@@ -44,14 +47,14 @@ local t = Def.ActorFrame{
 		elseif master == PLAYER_2 then lifeMaster = lifeP2 end;
 
 	end;
+
 }
 
-
+--[[
 
 for pn in ivalues(source) do
 
 	if Var "LoadingScreen" == "ScreenGameplay" then
-	
 	t[#t+1] = LoadActor("decoration")..{
 		InitCommand=cmd(horizalign,left;vertalign,top;zoomy,0.475;blend,Blend.Add;diffuse,0.75,0.9,1,0.66;diffusebottomedge,0.66,0.85,1,0.25);
 		OnCommand=function(self)
@@ -60,7 +63,6 @@ for pn in ivalues(source) do
 	};
 	
 	end;
-
 end
 
 
@@ -281,15 +283,28 @@ else
 			end	
 end;
 
+]]
 
 
-t[#t+1] = LoadActor("pause");
+
+
+t[#t+1] = Def.Quad{
+	OnCommand=function(self,params)
+		local s = SCREENMAN:GetTopScreen();
+		local player = s:GetChild("Player" .. ToEnumShortString(Global.master))
+		local field = player:GetChild("NoteField");
+
+		self:x(player:GetX());
+		self:y(player:GetY());
+		self:zoomto(field:get_width(), 16);
+	end;
+}
+
+t[#t+1] = LoadActor("assets/pause");
 
 if not VersionBranch("5.0") then
-	t[#t+1]= notefield_prefs_actor();
-	t[#t+1]= notefield_mods_actor()
+	t[#t+1] = notefield_prefs_actor();
+	t[#t+1] = notefield_mods_actor()
 end;
-
-t.InitCommand=cmd(SetUpdateFunction,UpdateTime);
 
 return t;

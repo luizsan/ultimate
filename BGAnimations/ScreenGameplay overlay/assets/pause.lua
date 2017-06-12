@@ -273,7 +273,7 @@ local frame= Def.ActorFrame{
 	end,
 
 	LoadActor(THEME:GetPathG("","bg"))..{
-		InitCommand=cmd(FullScreen;diffuse,0.05,0.05,0.05,0.9;visible,false),
+		InitCommand=cmd(FullScreen;diffuse,BoostColor(Global.bgcolor,0.2);diffusealpha,0.85;visible,false),
 		PausedMessageCommand=cmd(visible,true),
 		UnpausedMessageCommand=cmd(visible,false),
 	},

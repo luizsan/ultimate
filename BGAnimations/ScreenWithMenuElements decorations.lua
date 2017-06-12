@@ -22,7 +22,7 @@ local spacing = 290;
 					local ver = ProductVersion();
 					ver = string.gsub(string.lower(ver), "-unknown", "-test");
 
-					self:settext(string.upper("Stepmania "..ver));
+					self:settext(string.upper("Stepmania  "..ver));
 
 				--[[
 				local online = IsNetConnected() 

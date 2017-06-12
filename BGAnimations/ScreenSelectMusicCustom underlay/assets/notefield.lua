@@ -51,18 +51,20 @@ local tex = Def.ActorFrameTexture{
 for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 
     tex[#tex+1] = Def.NoteField{
-        NoteskinSelectedMessageCommand=cmd(playcommand,"Refresh");
+
         StepsChangedMessageCommand=cmd(playcommand,"Refresh");
         SpeedChangedMessageCommand=cmd(playcommand,"Refresh");
         FolderChangedMessageCommand=cmd(playcommand,"Refresh");
         NoteskinChangedMessageCommand=function(self,param)
-            if param and param.noteskin then
+            if param and param.noteskin and param.Player == pn then
                 self:set_skin(param.noteskin, {});
             end;
         end;
+
         StateChangedMessageCommand=function(self)
             if Global.state == "Noteskins" then self:playcommand("Refresh"); end;
         end;
+
         RefreshCommand=function(self)
             if GAMESTATE:IsSideJoined(pn) then
                 local steps = Global.pncursteps[pn] or GAMESTATE:GetCurrentSteps(pn);
@@ -83,7 +85,17 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
                 local mode = prefs.speed_type;
                 local bpm = Global.song:GetDisplayBpms()[2];
 
+                apply_notefield_prefs_nopn(bpm, self, prefs)
+                self:playcommand("WidthSet");
+                self:set_curr_second(curTime);  
+            end;
+        end;
+
+        WidthSetCommand=function(self,param)
+            if GAMESTATE:IsSideJoined(pn) then
+                local steps = Global.pncursteps[pn] or GAMESTATE:GetCurrentSteps(pn);
                 local st = PureType(steps);
+
                 if (st == "Double" or st == "Routine") or GAMESTATE:GetNumSidesJoined() == 1 then
                     self:set_base_values{
                         transform_pos_x = _screen.cx, 
@@ -91,13 +103,10 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
                     }
                 else
                     self:set_base_values{
-                        transform_pos_x = _screen.cx + (_screen.w * 0.2 * pnSide(pn)), 
+                        transform_pos_x = _screen.cx + (self:get_width() + 24) * 0.5 * pnSide(pn), 
                         transform_pos_y = _screen.cy,
                     }
                 end;
-
-                apply_notefield_prefs_nopn(bpm, self, prefs)
-                self:set_curr_second(curTime);  
             end;
         end;
 

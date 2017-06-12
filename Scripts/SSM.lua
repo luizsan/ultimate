@@ -2,30 +2,33 @@
 
 function SetSSM()
     
-    Global.prevstate = "MainMenu"
+    
     Global.pnskin[PLAYER_1] = -1;
     Global.pnskin[PLAYER_2] = -1;
 
     Global.master = GAMESTATE:GetMasterPlayerNumber();
     Global.selection = SetWheelSelection()
+    Global.steps = FilterSteps(Global.song);
 
-    MESSAGEMAN:Broadcast("BuildMusicList",{ first = true });
-    
     for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
         Global.pnsteps[pn] = GetEntry(GAMESTATE:GetCurrentSteps(pn));
         Global.pncursteps[pn] = Global.steps[Global.pnsteps[pn]];
+        GAMESTATE:SetCurrentSteps(pn, Global.pncursteps[pn])
         MESSAGEMAN:Broadcast("StepsChanged");
     end;
 
+    MESSAGEMAN:Broadcast("BuildMusicList", { first = true });
+    
     Global.level = 1;
     Global.confirm[PLAYER_1] = 0;
     Global.confirm[PLAYER_2] = 0;
 
     Global.selection = 4; 
+    Global.prevstate = "MainMenu"
     Global.state = "MainMenu"
     Global.blocksteps = true;
     Global.lockinput = true;
-    Global.steps = FilterSteps(Global.song);
+    
 
     MESSAGEMAN:Broadcast("StateChanged");
 
@@ -38,20 +41,37 @@ function SetGroups()
     Global.allgroups = FilterGroups(Global.allgroups);
 
     local pref = GAMESTATE:GetPreferredSong();
-    local first = SONGMAN:GetSongsInGroup(Global.allgroups[1]["Name"]);
+    local first = Global.allgroups[1]["Songs"];
+    local prefgroup = -1;
 
-    if #FilterSteps(pref)>0 then
-        Global.song = pref;
-        Global.songgroup = pref:GetGroupName();
+    if pref then
+        for i=1,#Global.allgroups do
+            if Global.allgroups[i]["Name"] == pref:GetGroupName() then prefgroup = i; end;
+        end;
+
+        if #FilterSteps(pref) > 0 then
+            Global.song = pref;
+            Global.songgroup = pref:GetGroupName();
+            Global.songlist = Global.allgroups[prefgroup]["Songs"];
+
+        elseif prefgroup > 0 then
+            Global.songgroup = Global.allgroups[prefgroup];
+            Global.song = Global.allgroups[prefgroup]["Songs"][1];
+            Global.songlist = Global.allgroups[prefgroup]["Songs"];
+
+        else
+            Global.songgroup = first[1]:GetGroupName();
+            Global.song = first[SetWheelSelection()];
+            Global.songlist = first;
+
+        end;
     else
-        Global.songgroup = first[1]:GetGroupName();
-        Global.song = first[SetWheelSelection()];
+        Global.songlist = Global.allgroups[1]["Songs"]
+        Global.songgroup = Global.allgroups[1]["Name"]
+        Global.song = Global.allgroups[1]["Songs"][1]
     end;
 
     GAMESTATE:SetCurrentSong(Global.song);
-
-    Global.songlist = SONGMAN:GetSongsInGroup(Global.songgroup)
-    Global.songlist = FilterSongList(Global.songlist);
     --MESSAGEMAN:Broadcast("SongGroup"); 
 end;
 
@@ -99,18 +119,19 @@ end;
 
 function SetWheelSelection()
     local selection = 1;
-    
-    Global.songlist = FilterSongList(SONGMAN:GetSongsInGroup(Global.songgroup));
+
+    if Global.song then
         for i=1,#Global.songlist do
-            if Global.song then
-                if Global.song == Global.songlist[i] then
-                    selection = i;
-                    break
-                end;
+            if Global.song == Global.songlist[i] then
+                selection = i;
+                break
             end
         end;
+        Global.song = Global.songlist[selection];
+    else
+        Global.song = Global.songlist[1];
+    end
 
-    Global.song = Global.songlist[selection]
     return selection;
 end;
 
@@ -141,12 +162,12 @@ function FilterSteps(song)
     local steplist = StepsList(song);
     if steplist then
         for i=1,#steplist do
-            if steplist[i] then
-            filter[#filter+1] = steplist[i]
+            if steplist[i] and steplist[i]:GetMeter() > 0 then
+                filter[#filter+1] = steplist[i]
             end
         end
-    table.sort(filter,function(a,b) return SortCharts(a,b) end)
-    return filter
+        table.sort(filter,function(a,b) return SortCharts(a,b) end)
+        return filter
     else
         return {};
     end;
@@ -180,6 +201,8 @@ end;
 function StepsList(song)
 
     if song then
+
+        --[[
         local singles = {};
         local solos = {};
         local doubles = {};
@@ -219,13 +242,49 @@ function StepsList(song)
                 steps[#steps+1] = routines[r];
             end;
         end;
-    
+        ]]
+
+        local allsteps = song:GetAllSteps();
+        local steps = {};
+
+        for i=1,#allsteps do
+            if EligibleSteps(allsteps[i]) then
+                steps[#steps+1] = allsteps[i];
+            end;
+        end;
+
         table.sort(steps,function(a,b) return SortCharts(a,b) end)
         return steps;
     else
         return {};
     end
 
+end;
+
+--//================================================================
+
+function EligibleSteps(steps)
+    local st = steps:GetStepsType();
+    local sides = GAMESTATE:GetNumSidesJoined();
+
+    if not string.find(st, Game()) then return false end;
+
+    local pads_required = {
+        ["StepsType_Dance_Double"]      = 2,
+        ["StepsType_Dance_Couple"]      = 2,
+        ["StepsType_Dance_Routine"]     = 2,
+        ["StepsType_Pump_Halfdouble"]   = 2,
+        ["StepsType_Pump_Double"]       = 2,
+        ["StepsType_Pump_Couple"]       = 2,
+        ["StepsType_Pump_Routine"]      = 2,
+        ["StepsType_Maniax_Double"]     = 2,
+        ["StepsType_Techno_Double4"]    = 2,
+        ["StepsType_Techno_Double5"]    = 2,
+        ["StepsType_Techno_Double8"]    = 2,
+    };
+
+    if pads_required[st] and pads_required[st] == sides then return false end;
+    return true;
 end;
 
 --//================================================================
@@ -394,14 +453,17 @@ end;
 --//================================================================
 
 function TotalNotes(steps,pn)
-    local song = Global.song;
+    local player = pn;
+    if not pn then player = Global.master or GAMESTATE:GetMasterPlayerNumber(); end;
+
+    local song = Global.song or GAMESTATE:GetCurrentSong();
         if song then
-            local taps = steps:GetRadarValues(pn):GetValue('RadarCategory_TapsAndHolds');
-            local holds = steps:GetRadarValues(pn):GetValue('RadarCategory_Holds');
-            local jumps = steps:GetRadarValues(pn):GetValue('RadarCategory_Jumps');
-            local hands = steps:GetRadarValues(pn):GetValue('RadarCategory_Hands');
-            local rolls = steps:GetRadarValues(pn):GetValue('RadarCategory_Rolls');
-            local lifts = steps:GetRadarValues(pn):GetValue('RadarCategory_Lifts');
+            local taps = steps:GetRadarValues(player):GetValue('RadarCategory_TapsAndHolds');
+            local holds = steps:GetRadarValues(player):GetValue('RadarCategory_Holds');
+            local jumps = steps:GetRadarValues(player):GetValue('RadarCategory_Jumps');
+            local hands = steps:GetRadarValues(player):GetValue('RadarCategory_Hands');
+            local rolls = steps:GetRadarValues(player):GetValue('RadarCategory_Rolls');
+            local lifts = steps:GetRadarValues(player):GetValue('RadarCategory_Lifts');
 
         return (taps+holds+jumps+hands+rolls+lifts)
         end;

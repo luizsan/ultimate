@@ -123,8 +123,8 @@ end;
 
 local function ItemIndex(sel, i, num)
 	local index = sel + (i-1) - math.floor(maxitems/2)
-	if(index < 1) then index = index + num end
-	if(index > num) then index = index - num end
+	while (index < 1) do index = index + num end
+	while (index > num) do index = index - num end
 	return index
 end
 
@@ -136,7 +136,11 @@ t[#t+1] = Def.Sprite{
 	ReloadGroupsMessageCommand=function(self,param)
 
 		local index = Global.selection;
-		local img = FindGroupImage(Global.allgroups[Global.selection]["Name"]);
+		local img = nil;
+		
+		if Global.allgroups[Global.selection] then
+			img = FindGroupImage(Global.allgroups[Global.selection]["Name"]);
+		end;
 
 		if(img) then
 			self:Load(img);

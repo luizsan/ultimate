@@ -30,7 +30,7 @@ Global = {
         [PLAYER_2] = 0,
     },
     players = 1,
-    master = 1,
+    master = "",
     mastersteps = nil,
     steps = {},
     pnsteps = {
@@ -81,6 +81,7 @@ function ResetState()
     Global.song = "";
     Global.selection = 1;
     Global.level = 1;
+    Global.master = "";
     Global.confirm = {
         [PLAYER_1] = 0,
         [PLAYER_2] = 0,
@@ -91,13 +92,13 @@ function ResetState()
         [PLAYER_1] = 1,
         [PLAYER_2] = 1,
     };
-    Global.pnselection = {
-        [PLAYER_1] = 1,
-        [PLAYER_2] = 1,
-    };
     Global.pncursteps = {
         [PLAYER_1] = nil,
         [PLAYER_2] = nil,
+    };
+    Global.pnselection = {
+        [PLAYER_1] = 1,
+        [PLAYER_2] = 1,
     };
     Global.pnskin = {
         [PLAYER_1] = -1,

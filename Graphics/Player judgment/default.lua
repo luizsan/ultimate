@@ -1,6 +1,7 @@
 local player = Var "Player";
 local pulse = cmd(stoptweening;zoomx,1.3;zoomy,1.5;decelerate,0.075;zoom,1;sleep,0.725;linear,0.12;zoom,0.5;sleep,0.5;linear,0.15;zoom,0.25);
 local fadeout = cmd(stoptweening;diffusealpha,1;sleep,0.8;linear,0.15;diffusealpha,0);
+local o
 
 local TNSFrames = {
 	TapNoteScore_W1 = 0;
@@ -26,7 +27,9 @@ local t = Def.ActorFrame{
 	JudgmentMessageCommand=function(self,param) 
 
 		if param.TapNoteScore == "TapNoteScore_HitMine" or param.TapNoteScore == "TapNoteScore_AvoidMine" then return end;
-		if param.Player == player and param.TapNoteScore then pulse(self); end;
+		if param.Player == player and param.TapNoteScore then 
+			pulse(self); 
+		end;
 
 		if IsGame("pump") and player == param.Player then
 			local beat = GAMESTATE:GetSongBeat();
