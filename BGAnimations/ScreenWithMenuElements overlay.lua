@@ -9,15 +9,15 @@ local function Update(self,dt)
     MESSAGEMAN:Broadcast("Update");
 end;
 
-local t = Def.ActorFrame{
+local t = MenuInputActor()..{
     InitCommand=function(self) self:SetUpdateFunction(Update); end;
+    MenuInputMessageCommand=function(self,param)  end;
 }
 
 --=======================================================================================================================
 --NAVIGATION ICONS
 --=======================================================================================================================
 
---[[
 local icon_spacing = 27
 for i=1,#Navigation do
     t[#t+1] = LoadActor(THEME:GetPathG("","navigation"))..{
@@ -27,9 +27,10 @@ for i=1,#Navigation do
         LoseFocusCommand=cmd(diffuse,1,1,1,1);
         DisabledCommand=cmd(diffuse,0.75,0.75,0.75,0.5);
         UpdateMessageCommand=function(self) ButtonHover(self,0.4); end;
-        MouseLeftMessageCommand=function(self) MouseDown(self,0.4,Navigation[i].Screen); end;
+        LeftClickMessageCommand=function(self) 
+            MouseDown(self,0.4,Navigation[i].Screen); 
+        end;
     };
 end;
-]]
 
 return t

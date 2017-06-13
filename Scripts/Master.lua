@@ -140,6 +140,18 @@ function ToGameplay()
 	end 
 end
 
+function ToSelectMusicFromGameplay() 
+	if GAMESTATE:GetCoinMode() == 'CoinMode_Home' then 
+		if IsRoutine() then
+			GAMESTATE:UnjoinPlayer(OtherPlayer[Global.master]);
+        	GAMESTATE:SetCurrentStyle("single");
+		end;
+		return "ScreenSelectMusicCustom"
+	else 
+		return "ScreenExit" 
+	end; 
+end;
+
 function AfterGameplay() 
 	if GAMESTATE:GetCoinMode() == 'CoinMode_Home' then 
 		if IsRoutine() then

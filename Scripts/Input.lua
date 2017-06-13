@@ -54,6 +54,7 @@ function MouseDown(self, range, scr)
 		self:glow(1,1,1,1);
 		self:linear(0.2)
 		self:glow(1,1,1,0);
+		Global.screen = SCREENMAN:GetTopScreen():GetName();
 		if GAMESTATE:GetNumSidesJoined() == 0 then
 			GAMESTATE:JoinPlayer(PLAYER_1);
 		end;
