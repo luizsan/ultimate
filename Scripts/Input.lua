@@ -11,10 +11,19 @@ function MenuInputActor()
         MenuLeftP2MessageCommand=function(self,param) MESSAGEMAN:Broadcast("MenuInput", { Input = "Prev", Player = PLAYER_2 }); end; 
         MenuRightP1MessageCommand=function(self,param) MESSAGEMAN:Broadcast("MenuInput", { Input = "Next", Player = PLAYER_1 }); end; 
         MenuRightP2MessageCommand=function(self,param) MESSAGEMAN:Broadcast("MenuInput", { Input = "Next", Player = PLAYER_2 }); end; 
+        CodeMessageCommand=function(self,param) MESSAGEMAN:Broadcast("MenuInput", { Input = param.Name, Player = param.PlayerNumber }); end;
+    }
+end;
+
+--//================================================================
+
+function MouseInputActor()
+    return Def.ActorFrame{
+        UnlockCommand=function() Global.lockinput = false; MESSAGEMAN:Broadcast("Unlock"); end;
+        MenuRightP2MessageCommand=function(self,param) MESSAGEMAN:Broadcast("MenuInput", { Input = "Next", Player = PLAYER_2 }); end; 
         LeftClickMessageCommand=function(self,param) MESSAGEMAN:Broadcast("MenuInput", { Input = "LMB", Player = Global.master }); end;
         RightClickMessageCommand=function(self,param) MESSAGEMAN:Broadcast("MenuInput", { Input = "RMB", Player = Global.master }); end;
         MiddleClickMessageCommand=function(self,param) MESSAGEMAN:Broadcast("MenuInput", { Input = "MMB", Player = Global.master }); end;
-        CodeMessageCommand=function(self,param) MESSAGEMAN:Broadcast("MenuInput", { Input = param.Name, Player = param.PlayerNumber }); end;
         MouseWheelUpMessageCommand=function(self,dt) 
             if Global.debounce <= 0 then 
                 MESSAGEMAN:Broadcast("MenuInput", { Input = "Up", Player = Global.master }); 

@@ -9,7 +9,7 @@ local function Update(self,dt)
     MESSAGEMAN:Broadcast("Update");
 end;
 
-local t = MenuInputActor()..{
+local t = MouseInputActor()..{
     InitCommand=function(self) self:SetUpdateFunction(Update); end;
     MenuInputMessageCommand=function(self,param)  end;
 }
