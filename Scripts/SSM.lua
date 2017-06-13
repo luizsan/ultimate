@@ -1,8 +1,6 @@
 --//================================================================    
 
 function SetSSM()
-    
-    
     Global.pnskin[PLAYER_1] = -1;
     Global.pnskin[PLAYER_2] = -1;
 
@@ -90,7 +88,7 @@ function FilterGroups(stringlist)
     local filter = {};
     local numsongs = {};
 
-    for i=1,#stringlist do
+    for i=1, math.min(#stringlist,SONGMAN:GetNumSongGroups()) do
         local songs = {};
         songs = SONGMAN:GetSongsInGroup(stringlist[i])
         songs = FilterSongList(songs);

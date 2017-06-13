@@ -67,7 +67,7 @@ end;
 
 function SideJoined(pn)
     if GAMESTATE:IsSideJoined(pn) then
-        if PureType(Global.mastersteps) == "Routine" or IsRoutine() then
+        if IsRoutine() then
             return Global.master == pn;
         else
             return true;
