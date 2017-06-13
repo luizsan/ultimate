@@ -6,7 +6,6 @@ Global = {
     debounce = 0,
     mouseX = 0,
     mouseY = 0,
-    input = "",
     wheel = 0,
     screen = "",
     ratio = "",
@@ -22,7 +21,7 @@ Global = {
     },
     songgroup = "",
     songlist = {},
-    song = "",
+    song = nil,
     selection = 1,
     level = 1,
     confirm = {
@@ -54,13 +53,11 @@ Global = {
         [PLAYER_2] = 0,
     },
     life = {
-        ["Master"] = 0,
         [PLAYER_1] = 0,
         [PLAYER_2] = 0,
     },
     volume = 1,
-    blocksteps = false,
-    blockjoin = true,
+    blockjoin = false,
     prevstate = "",
     toggle = false,
     bgcolor = {0.66,0.68,0.7,1},
@@ -69,33 +66,12 @@ Global = {
 };
 
 function ResetState()
-    Global.state = "";
-    Global.prevstate = "";
-    Global.substate = {
-        [PLAYER_1] = "",
-        [PLAYER_2] = "",
-    };
-    Global.allgroups = {};
-    Global.songgroup = "";
-    Global.songlist = {};
-    Global.song = "";
-    Global.selection = 1;
-    Global.level = 1;
-    Global.master = "";
     Global.confirm = {
         [PLAYER_1] = 0,
         [PLAYER_2] = 0,
     };
     Global.mastersteps = nil;
     Global.steps = {};
-    Global.pnsteps = {
-        [PLAYER_1] = 1,
-        [PLAYER_2] = 1,
-    };
-    Global.pncursteps = {
-        [PLAYER_1] = nil,
-        [PLAYER_2] = nil,
-    };
     Global.pnselection = {
         [PLAYER_1] = 1,
         [PLAYER_2] = 1,
@@ -109,7 +85,6 @@ function ResetState()
         [PLAYER_2] = 0,
     };
     Global.life = {
-        ["Master"] = 0,
         [PLAYER_1] = 0,
         [PLAYER_2] = 0,
     };

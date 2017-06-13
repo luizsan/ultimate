@@ -66,8 +66,8 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
         end;
 
         RefreshCommand=function(self)
-            if GAMESTATE:IsSideJoined(pn) then
-                local steps = Global.pncursteps[pn] or GAMESTATE:GetCurrentSteps(pn);
+            if GAMESTATE:IsSideJoined(pn) and Global.pncursteps[pn] then
+                local steps = Global.pncursteps[pn];
 
                 local skin = GetPreferredNoteskin(pn);
                 local prefs = notefield_prefs_config:get_data(pn);
@@ -92,8 +92,8 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
         end;
 
         WidthSetCommand=function(self,param)
-            if GAMESTATE:IsSideJoined(pn) then
-                local steps = Global.pncursteps[pn] or GAMESTATE:GetCurrentSteps(pn);
+            if GAMESTATE:IsSideJoined(pn) and Global.pncursteps[pn] then
+                local steps = Global.pncursteps[pn];
                 local st = PureType(steps);
 
                 if (st == "Double" or st == "Routine") or GAMESTATE:GetNumSidesJoined() == 1 then
@@ -103,7 +103,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
                     }
                 else
                     self:set_base_values{
-                        transform_pos_x = _screen.cx + (self:get_width() + 24) * 0.5 * pnSide(pn), 
+                        transform_pos_x = _screen.cx + (self:get_width() + 32) * 0.5 * pnSide(pn), 
                         transform_pos_y = _screen.cy,
                     }
                 end;
@@ -111,8 +111,10 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
         end;
 
         UpdateNotefieldMessageCommand=function(self)
-            if GAMESTATE:IsSideJoined(pn) then
+            if GAMESTATE:IsSideJoined(pn) and Global.pncursteps[pn] then
                 self:set_curr_second(curTime);
+            else
+
             end;
         end;
     };
@@ -121,8 +123,8 @@ end;
 
 t[#t+1] = tex;
 
-t[#t+1] = Def.Quad{
-    InitCommand=cmd(diffuse,0.25,0.25,0.25,0.75;vertalign,top;xy,_screen.cx,_screen.cy-177;zoomto,520,247;fadeleft,0.2;faderight,0.2);
+t[#t+1] = LoadActor(THEME:GetPathG("","bg"))..{
+    InitCommand=cmd(diffuse,Global.bgcolor;diffusealpha,0.5;xy,_screen.cx,_screen.cy-177;FullScreen;fadeleft,0.2;faderight,0.2);
 };
 
 t[#t+1] = Def.Sprite{

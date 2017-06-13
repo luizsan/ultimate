@@ -48,7 +48,6 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 		InitCommand=cmd(x,SCREEN_CENTER_X + spacing * pnSide(pn);y,originY);
 		OnCommand=cmd(stoptweening;diffusealpha,0;sleep,0.5;linear,0.5;diffusealpha,1);
 		StateChangedMessageCommand=function(self)
-			self:visible(GAMESTATE:IsSideJoined(pn));
 			self:stoptweening();
 			self:decelerate(0.2);
 			if Global.state == "GroupSelect" then 
@@ -60,10 +59,12 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 
 		LoadActor(THEME:GetPathG("","dim"))..{
 			InitCommand=cmd(zoomto,364,96;diffuse,BoostColor(Global.bgcolor,0.75);fadeleft,0.66666;faderight,0.66666;x,64 + pnSide(pn));
+			OnCommand=cmd(visible,SideJoined(pn));
 		};
 		
 		LoadActor(THEME:GetPathG("","separator"))..{
 			InitCommand=cmd(zoom,0.45;x,24 * -pnSide(pn);y,-2;diffuse,0,0,0,0.5);
+			OnCommand=cmd(visible,SideJoined(pn));
 		};
 
 		-- meter
@@ -73,8 +74,8 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 				OnCommand=cmd(playcommand,"Refresh");
 				StepsChangedMessageCommand=cmd(playcommand,"Refresh");
 				RefreshCommand=function(self)
-					if GAMESTATE:IsSideJoined(pn) then
-						local steps = Global.pncursteps[pn] or GAMESTATE:GetCurrentSteps(pn);
+					if SideJoined(pn) and Global.pncursteps[pn] then
+						local steps = Global.pncursteps[pn] 
 						if TotalNotes(steps,pn) == 0 then
 							self:settext("00");
 						else
@@ -92,8 +93,8 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 				OnCommand=cmd(playcommand,"Refresh");
 				StepsChangedMessageCommand=cmd(playcommand,"Refresh");
 				RefreshCommand=function(self)
-					if GAMESTATE:IsSideJoined(pn) then
-						local steps = Global.pncursteps[pn] or GAMESTATE:GetCurrentSteps(pn);
+					if SideJoined(pn) and Global.pncursteps[pn] then
+						local steps = Global.pncursteps[pn]
 						self:settext(string.upper(PureType(steps)));
 					
 						local tint = StepsColor(steps);
@@ -116,8 +117,8 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 				OnCommand=cmd(playcommand,"Refresh");
 				StepsChangedMessageCommand=cmd(playcommand,"Refresh");
 				RefreshCommand=function(self)
-					if GAMESTATE:IsSideJoined(pn) then
-						local steps = Global.pncursteps[pn] or GAMESTATE:GetCurrentSteps(pn);
+					if SideJoined(pn) and Global.pncursteps[pn] then
+						local steps = Global.pncursteps[pn]
 						local maker = steps:GetAuthorCredit()
 						maker = FilterStepmaker(maker);
 						
@@ -139,8 +140,8 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 				OnCommand=cmd(playcommand,"Refresh");
 				StepsChangedMessageCommand=cmd(playcommand,"Refresh");
 				RefreshCommand=function(self)
-					if GAMESTATE:IsSideJoined(pn) then
-						local steps = Global.pncursteps[pn] or GAMESTATE:GetCurrentSteps(pn);
+					if SideJoined(pn) and Global.pncursteps[pn] then
+						local steps = Global.pncursteps[pn]
 						self:settext("Avg. notes/sec: "..AvgNotesSec(steps,pn));
 						--self:settext("Total notes: "..TotalNotes(steps,pn));
 						--self:settext("Predicted meter: "..steps:PredictMeter());

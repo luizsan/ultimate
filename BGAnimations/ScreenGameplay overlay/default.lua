@@ -25,6 +25,7 @@ local t = Def.ActorFrame{
 	OnCommand=function(self)
 		Global.disqualified = false;
 		if IsRoutine() then
+
 			if Global.master == PLAYER_1 then
 				find_pactor_in_gameplay(SCREENMAN:GetTopScreen(), PLAYER_2):hibernate(math.huge);
 			else
@@ -293,10 +294,10 @@ t[#t+1] = Def.Quad{
 		local s = SCREENMAN:GetTopScreen();
 		local player = s:GetChild("Player" .. ToEnumShortString(Global.master))
 		local field = player:GetChild("NoteField");
-
 		self:x(player:GetX());
 		self:y(player:GetY());
 		self:zoomto(field:get_width(), 16);
+		self:visible(false);
 	end;
 }
 

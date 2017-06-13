@@ -78,20 +78,21 @@ function ReadyDecision(param)
 			if PureType(Global.mastersteps) == "Routine" then
 				Global.blockjoin = false;
 				GAMESTATE:JoinPlayer(OtherPlayer[Global.master]);
-
+				GAMESTATE:SetCurrentStyle("routine");
 				GAMESTATE:SetCurrentSteps(PLAYER_1,Global.mastersteps);
 				GAMESTATE:SetCurrentSteps(PLAYER_2,Global.mastersteps);
-				GAMESTATE:SetCurrentStyle("routine");
 				Global.blockjoin = true;
 			else
+				FixStyleForSteps(Global.mastersteps);
 				GAMESTATE:SetCurrentSteps(Global.master,Global.mastersteps);
 			end;
 		else
 
 			-- apply same failtype for both players
-			local fail = GAMESTATE:GetPlayerState(Global.master):GetPlayerOptions("ModsLevel_Current"):FailSetting();
-			GAMESTATE:GetPlayerState(OtherPlayer[Global.master]):GetPlayerOptions("ModsLevel_Current"):FailSetting(fail);
+			local fail = GAMESTATE:GetPlayerState(Global.master):GetPlayerOptions("ModsLevel_Preferred"):FailSetting();
+			GAMESTATE:GetPlayerState(OtherPlayer[Global.master]):GetPlayerOptions("ModsLevel_Preferred"):FailSetting(fail);
 
+			FixStyleForSteps(Global.mastersteps);
 			GAMESTATE:SetCurrentSteps(PLAYER_1,Global.pncursteps[PLAYER_1]);
 			GAMESTATE:SetCurrentSteps(PLAYER_2,Global.pncursteps[PLAYER_2]);
 

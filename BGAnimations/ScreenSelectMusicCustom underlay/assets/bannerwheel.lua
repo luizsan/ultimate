@@ -27,9 +27,11 @@ for k=1,maxitems do
 end;
 
 selfcoords = coords;
+
+--//================================================================
+
 function WheelController(self,param)
-	Global.blocksteps = false;	
-	if param.Input == "Prev" then 
+	if param.Input == "Prev" or param.Input == "Down" then 
 		if(Global.selection>1) then
 			Global.selection = Global.selection-1;
 		else
@@ -42,7 +44,7 @@ function WheelController(self,param)
 		MESSAGEMAN:Broadcast("StepsChanged"); 
 	end
 
-	if param.Input == "Next" then 
+	if param.Input == "Next" or param.Input == "Up" then 
 		if(Global.selection < #Global.songlist) then
 			Global.selection = Global.selection+1;
 		else
@@ -62,9 +64,6 @@ function WheelController(self,param)
 		MESSAGEMAN:Broadcast("StateChanged"); 
 		MESSAGEMAN:Broadcast("Return");
 	end;
-
-	
-
 end;
 
 --//================================================================
@@ -77,7 +76,6 @@ function SelectSong()
 	MESSAGEMAN:Broadcast("StateChanged"); 
 	MESSAGEMAN:Broadcast("MainMenu"); 
 end;
-
 
 --//================================================================
 
@@ -128,16 +126,17 @@ local function AdjustBanner(self)
 	end
 end;
 
-
 --//================================================================
 
 local t = Def.ActorFrame{
 		InitCommand=cmd(fov,60*((SCREEN_WIDTH/SCREEN_HEIGHT)/(4/3)*0.9333);vanishpoint,originX,originY-74);
 		BuildMusicListMessageCommand=function(self)
 			offset = Global.selection;
+
 			for k=1,maxitems do
 				coords[k] = originX - ((k*-wheelspacing) + (math.ceil(maxitems/2)*wheelspacing));
 			end;
+
 			selfcoords = coords;
 			minIndex = 1;
 			maxIndex = 15;
@@ -162,47 +161,47 @@ local t = Def.ActorFrame{
 		MusicWheelMessageCommand=function(self,param)
 			SetWheelSteps();
 
-					if param then
-						if param.Direction == "Prev" then
-							table.insert(selfcoords,selfcoords[1])
-							table.remove(selfcoords,1)
-							offset = offset-1;
-						end
-
-						if param.Direction == "Next" then
-							table.insert(selfcoords,1,selfcoords[maxitems])
-							table.remove(selfcoords,#selfcoords)
-							offset = offset+1;
-						end
-					end
-					
-					while offset > #Global.songlist do
-						offset = 1;
-					end;
-
-					while offset < 1 do
-						offset = #Global.songlist;
-					end;
-					
-					min = #Global.songlist;
-					max = 0;
-
-					minIndex = 999999;
-					maxIndex = 1;
-
-				for i=1,maxitems do
-					if (selfcoords[i] < min) then
-						min = selfcoords[i];
-						minIndex = i;
-					end
-					if (selfcoords[i] > max) then 
-						max = selfcoords[i];
-						maxIndex = i;
-					end
+			if param then
+				if param.Direction == "Prev" then
+					table.insert(selfcoords,selfcoords[1])
+					table.remove(selfcoords,1)
+					offset = offset-1;
 				end
 
-				MESSAGEMAN:Broadcast("Reload"); 
-				MESSAGEMAN:Broadcast("Tween", { silent = param.silent} );
+				if param.Direction == "Next" then
+					table.insert(selfcoords,1,selfcoords[maxitems])
+					table.remove(selfcoords,#selfcoords)
+					offset = offset+1;
+				end
+			end
+			
+			while offset > #Global.songlist do
+				offset = 1;
+			end;
+
+			while offset < 1 do
+				offset = #Global.songlist;
+			end;
+			
+			min = #Global.songlist;
+			max = 0;
+
+			minIndex = 999999;
+			maxIndex = 1;
+
+			for i=1,maxitems do
+				if (selfcoords[i] < min) then
+					min = selfcoords[i];
+					minIndex = i;
+				end
+				if (selfcoords[i] > max) then 
+					max = selfcoords[i];
+					maxIndex = i;
+				end
+			end
+
+			MESSAGEMAN:Broadcast("Reload"); 
+			MESSAGEMAN:Broadcast("Tween", { silent = param.silent });
 			
 		end;
 };
@@ -242,7 +241,8 @@ for i=1,maxitems do
 				if i ~= minIndex and i ~= maxIndex and not param.silent then
 					self:decelerate(tweenSpeed);
 				end;
-                   local tilt = (selfcoords[i]-SCREEN_CENTER_X)/320;
+
+                local tilt = (selfcoords[i]-SCREEN_CENTER_X)/320;
 				self:x(selfcoords[i]);
 				self:z(math.abs(tilt)*-70);
 				self:rotationy(clamp(tilt*60,-90,90));
@@ -397,59 +397,6 @@ for i=1,maxitems do
 	};
 
 end;
-
--- arrow indicators
-
---[[
-t[#t+1] = Def.ActorFrame{
-	InitCommand=cmd(x,SCREEN_CENTER_X;y,SCREEN_BOTTOM-96);
-	StateChangedMessageCommand=function(self)
-		self:stoptweening();
-		self:decelerate(0.15);
-		if(Global.state == "MusicWheel") then
-			self:diffusealpha(1);
-		else
-			self:diffusealpha(0);
-		end
-	end;
-
-	Def.ActorFrame{
-	Name = "Normal";
-		LoadActor(THEME:GetPathG("","miniarrow"))..{
-			InitCommand=cmd(animate,false;x,-cursorspacing;zoom,cursorzoom;diffuse,0.6,0.6,0.6,0.95;shadowlengthy,1);
-		},	
-		LoadActor(THEME:GetPathG("","miniarrow"))..{
-			InitCommand=cmd(animate,false;x,cursorspacing;zoom,cursorzoom;zoomx,-cursorzoom;diffuse,0.6,0.6,0.6,0.95;shadowlengthy,1);
-		},
-	},
-
-	Def.ActorFrame{
-	Name = "Glow";
-		LoadActor(THEME:GetPathG("","miniarrow"))..{
-			InitCommand=cmd(animate,false;setstate,1;x,-cursorspacing;zoom,cursorzoom;diffusealpha,0;blend,"BlendMode_Add");
-			MusicWheelMessageCommand=function(self,param)
-				if param and param.Direction == "Prev" then
-					self:stoptweening();
-					self:diffusealpha(1);
-					self:decelerate(0.25);
-					self:diffusealpha(0);
-				end;
-			end;
-		},	
-		LoadActor(THEME:GetPathG("","miniarrow"))..{
-			InitCommand=cmd(animate,false;setstate,1;x,cursorspacing;zoom,cursorzoom;zoomx,-cursorzoom;diffusealpha,0;blend,"BlendMode_Add");
-			MusicWheelMessageCommand=function(self,param)
-				if param and param.Direction == "Next" then
-					self:stoptweening();
-					self:diffusealpha(1);
-					self:decelerate(0.25);
-					self:diffusealpha(0);
-				end;
-			end;
-		},
-	},
-}
-]]--
 
 -- cover
 t[#t+1] = LoadActor(THEME:GetPathG("","bg"))..{

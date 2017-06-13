@@ -7,17 +7,28 @@ function SetSSM()
     Global.pnskin[PLAYER_2] = -1;
 
     Global.master = GAMESTATE:GetMasterPlayerNumber();
+    Global.mastersteps = Global.pncursteps[Global.master];
     Global.selection = SetWheelSelection()
     Global.steps = FilterSteps(Global.song);
 
-    for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
-        Global.pnsteps[pn] = GetEntry(GAMESTATE:GetCurrentSteps(pn));
-        Global.pncursteps[pn] = Global.steps[Global.pnsteps[pn]];
-        GAMESTATE:SetCurrentSteps(pn, Global.pncursteps[pn])
-        MESSAGEMAN:Broadcast("StepsChanged");
+    if IsRoutine() then
+        GAMESTATE:UnjoinPlayer(OtherPlayer[Global.master]);
     end;
 
+    for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
+        if not Global.pncursteps[pn] then
+            Global.pnsteps[pn] = GetEntry(GAMESTATE:GetCurrentSteps(pn), Global.steps);
+            Global.pncursteps[pn] = Global.steps[Global.pnsteps[pn]];
+            --GAMESTATE:SetCurrentSteps(pn, Global.pncursteps[pn]);
+        else
+            Global.pncursteps[pn] = Global.steps[Global.pnsteps[pn]];
+        end;
+    end;
+
+    FixStyleForSteps(Global.pncursteps[Global.master]);
+
     MESSAGEMAN:Broadcast("BuildMusicList", { first = true });
+    MESSAGEMAN:Broadcast("StepsChanged", { silent = true });
     
     Global.level = 1;
     Global.confirm[PLAYER_1] = 0;
@@ -28,10 +39,9 @@ function SetSSM()
     Global.state = "MainMenu"
     Global.blocksteps = true;
     Global.lockinput = true;
+    Global.disqualify = false;
     
-
     MESSAGEMAN:Broadcast("StateChanged");
-
 end;
 
 --//================================================================    
@@ -40,7 +50,7 @@ function SetGroups()
     Global.allgroups = SONGMAN:GetSongGroupNames();
     Global.allgroups = FilterGroups(Global.allgroups);
 
-    local pref = GAMESTATE:GetPreferredSong();
+    local pref = GAMESTATE:GetPreferredSong()
     local first = Global.allgroups[1]["Songs"];
     local prefgroup = -1;
 
@@ -50,19 +60,18 @@ function SetGroups()
         end;
 
         if #FilterSteps(pref) > 0 then
-            Global.song = pref;
-            Global.songgroup = pref:GetGroupName();
             Global.songlist = Global.allgroups[prefgroup]["Songs"];
+            Global.songgroup = pref:GetGroupName();
+            Global.song = pref;
 
         elseif prefgroup > 0 then
-            Global.songgroup = Global.allgroups[prefgroup];
-            Global.song = Global.allgroups[prefgroup]["Songs"][1];
             Global.songlist = Global.allgroups[prefgroup]["Songs"];
-
+            Global.songgroup = Global.allgroups[prefgroup]["Name"];
+            Global.song = Global.allgroups[prefgroup]["Songs"][1];
         else
+            Global.songlist = first;
             Global.songgroup = first[1]:GetGroupName();
             Global.song = first[SetWheelSelection()];
-            Global.songlist = first;
 
         end;
     else
@@ -139,20 +148,20 @@ end;
 
 function SetWheelSteps()
     Global.steps = FilterSteps(Global.song);
-    Global.pnsteps[PLAYER_1] = 1;
-    Global.pnsteps[PLAYER_2] = 1;
-    Global.pncursteps[PLAYER_1] = Global.steps[1];
-    Global.pncursteps[PLAYER_2] = Global.steps[1];
+    for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
+        Global.pnsteps[pn] = 1;
+        Global.pncursteps[pn] = Global.steps[1];
+    end;
 end;
 
 --//================================================================
 
 function GetWheelSteps()
     Global.steps = FilterSteps(Global.song);
-    Global.pnsteps[PLAYER_1] = GetEntry(GAMESTATE:GetCurrentSteps(PLAYER_1));
-    Global.pnsteps[PLAYER_2] = GetEntry(GAMESTATE:GetCurrentSteps(PLAYER_2));
-    Global.pncursteps[PLAYER_1] = Global.steps[Global.pnsteps[PLAYER_1]];
-    Global.pncursteps[PLAYER_2] = Global.steps[Global.pnsteps[PLAYER_2]];
+    for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
+        Global.pnsteps[pn] = GetEntry(Global.pncursteps[pn], Global.steps);
+        Global.pncursteps[pn] = Global.steps[Global.pnsteps[pn]];
+    end;
 end;
 
 --//================================================================
@@ -172,6 +181,25 @@ function FilterSteps(song)
         return {};
     end;
 end
+--//================================================================
+
+
+function FixStyleForSteps(steps)
+    if steps then
+        local st = ToEnumShortString(steps:GetStepsType());
+        if st == "Double" then 
+            GAMESTATE:SetCurrentStyle("single");
+        --elseif st == "Routine" then 
+        --    GAMESTATE:SetCurrentStyle("single");
+        else 
+            if GAMESTATE:GetNumSidesJoined() == 2 then
+                GAMESTATE:SetCurrentStyle("versus");
+            else
+                GAMESTATE:SetCurrentStyle("single");
+            end;
+        end;
+    end;
+end;
 
 --//================================================================
 
@@ -289,19 +317,18 @@ end;
 
 --//================================================================
 
-function GetEntry(steps)
+function GetEntry(steps, steplist)
     local entry;
-    local steplist = FilterSteps(Global.song);
     local value = 1;
-        if steps then
-            for entry=1,#steplist do
-                if steplist[entry] == steps then
-                    return entry;
-                end;
+    if steps then
+        for entry=1,#steplist do
+            if steplist[entry] == steps then
+                return entry;
             end;
-        else
-            return 1;
         end;
+    else
+        return 1;
+    end;
 end;
 
 --//================================================================

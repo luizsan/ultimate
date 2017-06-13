@@ -197,7 +197,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
     -- numbers
     for n=1,#dance_grade do
         numbers[#numbers+1] = Def.ActorFrame{
-        InitCommand=cmd(x,SCREEN_CENTER_X;y,labelspacing * (n-1));
+        InitCommand=cmd(x,SCREEN_CENTER_X;y,labelspacing * (n-1);visible,SideJoined(pn));
         OnCommand=cmd(diffusealpha,0;sleep,n/10;linear,0.3;diffusealpha,1);
 
             Def.RollingNumbers{
@@ -225,7 +225,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
     -- sub data
     for n=1,#sub_sections do
         subdata[#subdata+1] = Def.ActorFrame{
-            InitCommand=cmd(y,108 + (n-1) * 40;x,SCREEN_CENTER_X + (210*pnSide(pn)));
+            InitCommand=cmd(y,108 + (n-1) * 40;x,SCREEN_CENTER_X + (210*pnSide(pn));visible,SideJoined(pn));
             OnCommand=cmd(diffusealpha,0;sleep,1 + (n/10);linear,0.3;diffusealpha,1);
 
             Def.BitmapText{
@@ -280,7 +280,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 
     -- grade
     subdata[#subdata+1] = Def.ActorFrame{
-        InitCommand=cmd(y,30;x,SCREEN_CENTER_X + (210*pnSide(pn)));
+        InitCommand=cmd(y,30;x,SCREEN_CENTER_X + (210*pnSide(pn));visible,SideJoined(pn));
 
         Def.Sprite{
             Name = "SPRITE";

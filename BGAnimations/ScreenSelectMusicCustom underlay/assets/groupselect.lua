@@ -25,7 +25,6 @@ end
 
 
 function GroupController(self,param)
-	Global.blocksteps = false;
 	if param.Input == "Prev" then
 		if Global.selection > 1 then 
 			Global.selection = Global.selection-1;
@@ -91,14 +90,19 @@ function SelectFolder()
 
 		Global.song = Global.songlist[Global.selection];
 		Global.steps = StepsList(Global.song);
+		GAMESTATE:SetPreferredSong(Global.song);
+
 		if Global.p1steps and Global.p1steps > #Global.steps then Global.p1steps = #Global.steps; end
 		if Global.p2steps and Global.p2steps > #Global.steps then Global.p2steps = #Global.steps; end
 
 		MESSAGEMAN:Broadcast("BuildMusicList"); 
 		MESSAGEMAN:Broadcast("StateChanged"); 
-		SetWheelSteps();
 		MESSAGEMAN:Broadcast("FolderChanged"); 
-		MESSAGEMAN:Broadcast("MusicWheel",{ silent = true });
+		MESSAGEMAN:Broadcast("MusicWheel", { silent = true });
+
+
+		SetWheelSteps();
+		MESSAGEMAN:Broadcast("StepsChanged", { silent = true });
 
 	end;
 end;

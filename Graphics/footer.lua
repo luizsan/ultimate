@@ -23,11 +23,16 @@ for pn in ivalues({PLAYER_1,PLAYER_2}) do
 				self:settext("P2");
 			end;
 
-			if GAMESTATE:IsSideJoined(pn) then 
-				self:diffusealpha(1) 
+			if SideJoined(pn) then
+				if IsRoutine() and Global.master ~= pn then
+					self:diffusealpha(0.33); 
+				else
+					self:diffusealpha(1)
+				end;
 			else 
 				self:diffusealpha(0.33); 
-			end
+			end;
+
 		end;
 	};
 end;
@@ -42,11 +47,22 @@ t[#t+1] = LoadFont("neotech")..{
 	OnCommand=cmd(playcommand,"Refresh");
 	PlayerJoinedMessageCommand=cmd(playcommand,"Refresh");
 	RefreshCommand=function(self)
-		if GAMESTATE:IsSideJoined(pn) then 
-			self:diffusealpha(1) 
-			self:settext(PROFILEMAN:GetProfile(pn):GetDisplayName());
+		if SideJoined(pn) then
+			if IsRoutine() and Global.master ~= pn then
+				self:settext("");
+			else
+				local name = PROFILEMAN:GetProfile(pn):GetDisplayName();
+				if name == "" then
+					self:diffusealpha(0.33);
+					self:settext("No Profile");
+				else
+					self:diffusealpha(1)
+					self:settext(name);
+				end;
+			end;
 		else 
 			self:diffusealpha(0.33); 
+			self:settext("");
 		end
 	end;
 };

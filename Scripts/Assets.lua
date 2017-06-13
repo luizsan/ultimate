@@ -95,3 +95,20 @@ function FindRandomMovie(song)
 end;
 
 --//================================================================
+
+function LoadJacket(self,song)
+    local path;
+    path = song:GetJacketPath(); 
+    if path ~= nil then
+        self:Load(path)
+    else
+        path = song:GetBannerPath(); 
+        if path ~= nil then
+            self:LoadBanner(path)
+        else
+            self:Load(THEME:GetPathG("Common fallback","banner"));  
+        end;
+    end;
+end;
+
+--//================================================================

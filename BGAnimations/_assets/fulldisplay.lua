@@ -17,6 +17,8 @@ t[#t+1] = Def.Sprite{
 		end;
 	end;
 
+	OffCommand=cmd(stoptweening;linear,0.5;diffuse,1,1,1,0);
+
 	MusicWheelMessageCommand=function(self)
 		self:stoptweening();
 		self:linear(0.2);

@@ -23,28 +23,9 @@ local spacing = 290;
 					ver = string.gsub(string.lower(ver), "-unknown", "-test");
 
 					self:settext(string.upper("Stepmania  "..ver));
-
-				--[[
-				local online = IsNetConnected() 
-				if  online then
-					self:x(SCREEN_CENTER_X+320-16);
-					self:diffuse(0.66,1,0.66,1);
-					self:diffusebottomedge(0.3,1,0.3,1);
-					self:strokecolor(0.1,0.3,0.1,1);
-					self:settext("network ok");
-				else
-					self:x(SCREEN_CENTER_X+319.5-16);
-					self:diffuse(0.66,0.66,0.66,0.5);
-					self:diffusebottomedge(1,1,1,0.5);
-					self:strokecolor(0.1,0.1,0.1,1);
-					self:settext("offline");
-				end
-				]]--
 			end;
-			
 	};
-
-
+	
 	-- date and time
 	t[#t+1] = LoadFont("regen small")..{
 			InitCommand=cmd(horizalign,right;x,SCREEN_CENTER_X+spacing;y,SCREEN_TOP+20;zoomx,0.317;zoomy,0.305);
@@ -101,9 +82,9 @@ t[#t+1] = Def.Quad{InitCommand=cmd(zoomto,SCREEN_WIDTH,1;CenterY;x,SCREEN_CENTER
 --=======================================================================================================================
 t[#t+1] = Def.Actor{
 	PlayerJoinedMessageCommand=function(self,params) 
-		if GAMESTATE:GetNumSidesJoined()==3 and Global.blockjoin then 
-			GAMESTATE:UnjoinPlayer(params.Player) 
-		end; 
+		--if Global.blockjoin then 
+		--	GAMESTATE:UnjoinPlayer(params.Player) 
+		--end; 
 	end;
 };
 

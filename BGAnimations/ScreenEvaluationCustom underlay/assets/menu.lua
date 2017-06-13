@@ -12,7 +12,7 @@ local options = {
     {
         Name = "Continue",
         Action = function(param)
-            SCREENMAN:GetTopScreen():SetNextScreenName("ScreenProfileSave");
+            MESSAGEMAN:Broadcast("FinalDecision");
             SCREENMAN:GetTopScreen():StartTransitioningScreen("SM_BeginFadingOut");
         end;
     },
@@ -44,12 +44,12 @@ local options = {
 function EvaluationController(param)
     if param.Input == "Prev" and GAMESTATE:IsSideJoined(param.Player) and selection > 1 then
         selection = selection - 1;
-        MESSAGEMAN:Broadcast("EvaluationMenu", { silent = true } );
+        MESSAGEMAN:Broadcast("EvaluationMenu", { silent = false } );
     end;
 
     if param.Input == "Next" and GAMESTATE:IsSideJoined(param.Player) and selection < #options then
         selection = selection + 1;
-        MESSAGEMAN:Broadcast("EvaluationMenu", { silent = true } );
+        MESSAGEMAN:Broadcast("EvaluationMenu", { silent = false } );
     end;
 
     if param.Input == "Center" or param.Input == "Start" then

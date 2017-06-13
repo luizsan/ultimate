@@ -1,33 +1,24 @@
 themeInfo = {
 	Name = "Ultimate",
+	Version = "0.2.0",
 };
 
 --//================================================================
 
 Navigation = {
-	Icon = {
-		["Play"] = 1,
-		["Home"] = 4,
-		["Profiles"] = 2,
-		["Reload"] = 3,
-		["Options"] = 5,
-		["Quit"] = 6,
-	},
-	Screen = {
-		["Play"] = "ScreenProfileLoad",
-		["Home"] = "ScreenTitleMenu",
-		["Profiles"] = "ScreenOptionsManageProfiles",
-		["Reload"] = "ScreenReloadSongs",
-		["Options"] = "ScreenOptionsService",
-		["Quit"] = "ScreenExit",
-	}
+	{ Icon = 1, 	Name = "Play",		Screen = "ScreenProfileLoad" },
+	{ Icon = 4, 	Name = "Home",		Screen = "ScreenTitleMenu" },
+	{ Icon = 2, 	Name = "Profiles",	Screen = "ScreenOptionsManageProfiles" },
+	{ Icon = 3, 	Name = "Reload",	Screen = "ScreenReloadSongs" },
+	{ Icon = 5, 	Name = "Options",	Screen = "ScreenOptionsService" },
+	{ Icon = 6, 	Name = "Quit",		Screen = "ScreenExit" },
 }
 
 --//================================================================
 
 function VersionBranch(ver)
 	local search = string.find(string.lower(ProductVersion()), string.lower(ver));
-	return search == 1
+	return search == 1;
 end;
 
 --//================================================================
@@ -65,83 +56,25 @@ end;
 
 --//================================================================
 
-function LoadBackground(self,song)
-
-	local mov = FindRandomMovie(Global.song)
-	local bga = Global.song:GetSongDir()..FindBGA(FILEMAN:GetDirListing(Global.song:GetSongDir()));
-	local vid = Global.song:GetPreviewVidPath();
-	local path = Global.song:GetBackgroundPath();
-	--SCREENMAN:SystemMessage(mov)
-
-	if vid ~= nil and FILEMAN:DoesFileExist(vid) then
-		self:Load(vid);
-	elseif mov ~= nil and FILEMAN:DoesFileExist(mov) then
-		self:Load(mov);
-	elseif bga ~= nil and FILEMAN:DoesFileExist(bga) then
-		self:Load(bga);
-	elseif path ~= nil and FILEMAN:DoesFileExist(path) then
-		self:Load(path);
-	else
-		self:Load(THEME:GetPathG("Common fallback","preview"));
-	end;
-end;
-
-
---//================================================================
-
-function FindBGA(dir)
-	local path = nil;
-	for i=1,#dir do
-		if 	string.find(dir[i],".avi")~=nil or 
-			string.find(dir[i],".mpg")~=nil or 
-			string.find(dir[i],".mpeg")~=nil or 
-			string.find(dir[i],".mp4")~=nil or 
-			string.find(dir[i],".m1v")~=nil or 
-			string.find(dir[i],".m2v")~=nil then
-			path = dir[i];
-			break;
-		end;
-	end;
-	
-	return tostring(path);
-end;
-
---//================================================================
-
-function FindRandomMovie(song)
-	local rmovies = FILEMAN:GetDirListing("/RandomMovies/",false,true);
-	local path = nil;
-	local file = nil;
-
-	for i=1,#rmovies do
-
-		file = rmovies[i];
-		file = string.gsub(file,".avi","")
-		file = string.gsub(file,".mpg","")
-		file = string.gsub(file,".mpeg","")
-		file = string.gsub(file,".mp4","")
-		file = string.gsub(file,".m1v","")
-		file = string.gsub(file,".m2v","")
-		file = string.gsub(file,"/RandomMovies/","")
-
-		if file == GetFolder(song) then
-			path = rmovies[i];
-			break;
-		end;
-
-	end;
-
-	return path;
-
-end;
-
---//================================================================
-
 function NavigationAction(index)
 	if GAMESTATE:GetNumSidesJoined() == 0 then
 		GAMESTATE:JoinPlayer(PLAYER_1);
 	end;
 	SCREENMAN:SetNewScreen(Navigation.Screen[index]);
+end;
+
+--//================================================================
+
+function SideJoined(pn)
+    if GAMESTATE:IsSideJoined(pn) then
+        if PureType(Global.mastersteps) == "Routine" or IsRoutine() then
+            return Global.master == pn;
+        else
+            return true;
+        end; 
+    else
+        return false;
+    end;
 end;
 
 --//================================================================
@@ -154,18 +87,6 @@ function pnCrop(pn,self,amount) if pn == PLAYER_1 or pn == 1 then self:cropright
 --//================================================================
 
 function Setup()
-
-	PREFSMAN:SetPreference("PercentScoreWeightCheckpointHit",2);
-	PREFSMAN:SetPreference("PercentScoreWeightCheckpointMiss",0);
-	PREFSMAN:SetPreference("PercentScoreWeightHeld",0);
-	PREFSMAN:SetPreference("PercentScoreWeightHitMine",-2);
-	PREFSMAN:SetPreference("PercentScoreWeightLetGo",0);
-	PREFSMAN:SetPreference("PercentScoreWeightMiss",0);
-	PREFSMAN:SetPreference("PercentScoreWeightW1",3);
-	PREFSMAN:SetPreference("PercentScoreWeightW2",2);
-	PREFSMAN:SetPreference("PercentScoreWeightW3",1);
-	PREFSMAN:SetPreference("PercentScoreWeightW4",0);
-	PREFSMAN:SetPreference("PercentScoreWeightW5",0);
 
 	if Game() == "Pump" then
 		PREFSMAN:SetPreference("EditorNoteSkinP1","delta-note");
@@ -183,68 +104,61 @@ end
 
 --//================================================================
 
-function SetProfiles()
-	--GAMESTATE:ApplyGameCommand("profileid,00000003",PLAYER_1);
-	--GAMESTATE:ApplyGameCommand("profileid,00000001",PLAYER_2);
+function ToInit() 
+	if GAMESTATE:GetCoinMode() == 'CoinMode_Home' then 
+		return "ScreenInit" 
+	else 
+		return "ScreenExit" 
+	end; 
 end;
 
---//================================================================
-
-function ToInit() Setup(); if GAMESTATE:GetCoinMode() == 'CoinMode_Home' then return "ScreenInit" else return "ScreenExit" end; end;
-function ToTitleMenu() if GAMESTATE:GetCoinMode() == 'CoinMode_Home' then return "ScreenTitleMenu" else return "ScreenExit" end; end;
-function ToSelectMusic() if GAMESTATE:GetCoinMode() == 'CoinMode_Home' then return "ScreenSelectMusicCustom" else return "ScreenExit" end; end;
-function ToSelectMusicFromGameplay() 
+function ToTitleMenu() 
 	if GAMESTATE:GetCoinMode() == 'CoinMode_Home' then 
-		local master = GAMESTATE:GetMasterPlayerNumber();
-		if IsRoutine() then
-			return "ScreenUnjoin" 
+		return "ScreenTitleMenu" 
+	else 
+		return "ScreenExit" 
+	end 
+end;
+
+function ToSelectMusic() 
+	if GAMESTATE:GetCoinMode() == 'CoinMode_Home' then 
+		if SONGMAN:GetNumSongs() == 0 and SONGMAN:GetNumAdditionalSongs() == 0 then
+			return "ScreenHowToInstallSongs"
 		else
-			return "ScreenSelectMusicCustom"
+			return "ScreenSelectMusicCustom" 
 		end
 	else 
 		return "ScreenExit" 
 	end; 
 end;
 
-Branch = {
-	Init = function() return ToInit() end,
-	AfterInit  = function() return ToTitleMenu() end,
-	NoiseTrigger = function()
-		local hour = Hour()
-		return hour > 3 and hour < 6 and "ScreenNoise" or "ScreenInit"
-	end,
-	TitleMenu = function() return ToTitleMenu() end,
-	StartGame = function()
-		if SONGMAN:GetNumSongs() == 0 and SONGMAN:GetNumAdditionalSongs() == 0 then
-			return "ScreenHowToInstallSongs"
-		end
-		if PROFILEMAN:GetNumLocalProfiles() >= 2 then
-			SetProfiles();
-			return "ScreenProfileLoad"
+function ToGameplay()
+	if GAMESTATE:GetCoinMode() == 'CoinMode_Home' then 
+		return IsRoutine() and "ScreenGameplayShared" or "ScreenGameplay"
+	else 
+		return "ScreenExit" 
+	end 
+end
+
+function AfterGameplay() 
+	if GAMESTATE:GetCoinMode() == 'CoinMode_Home' then 
+		if IsRoutine() then
+			return "ScreenUnjoin" 
 		else
-			if THEME:GetMetric("Common","AutoSetStyle") == false then
-				return "ScreenExit"
-			else
-				return "ScreenProfileLoad"
-			end
+			return "ScreenProfileSave"
 		end
-	end,
-	OptionsEdit = function()
-		-- Similar to above, don't let anyone in here with 0 songs.
-		if SONGMAN:GetNumSongs() == 0 and SONGMAN:GetNumAdditionalSongs() == 0 then
-			return "ScreenHowToInstallSongs"
-		end
-		return "ScreenOptionsEdit"
-	end,
-	AfterSelectProfile = function() return ToSelectMusic() end,
-	AfterProfileLoad = function() return ToSelectMusic() end,
-	AfterProfileSave = function() return ToSelectMusicFromGameplay() end,
-	BackOutOfStageInformation = function() return ToSelectMusicFromGameplay() end,
-	GameplayScreen = function() return IsRoutine() and "ScreenGameplayShared" or "ScreenGameplay" end,
-	AfterGameplay = function() return "ScreenEvaluationCustom" end,
-	--AfterEvaluation = function() return "ScreenProfileSave" end
-	AfterEvaluation = function() return "ScreenGameplay" end
-}
+	else 
+		return "ScreenExit" 
+	end; 
+end;
+
+function ToEvaluation()
+	if GAMESTATE:GetCoinMode() == 'CoinMode_Home' then 
+		return "ScreenEvaluationCustom" 
+	else 
+		return "ScreenExit" 
+	end 
+end
 
 --//================================================================
 

@@ -61,7 +61,13 @@ t[#t+1] = Def.Actor{
 };
 	
 t[#t+1] = LoadActor(THEME:GetPathS("","SSM_Difficulty"))..{
-	StepsChangedMessageCommand=function(self) if Global.state == "SelectSteps" then self:play(); end; end;
+	StepsChangedMessageCommand=function(self, param) 
+		if Global.state == "SelectSteps" then 
+			if param and param.Player then 
+				self:play(); 
+			end;
+		end; 
+	end;
 };	
 	
 t[#t+1] = LoadActor(THEME:GetPathS("","SSM_Confirm"))..{
@@ -98,6 +104,7 @@ t[#t+1] = LoadActor(THEME:GetPathS("","SSM_Mainmenu"))..{
 	SpeedMenuMessageCommand=function(self,param) if not param or not param.silent then self:play() end; end;
 	SpeedChangedMessageCommand=function(self,param) if not param or not param.silent then self:play(); end; end;
 	NoteskinChangedMessageCommand=function(self,param) if not param or not param.silent then self:play(); end; end;
+	EvaluationMenuMessageCommand=function(self,param) if not param or not param.silent then self:play(); end; end;
 };	
 	
 t[#t+1] = LoadActor(THEME:GetPathS("Common","Cancel"))..{

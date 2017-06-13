@@ -1,11 +1,12 @@
 --//================================================================
 
 function PureType(steps)
-    local filter
-    filter = string.gsub(ToEnumShortString(steps:GetStepsType()),Game().."_","");
-    return filter
+    if steps then
+        return string.gsub(ToEnumShortString(steps:GetStepsType()),Game().."_","");
+    else
+        return nil;
+    end;
 end;
-
 
 --//================================================================
 
