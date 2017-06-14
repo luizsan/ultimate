@@ -11,7 +11,7 @@ function MenuInputActor()
         MenuLeftP2MessageCommand=function(self,param) MESSAGEMAN:Broadcast("MenuInput", { Input = "Prev", Player = PLAYER_2 }); end; 
         MenuRightP1MessageCommand=function(self,param) MESSAGEMAN:Broadcast("MenuInput", { Input = "Next", Player = PLAYER_1 }); end; 
         MenuRightP2MessageCommand=function(self,param) MESSAGEMAN:Broadcast("MenuInput", { Input = "Next", Player = PLAYER_2 }); end; 
-        CodeMessageCommand=function(self,param) MESSAGEMAN:Broadcast("MenuInput", { Input = param.Name, Player = param.PlayerNumber }); end;
+        CodeMessageCommand=function(self,param) MESSAGEMAN:Broadcast("MenuInput", { Input = string.gsub(param.Name, "_", ""), Player = param.PlayerNumber }); end;
     }
 end;
 

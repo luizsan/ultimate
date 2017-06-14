@@ -78,7 +78,6 @@ t[#t+1] = LoadActor(THEME:GetPathS("","SSM_Group"))..{
 	FolderChangedMessageCommand=cmd(play);
 };	
 	
-	
 t[#t+1] = LoadActor(THEME:GetPathS("","SSM_Select"))..{
 	DecisionMessageCommand=cmd(play);
 };	
@@ -90,6 +89,7 @@ t[#t+1] = LoadActor(THEME:GetPathS("","SSM_Switch"))..{
 	
 t[#t+1] = LoadActor(THEME:GetPathS("","SSM_State"))..{
 	MainMenuDecisionMessageCommand=cmd(play);
+	OptionsListOpenedMessageCommand=cmd(play);
 };	
 
 t[#t+1] = LoadActor(THEME:GetPathS("","SSM_Steps"))..{

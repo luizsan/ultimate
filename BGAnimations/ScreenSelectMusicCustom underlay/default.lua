@@ -10,31 +10,33 @@ local t = MenuInputActor()..{
 		GAMESTATE:SetCurrentStyle("versus");
 		SCREENMAN:SetNewScreen("ScreenSelectMusicCustom");
 	end;
-
 	MenuInputMessageCommand=function(self,param) 
-		InputController(self,param) 
+		if param and param.Player and SideJoined(param.Player) and not Global.lockinput then
+			InputController(self,param);
+			MainController(self,param);
+		end;
 	end;	
 }
 
 --//================================================================	
 
 function InputController(self,param)
-	if param and param.Player and SideJoined(param.Player) and not Global.lockinput then
-		
-		MainController(self,param);
-		if Global.state == "MainMenu" then MainMenuController(self,param) end;
-		if Global.state == "GroupSelect" then GroupController(self,param) end;
-		if Global.state == "MusicWheel" then WheelController(self,param) end;
-		if Global.state == "SelectSteps" then StepsController(self,param) end;
-		if Global.state == "SpeedMods" then SpeedController(self,param); end;
-		if Global.state == "Noteskins" then NoteskinController(self,param); end;
-
-	end;
+	if Global.state == "MainMenu" then MainMenuController(self,param) end;
+	if Global.state == "GroupSelect" then GroupController(self,param) end;
+	if Global.state == "MusicWheel" then WheelController(self,param) end;
+	if Global.state == "SelectSteps" then StepsController(self,param) end;
+	if Global.state == "SpeedMods" then SpeedController(self,param); end;
+	if Global.state == "Noteskins" then NoteskinController(self,param); end;
 end;
 
 --//================================================================	
 
 function MainController(self,param)
+	if param.Input == "Options" then
+		InputController(self, { Player = param.Player, Input = "Next"})
+		MESSAGEMAN:Broadcast("OptionsListOpened");
+	end;
+
 	if param.Input == "Center" or param.Name == "Start" then 
 		MainMenuDecision({ Player = param.Player });
 	end;

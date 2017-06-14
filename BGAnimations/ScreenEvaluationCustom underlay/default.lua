@@ -23,6 +23,10 @@ end;
 --//================================================================    
 
 function MainController(self,param)
+    if param.Input == "Options" then
+        InputController(self, { Player = param.Player, Input = "Next"})
+    end;
+
     if param.Name == "PressSelect" then
         Global.toggle = true;
         MESSAGEMAN:Broadcast("ToggleSelect", { Toggled = true });
