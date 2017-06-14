@@ -265,12 +265,14 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 			InitCommand=cmd(zoom,0.45;y,-32;vertalign,top);
 		},
 
-		LoadFont("neotech")..{
+		Def.BitmapText{
+			Font = Fonts.speeds["Options"];
 			Text="Select Speed";
 			InitCommand=cmd(zoom,0.425;diffuse,0.666,0.666,0.666,1;strokecolor,0.15,0.15,0.15,0.5;y,-2);
 		},
 
-		LoadFont("regen silver")..{
+		Def.BitmapText{
+			Font = Fonts.speeds["Speed"];
 			Name = choices[1].name;
 			InitCommand=cmd(zoom,0.575;diffuse,PlayerColor(pn);strokecolor,BoostColor(PlayerColor(pn),0.25);y,(base/2)-2);
 			GainFocusCommand=cmd(diffuseshift;effectcolor1,BoostColor(PlayerColor(pn),2);effectcolor2,BoostColor(PlayerColor(pn),1.5);effectperiod,0.25;strokecolor,BoostColor(PlayerColor(pn),0.3));
@@ -281,7 +283,8 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 			end;
 		},
 
-		LoadFont("neotech")..{
+		Def.BitmapText{
+			Font = Fonts.speeds["Options"];
 			Name = choices[2].name;
 			InitCommand=cmd(zoom,0.425;diffuse,PlayerColor(pn);strokecolor,BoostColor(PlayerColor(pn),0.25);y,base);
 			GainFocusCommand=cmd(diffuseshift;effectcolor1,BoostColor(PlayerColor(pn),2);effectcolor2,BoostColor(PlayerColor(pn),1.5);effectperiod,0.25;strokecolor,BoostColor(PlayerColor(pn),0.3));
@@ -292,7 +295,8 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 			end;
 		},
 
-		LoadFont("neotech")..{
+		Def.BitmapText{
+			Font = Fonts.speeds["Options"];
 			Name = choices[3].name;
 			InitCommand=cmd(zoom,0.425;diffuse,PlayerColor(pn);strokecolor,BoostColor(PlayerColor(pn),0.25);y,base+spacing);
 			GainFocusCommand=cmd(diffuseshift;effectcolor1,BoostColor(PlayerColor(pn),2);effectcolor2,BoostColor(PlayerColor(pn),1.5);effectperiod,0.25;strokecolor,BoostColor(PlayerColor(pn),0.3));
@@ -303,7 +307,8 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 			end;
 		},
 
-		LoadFont("neotech")..{
+		Def.BitmapText{
+			Font = Fonts.speeds["Options"];
 			Text="Reset";
 			Name = choices[4].name;
 			InitCommand=cmd(zoom,0.425;diffuse,PlayerColor(pn);strokecolor,BoostColor(PlayerColor(pn),0.25);y,base+(spacing*2));

@@ -3,6 +3,9 @@ local t = MenuInputActor()..{
     OnCommand=cmd(diffusealpha,1;sleep,2.5;queuecommand,"Unlock");
     OffCommand=cmd(linear,0.5;diffusealpha,0;sleep,0.75;queuecommand,"Exit");
     ExitCommand=function() SCREENMAN:SetNewScreen(AfterGameplay()) end;
+    PlayerJoinedMessageCommand=function(self,param)
+        GAMESTATE:UnjoinPlayer(param.Player);
+    end;
     MenuInputMessageCommand=function(self,param) 
         InputController(self,param) 
     end;
@@ -39,7 +42,7 @@ end;
 
 t[#t+1] = LoadActor(THEME:GetPathB("","_assets/fulldisplay"));
 t[#t+1] = LoadActor("assets/information");
-t[#t+1] = LoadActor("assets/scores");
+t[#t+1] = LoadActor("assets/grading");
 t[#t+1] = LoadActor("assets/menu");
 
 t[#t+1] = LoadActor(THEME:GetPathB("","_assets/cursteps"));

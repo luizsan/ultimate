@@ -130,6 +130,7 @@ if(PREFSMAN:GetPreference("AllowW1") == "AllowW1_Never") then
 end;
 
 local t = Def.ActorFrame{
+    OnCommand=cmd(y,-2);
     InitCommand=function(self)
         stagestats = STATSMAN:GetCurStageStats()
         stageindex = stagestats:GetStageIndex();
@@ -166,7 +167,7 @@ for n=1,#dance_grade do
 
         -- label
         Def.BitmapText{
-            Font = "regen strong";
+            Font = Fonts.eval["Labels"];
             InitCommand=cmd(zoom,0.875);
             OnCommand=function(self)
                 self:settext(string.upper(dance_grade[n].Label));
@@ -201,7 +202,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
         OnCommand=cmd(diffusealpha,0;sleep,n/10;linear,0.3;diffusealpha,1);
 
             Def.RollingNumbers{
-                Font = "eval numbers";
+                Font = Fonts.eval["Numbers"];
                 InitCommand=cmd(zoom,number_zoom;x,numberspacing*pnSide(pn);horizalign,pnAlign(OtherPlayer[pn]);strokecolor,0.125,0.125,0.125,0.5);
                 OnCommand=function(self)
                     self:set_chars_wide(math.max(stats[PLAYER_1]["Digits"],stats[PLAYER_2]["Digits"]));
@@ -229,8 +230,8 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
             OnCommand=cmd(diffusealpha,0;sleep,1 + (n/10);linear,0.3;diffusealpha,1);
 
             Def.BitmapText{
+                Font = Fonts.eval["Labels"];
                 Name = "SUB LABEL";
-                Font = "regen strong";
                 InitCommand=cmd(vertalign,bottom;strokecolor,0.2,0.2,0.2,0.8;zoomy,0.3;zoomx,0.32;y,-17;shadowlength,1);
                 OnCommand=function(self)
                     self:settext(string.upper(sub_sections[n].Label));
@@ -246,8 +247,8 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
             },
 
             Def.BitmapText{
+                Font = Fonts.eval["Numbers"];
                 Name = "SUB";
-                Font = "eval numbers";
                 InitCommand=cmd(vertalign,bottom;strokecolor,0.2,0.2,0.2,0.5;zoom,number_zoom;shadowlength,1);
                 OnCommand=function(self)
                     if pss[pn] then 
@@ -336,8 +337,8 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
         },
 
         Def.BitmapText{
+            Font = Fonts.eval["Award"];
             Name = "AWARD";
-            Font = "neotech";
             InitCommand=cmd(strokecolor,0.2,0.2,0.2,0.8;zoom,0.4;y,32;diffusealpha,0);
             OnCommand=function(self)
                 if pss[pn] then 
@@ -372,7 +373,7 @@ local soptions = Def.ActorFrame{
 
     -- rate
     Def.BitmapText{
-        Font = "regen strong";
+        Font = Fonts.eval["Options"];
         InitCommand=cmd(horizalign,left;vertalign,top;zoom,o_zoom;x,-274;
             strokecolor,0.2,0.2,0.2,1;shadowlength,1.25);
         OnCommand=function(self)
@@ -383,7 +384,7 @@ local soptions = Def.ActorFrame{
 
     -- failtype
     Def.BitmapText{
-        Font = "regen strong";
+        Font = Fonts.eval["Options"];
         InitCommand=cmd(horizalign,right;vertalign,top;zoom,o_zoom;x,274;
             strokecolor,0.2,0.2,0.2,1;shadowlength,1.25);
         OnCommand=function(self)
@@ -394,7 +395,7 @@ local soptions = Def.ActorFrame{
 
     -- gamemode
     Def.BitmapText{
-        Font = "regen strong";
+        Font = Fonts.eval["Options"];
         InitCommand=cmd(vertalign,top;zoom,o_zoom;
             strokecolor,0.2,0.2,0.2,1;shadowlength,1.25);
         OnCommand=function(self)

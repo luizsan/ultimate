@@ -217,23 +217,19 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 				Name = "Glow";
 				LoadActor(THEME:GetPathG("","miniarrow"))..{
 					InitCommand=cmd(animate,false;setstate,1;x,-cursorspacing;zoom,0.43;diffusealpha,0;blend,"BlendMode_Add");
+					GlowCommand=cmd(stoptweening;diffusealpha,1;decelerate,0.3;diffusealpha,0);
 					NoteskinChangedMessageCommand=function(self,param)
 						if param.direction == "Prev" and pn == param.Player then
-							self:stoptweening();
-							self:diffusealpha(1);
-							self:decelerate(0.3);
-							self:diffusealpha(0);
+							self:playcommand("Glow");
 						end;
 					end;
 				},	
 				LoadActor(THEME:GetPathG("","miniarrow"))..{
 					InitCommand=cmd(animate,false;setstate,1;x,cursorspacing;zoom,0.43;zoomx,-0.43;diffusealpha,0;blend,"BlendMode_Add");
+					GlowCommand=cmd(stoptweening;diffusealpha,1;decelerate,0.3;diffusealpha,0);
 					NoteskinChangedMessageCommand=function(self,param)
 						if param.direction == "Next" and pn == param.Player then
-							self:stoptweening();
-							self:diffusealpha(1);
-							self:decelerate(0.3);
-							self:diffusealpha(0);
+							self:playcommand("Glow");
 						end;
 					end;
 				},
@@ -278,7 +274,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 			end;
 
 			Def.BitmapText{
-				Font = "neotech";
+				Font = Fonts.noteskins["Main"];
 				Text = "Label"..i;
 				InitCommand=cmd(zoom,0.425;horizalign,pnAlign(pn));
 				UpdateNoteskinsMessageCommand=function(self,param)

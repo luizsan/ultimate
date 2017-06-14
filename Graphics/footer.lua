@@ -12,7 +12,8 @@ for pn in ivalues({PLAYER_1,PLAYER_2}) do
 	};
 
 	--minilabel
-	t[#t+1] = LoadFont("regen silver")..{
+	t[#t+1] = Def.BitmapText{
+		Font = Fonts.common["ProfileMini"];
 		InitCommand=cmd(vertalign,bottom;y,-26;x,279*pnSide(pn);horizalign,pnAlign(OtherPlayer[pn]);zoom,0.28;diffuse,PlayerColor(pn));
 		OnCommand=cmd(playcommand,"Refresh");
 		PlayerJoinedMessageCommand=cmd(playcommand,"Refresh");
@@ -42,7 +43,8 @@ end;
 for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 
 --player name
-t[#t+1] = LoadFont("neotech")..{
+t[#t+1] = Def.BitmapText{
+	Font = Fonts.common["ProfileName"];
 	InitCommand=cmd(vertalign,bottom;y,-34;x,147*pnSide(pn);horizalign,pnAlign(OtherPlayer[pn]);zoom,0.444;strokecolor,0.15,0.15,0.15,0.4;settext,"Absent");
 	OnCommand=cmd(playcommand,"Refresh");
 	PlayerJoinedMessageCommand=cmd(playcommand,"Refresh");

@@ -205,7 +205,8 @@ for i=1,maxitems do
 		};
 
 		-- FOLDER NAME
-		LoadFont("neotech")..{
+		Def.BitmapText{
+			Font = Fonts.groupselect["Name"];
 			InitCommand=cmd(zoom,0.42;diffusealpha,1;strokecolor,0.175,0.175,0.175,0.85;y,8;
 				maxheight,128;maxwidth,(itemspacing-24)/self:GetZoom();wrapwidthpixels,(itemspacing-24)/self:GetZoom();vertspacing,-4;vertalign,bottom);
 			OnCommand=cmd(playcommand,"ReloadGroups");
@@ -216,7 +217,8 @@ for i=1,maxitems do
 		};
 		
 		-- NUMSONGS
-		LoadFont("neotech")..{
+		Def.BitmapText{
+			Font = Fonts.groupselect["Songs"];
 			InitCommand=cmd(zoom,0.38;diffuse,HighlightColor();diffusealpha,1;strokecolor,BoostColor(HighlightColor(),0.25);y,16);
 			OnCommand=cmd(playcommand,"ReloadGroups");
 			ReloadGroupsMessageCommand=function(self,param)
@@ -292,29 +294,26 @@ end;
 			Name = "Glow";
 				LoadActor(THEME:GetPathG("","miniarrow"))..{
 					InitCommand=cmd(animate,false;setstate,1;x,-cursorspacing;zoom,cursorzoom;diffusealpha,0;blend,"BlendMode_Add");
+					GlowCommand=cmd(stoptweening;diffusealpha,1;decelerate,0.3;diffusealpha,0);
 					SongGroupMessageCommand=function(self,param)
 						if param and param.direction == "Prev" then
-							self:stoptweening();
-							self:diffusealpha(1);
-							self:decelerate(0.25);
-							self:diffusealpha(0);
+							self:playcommand("Glow");
 						end;
 					end;
 				},	
 				LoadActor(THEME:GetPathG("","miniarrow"))..{
 					InitCommand=cmd(animate,false;setstate,1;x,cursorspacing;zoom,cursorzoom;zoomx,-cursorzoom;diffusealpha,0;blend,"BlendMode_Add");
+					GlowCommand=cmd(stoptweening;diffusealpha,1;decelerate,0.3;diffusealpha,0);
 					SongGroupMessageCommand=function(self,param)
 						if param and param.direction == "Next" then
-							self:stoptweening();
-							self:diffusealpha(1);
-							self:decelerate(0.25);
-							self:diffusealpha(0);
+							self:playcommand("Glow");
 						end;
 					end;
 				},
 			},
 
-			LoadFont("regen strong")..{
+			Def.BitmapText{
+				Font = Fonts.groupselect["Folders"];
 				InitCommand=cmd(y,-8;zoomx,0.3;zoomy,0.3;strokecolor,0.175,0.175,0.175,0.75);
 				StateChangedMessageCommand=cmd(playcommand,"SongGroup");
 				SongGroupMessageCommand=function(self)

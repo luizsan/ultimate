@@ -23,7 +23,8 @@ local t = Def.ActorFrame{
 		};
 
 		--accuracy
-		LoadFont("corbel")..{
+		Def.BitmapText{
+			Font = Fonts.player["Accuracy"];
 			Text="Accuracy";
 			InitCommand=cmd(textglowmode,"TextGlowMode_Inner");
 			OnCommand=cmd(horizalign,right;diffuse,0.8,0.8,0.8,1;diffusetopedge,1,1,1,1;strokecolor,0,0,0,0.66;diffusealpha,0;zoom,0.433;x,46;y,2);
@@ -54,7 +55,8 @@ local t = Def.ActorFrame{
 		};
 
 		--combo
-		LoadFont("regen silver")..{
+		Def.BitmapText{
+			Font = Fonts.player["Combo"];
 			OnCommand=cmd(horizalign,right;diffuse,1,1,1,0;strokecolor,0,0,0,1;zoomx,0.825;zoomy,0.725;y,22;x,10);
 			ComboCommand=function(self,param)
 				self:stoptweening();
@@ -75,7 +77,8 @@ local t = Def.ActorFrame{
 		};
 
 		--label
-		LoadFont("regen small")..{
+		Def.BitmapText{
+			Font = Fonts.player["Label"];
 			OnCommand=cmd(horizalign,left;diffuse,1,1,1,0;strokecolor,0,0,0,0.95;zoomx,0.72;zoomy,0.64;vertspacing,-18;x,15;y,22);
 			ComboCommand=function(self,param)
 				local combo = param.Misses or param.Combo;

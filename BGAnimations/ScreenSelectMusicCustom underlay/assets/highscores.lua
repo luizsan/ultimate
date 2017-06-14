@@ -253,8 +253,8 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 			},
 
 			Def.BitmapText{
+				Font = Fonts.highscores["Main"];
 				Name = "TITLE";
-				Font = "neotech";
 				InitCommand=cmd(horizalign,pnAlign(OtherPlayer[pn]);strokecolor,0.2,0.2,0.2,0.8;zoomx,0.4;zoomy,0.39;maxwidth,240/self:GetZoomX());
 				OnCommand=function(self)
 					if i==1 then
@@ -275,8 +275,8 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 			},
 
 			Def.BitmapText{
+				Font = Fonts.highscores["Grade"];
 				Name = "GRADE";
-				Font = "bebas neue";
 				InitCommand=cmd(strokecolor,0.2,0.2,0.2,0.8;zoomy,0.45;zoomx,0.55;y,36;x,160*pnSide(pn);skewx,-0.15);
 				UpdateScoresMessageCommand=function(self)
 					if scores[pn][i] then 
@@ -292,8 +292,8 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 			},
 
 			Def.BitmapText{
+				Font = Fonts.highscores["Main"];
 				Name = "AWARD";
-				Font = "neotech";
 				InitCommand=cmd(strokecolor,0.2,0.2,0.2,0.8;zoom,0.4;y,14;x,160*pnSide(pn));
 				UpdateScoresMessageCommand=function(self)
 					if scores[pn][i] then 
@@ -313,8 +313,8 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 			},
 
 			Def.BitmapText{
+				Font = Fonts.highscores["Main"];
 				Name = "PERCENTAGE";
-				Font = "neotech";
 				InitCommand=cmd(horizalign,pnAlign(OtherPlayer[pn]);zoom,0.5;y,14);
 				UpdateScoresMessageCommand=function(self)
 					if scores[pn][i] then 
@@ -330,8 +330,8 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 			},
 
 			Def.BitmapText{
+				Font = Fonts.highscores["Main"];
 				Name = "MAX COMBO";
-				Font = "neotech";
 				InitCommand=cmd(horizalign,pnAlign(OtherPlayer[pn]);strokecolor,0.2,0.2,0.2,0.8;zoom,0.38;y,29);
 				UpdateScoresMessageCommand=function(self)
 					if scores[pn][i] then
@@ -347,8 +347,8 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 			},	
 
 			Def.BitmapText{
+				Font = Fonts.highscores["Main"];
 				Name = "DATE";
-				Font = "neotech";
 				InitCommand=cmd(horizalign,pnAlign(OtherPlayer[pn]);strokecolor,0.2,0.2,0.2,0.8;zoom,0.38;y,43);
 				UpdateScoresMessageCommand=function(self)
 					if scores[pn][i] then

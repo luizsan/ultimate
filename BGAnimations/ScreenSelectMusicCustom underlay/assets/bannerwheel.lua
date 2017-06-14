@@ -379,20 +379,6 @@ for i=1,maxitems do
 
 				end;
 			};
-
-			--//========== 
-			--//  DEBUG
-			--//==========
-
-			--[[
-			LoadFont("neotech")..{
-				InitCommand=cmd(zoom,0.5;strokecolor,0,0,0,1);
-				UpdateMessageCommand=function(self)
-					self:settext("offset: "..offset.."\n".."i: "..i);
-				end
-
-			}
-			]]--
 			
 	};
 

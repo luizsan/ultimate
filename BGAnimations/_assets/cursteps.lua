@@ -69,7 +69,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 
 		-- meter
 		Def.BitmapText{
-				Font = "regen silver";
+				Font = Fonts.cursteps["Meter"];
 				InitCommand=cmd(zoom,0.5;strokecolor,0.15,0.15,0.15,1);
 				OnCommand=cmd(playcommand,"Refresh");
 				StepsChangedMessageCommand=cmd(playcommand,"Refresh");
@@ -88,7 +88,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 		
 		-- stepstype
 		Def.BitmapText{
-				Font = "regen strong";
+				Font = Fonts.cursteps["Type"];
 				InitCommand=cmd(vertalign,bottom;zoom,0.3;strokecolor,0.2,0.2,0.2,0.5;y,-10;x,-1);
 				OnCommand=cmd(playcommand,"Refresh");
 				StepsChangedMessageCommand=cmd(playcommand,"Refresh");
@@ -112,7 +112,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 		
 		-- maker
 		Def.BitmapText{
-				Font = "neotech";
+				Font = Fonts.cursteps["Info"];
 				InitCommand=cmd(horizalign,pnAlign(pn);x,34 * -pnSide(pn);y,-11;zoom,0.4;strokecolor,0.2,0.2,0.2,1;maxwidth,560);
 				OnCommand=cmd(playcommand,"Refresh");
 				StepsChangedMessageCommand=cmd(playcommand,"Refresh");
@@ -135,7 +135,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 		
 		-- notes
 		Def.BitmapText{
-				Font = "neotech";
+				Font = Fonts.cursteps["Info"];
 				InitCommand=cmd(horizalign,pnAlign(pn);x,34 * -pnSide(pn);y,3;zoom,0.4;diffuse,BoostColor(PlayerColor(pn),0.95);strokecolor,BoostColor(PlayerColor(pn),0.25);maxwidth,560);
 				OnCommand=cmd(playcommand,"Refresh");
 				StepsChangedMessageCommand=cmd(playcommand,"Refresh");

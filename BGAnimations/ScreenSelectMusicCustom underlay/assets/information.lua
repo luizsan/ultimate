@@ -77,7 +77,7 @@ t[#t+1] = Def.ActorFrame{
 	InitCommand=cmd(x,originX-spacing-4;y,originY+1);
 
 	Def.BitmapText{
-		Font = "roboto";
+		Font = Fonts.information["Main"];
 		InitCommand=cmd(horizalign,left;x,-1;y,-1;vertalign,top;zoom,artistzoom;diffuse,BoostColor(HighlightColor(),0.25);
 			strokecolor,BoostColor(HighlightColor(),0.25);shadowcolor,BoostColor(HighlightColor(),0.25);shadowlengthx,1.75;shadowlengthy,1.75);
 		SongInformationMessageCommand=function(self)
@@ -86,7 +86,7 @@ t[#t+1] = Def.ActorFrame{
 	},
 
 	Def.BitmapText{
-		Font = "roboto";
+		Font = Fonts.information["Main"];
 		InitCommand=cmd(horizalign,left;vertalign,top;zoom,artistzoom;diffuse,BoostColor(HighlightColor(),0.25);
 			strokecolor,BoostColor(HighlightColor(),0.25);shadowcolor,BoostColor(HighlightColor(),0.25);shadowlengthx,1.2;shadowlengthy,1.2);
 		SongInformationMessageCommand=function(self)
@@ -95,7 +95,7 @@ t[#t+1] = Def.ActorFrame{
 	},
 
 	Def.BitmapText{
-		Font = "roboto";
+		Font = Fonts.information["Main"];
 		InitCommand=cmd(horizalign,left;x,-1;y,-1;vertalign,top;zoom,artistzoom;diffuse,BoostColor(HighlightColor(),1.2);
 			strokecolor,BoostColor(HighlightColor(),0.25);wrapwidthpixels,400/self:GetZoom();vertspacing,-16);
 		SongInformationMessageCommand=function(self)
@@ -112,7 +112,7 @@ t[#t+1] = Def.ActorFrame{
 	InitCommand=cmd(x,originX-spacing-6;y,originY-4);
 
 	Def.BitmapText{
-		Font = "roboto";
+		Font = Fonts.information["Main"];
 		InitCommand=cmd(horizalign,left;x,-1;y,-1;vertalign,bottom;zoom,artistzoom;diffuse,0.25,0.25,0.25,1;strokecolor,0.25,0.25,0.25,1;
 			shadowcolor,0.25,0.25,0.25,1;shadowlengthx,1.2;shadowlengthy,1.2;wrapwidthpixels,400/self:GetZoom();vertspacing,-24);
 		SongInformationMessageCommand=function(self)
@@ -121,7 +121,7 @@ t[#t+1] = Def.ActorFrame{
 	},
 
 	Def.BitmapText{
-		Font = "roboto";
+		Font = Fonts.information["Main"];
 		InitCommand=cmd(horizalign,left;vertalign,bottom;zoom,artistzoom;diffuse,0.25,0.25,0.25,1;strokecolor,0.25,0.25,0.25,1;
 			shadowcolor,0.25,0.25,0.25,1;shadowlengthx,1.2;shadowlengthy,1.2;wrapwidthpixels,400/self:GetZoom();vertspacing,-24);
 		SongInformationMessageCommand=function(self)
@@ -130,7 +130,7 @@ t[#t+1] = Def.ActorFrame{
 	},
 
 	Def.BitmapText{
-		Font = "roboto";
+		Font = Fonts.information["Main"];
 		InitCommand=cmd(horizalign,left;x,-1;y,-1;vertalign,bottom;zoom,artistzoom;diffusealpha,1;strokecolor,0.25,0.25,0.25,1;wrapwidthpixels,400/self:GetZoom();vertspacing,-24);
 		SongInformationMessageCommand=function(self)
 			self:settext(bpm);
@@ -146,7 +146,7 @@ t[#t+1] = Def.ActorFrame{
 	InitCommand=cmd(x,originX+spacing+7;y,originY-7;zoomx,0.98);
 
 	Def.BitmapText{
-		Font = "roboto";
+		Font = Fonts.information["Main"];
 		InitCommand=cmd(horizalign,right;vertalign,bottom;x,-1;y,-1;zoom,titlezoom;diffuse,0.25,0.25,0.25,1;strokecolor,0.25,0.25,0.25,1;
 			maxwidth,titlemaxwidth/self:GetZoom();wrapwidthpixels,titlemaxwidth/self:GetZoom();vertspacing,-2;shadowcolor,0.25,0.25,0.25,0.75;shadowlengthx,2.5;shadowlengthy,2.5);
 		SongInformationMessageCommand=function(self)
@@ -155,7 +155,7 @@ t[#t+1] = Def.ActorFrame{
 	},
 
 	Def.BitmapText{
-		Font = "roboto";
+		Font = Fonts.information["Main"];
 		InitCommand=cmd(horizalign,right;vertalign,bottom;zoom,titlezoom;diffuse,0.3,0.25,0.25,1;strokecolor,0.25,0.25,0.25,1;
 			maxwidth,titlemaxwidth/self:GetZoom();wrapwidthpixels,titlemaxwidth/self:GetZoom();vertspacing,-2;shadowcolor,0.25,0.25,0.25,0.8;shadowlengthx,1.2;shadowlengthy,1.2);
 		SongInformationMessageCommand=function(self)
@@ -164,7 +164,7 @@ t[#t+1] = Def.ActorFrame{
 	},
 
 	Def.BitmapText{
-		Font = "roboto";
+		Font = Fonts.information["Main"];
 		InitCommand=cmd(horizalign,right;x,-1;y,-1;vertalign,bottom;zoom,titlezoom;strokecolor,0.275,0.275,0.275,1;
 			maxwidth,titlemaxwidth/self:GetZoom();wrapwidthpixels,titlemaxwidth/self:GetZoom();vertspacing,-2);
 		SongInformationMessageCommand=function(self)
@@ -196,7 +196,7 @@ t[#t+1] = Def.ActorFrame{
 	InitCommand=cmd(x,originX+spacing+7;y,originY;zoomx,0.975);
 
 		Def.BitmapText{
-			Font = "roboto";
+			Font = Fonts.information["Main"];
 			InitCommand=cmd(horizalign,right;x,-1;y,-1;vertalign,top;zoom,artistzoom;diffuse,BoostColor(HighlightColor(),0.25);strokecolor,BoostColor(HighlightColor(),0.25);
 				maxwidth,500/self:GetZoom();vertspacing,-16;shadowcolor,BoostColor(HighlightColor(),0.25);shadowlengthx,2.2;shadowlengthy,2.2);
 			SongInformationMessageCommand=function(self)
@@ -205,7 +205,7 @@ t[#t+1] = Def.ActorFrame{
 		},
 
 		Def.BitmapText{
-			Font = "roboto";
+			Font = Fonts.information["Main"];
 			InitCommand=cmd(horizalign,right;vertalign,top;zoom,artistzoom;diffuse,BoostColor(HighlightColor(),0.25);strokecolor,BoostColor(HighlightColor(),0.25);
 				maxwidth,500/self:GetZoom();vertspacing,-16;shadowcolor,BoostColor(HighlightColor(),0.25);shadowlengthx,1.2;shadowlengthy,1.2);
 			SongInformationMessageCommand=function(self)
@@ -214,7 +214,7 @@ t[#t+1] = Def.ActorFrame{
 		},
 
 		Def.BitmapText{
-			Font = "roboto";
+			Font = Fonts.information["Main"];
 			InitCommand=cmd(horizalign,right;x,-1;y,-1;vertalign,top;zoom,artistzoom;diffuse,BoostColor(HighlightColor(),1.0);strokecolor,BoostColor(HighlightColor(),0.3);
 				maxwidth,500/self:GetZoom();vertspacing,-16;shadowcolor,BoostColor(HighlightColor(),0.25);shadowlengthx,1;shadowlengthy,1);
 			SongInformationMessageCommand=function(self)

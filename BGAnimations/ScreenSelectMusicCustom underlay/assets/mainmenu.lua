@@ -270,9 +270,10 @@ for i=1,#menutable do
 	};
 	
 	
-	t[#t+1] = LoadFont("neotech")..{
-			InitCommand=cmd(zoomx,0.42;zoomy,0.41;y,originY-1;strokecolor,0.15,0.15,0.15,0.8;draworder,3;playcommand,"MainMenu");
-			OnCommand=cmd(settext,menutable[i].name);
+	t[#t+1] = Def.BitmapText{
+			Font = Fonts.mainmenu["Main"];
+			Text = menutable[i].name;
+			InitCommand=cmd(zoomx,0.4;zoomy,0.41;y,originY-1;strokecolor,0.15,0.15,0.15,0.8;draworder,3;playcommand,"MainMenu");
 			StateChangedMessageCommand=cmd(playcommand,"MainMenu");
 			MainMenuMessageCommand=function(self) 
 
@@ -345,7 +346,8 @@ t[#t+1] = LoadActor(THEME:GetPathG("","holes"))..{
 
 
 -- group
-t[#t+1] = LoadFont("regen strong")..{
+t[#t+1] = Def.BitmapText{
+		Font = Fonts.mainmenu["Info"];
 		InitCommand=cmd(horizalign,left;x,SCREEN_CENTER_X-266;y,SCREEN_TOP+72;zoom,0.322;diffuse,0.75,0.75,0.75,1;strokecolor,0.175,0.175,0.175,0.95);
 		StateChangedMessageCommand=function(self)
 			local g = string.gsub(Global.songgroup, "~", "-");
@@ -369,7 +371,8 @@ t[#t+1] = LoadFont("regen strong")..{
 };
 
 -- song index
-t[#t+1] = LoadFont("regen strong")..{
+t[#t+1] = Def.BitmapText{
+		Font = Fonts.mainmenu["Info"];
 		InitCommand=cmd(horizalign,right;x,SCREEN_CENTER_X+266;y,SCREEN_TOP+72;zoom,0.322;diffuse,0.75,0.75,0.75,1;strokecolor,0.175,0.175,0.175,1;diffusealpha,2/3);
 		BuildMusicListMessageCommand=cmd(playcommand,"Refresh");
 		MusicWheelMessageCommand=cmd(playcommand,"Refresh");
@@ -397,7 +400,8 @@ t[#t+1] = LoadFont("regen strong")..{
 
 
 -- READY
-t[#t+1] = LoadFont("neotech")..{
+t[#t+1] = Def.BitmapText{
+	Font = Fonts.mainmenu["Main"];
 	InitCommand=cmd(x,SCREEN_CENTER_X;y,SCREEN_TOP+78;zoom,0.425;textglowmode,"TextGlowMode_Inner";strokecolor,0.3,0.3,0.3,1;diffusealpha,0;bob;effectmagnitude,0,2,0;effectperiod,1.75);
 	OnCommand=cmd(settext,"All players ready! Press &START; button to play!";playcommand,"MainMenu");
 	CodeMessageCommand=cmd(playcommand,"MainMenu");
@@ -421,7 +425,8 @@ t[#t+1] = LoadFont("neotech")..{
 };
 
 -- HIGHSCORES
-t[#t+1] = LoadFont("neotech")..{
+t[#t+1] = Def.BitmapText{
+	Font = Fonts.mainmenu["Main"];
 	InitCommand=cmd(x,SCREEN_CENTER_X;y,SCREEN_TOP+78;zoom,0.425;textglowmode,"TextGlowMode_Inner";strokecolor,0.3,0.3,0.3,1;diffusealpha,0;bob;effectmagnitude,0,2,0;effectperiod,1.75);
 	OnCommand=cmd(settext,"Press &SELECT; to show High Scores");
 	CodeMessageCommand=cmd(playcommand,"StateChanged");
