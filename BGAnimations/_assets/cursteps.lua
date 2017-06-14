@@ -136,7 +136,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 		-- notes
 		Def.BitmapText{
 				Font = Fonts.cursteps["Info"];
-				InitCommand=cmd(horizalign,pnAlign(pn);x,34 * -pnSide(pn);y,3;zoom,0.4;diffuse,BoostColor(PlayerColor(pn),0.95);strokecolor,BoostColor(PlayerColor(pn),0.25);maxwidth,560);
+				InitCommand=cmd(horizalign,pnAlign(pn);x,34 * -pnSide(pn);y,3;zoom,0.4;diffuse,BoostColor(PlayerColor(pn),0.95);strokecolor,BoostColor(PlayerColor(pn),0.3);maxwidth,560);
 				OnCommand=cmd(playcommand,"Refresh");
 				StepsChangedMessageCommand=cmd(playcommand,"Refresh");
 				RefreshCommand=function(self)
