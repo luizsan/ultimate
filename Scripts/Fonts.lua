@@ -1,7 +1,7 @@
 Fonts = {
     common = {
         ["Loading"] = "roboto regular",
-        ["ProfileName"] = "ubuntu regular",
+        ["ProfileName"] = "titillium regular",
         ["ProfileMini"] = "regen silver",
     },
     player = {
@@ -11,43 +11,43 @@ Fonts = {
     },
     mainmenu = {
         ["Title"] = "regen silver",
-        ["Subtitle"] = "ubuntu regular",
-        ["Choice"] = "ubuntu regular",
+        ["Subtitle"] = "titillium regular",
+        ["Choice"] = "titillium regular",
     },
     groupselect = {
-        ["Name"] = "ubuntu regular",
-        ["Songs"] = "ubuntu regular",
+        ["Name"] = "titillium regular",
+        ["Songs"] = "titillium regular",
         ["Folders"] = "regen strong",
     },
     cursteps = {
-        ["Info"] = "ubuntu regular",
+        ["Info"] = "titillium regular",
         ["Type"] = "regen strong",
         ["Meter"] = "regen silver",
     },
     highscores = {
-        ["Main"] = "ubuntu regular",
+        ["Main"] = "titillium regular",
         ["Grade"] = "bebas neue",
     },
     radar = {
-        ["Label"] = "regen silver",
-        ["Number"] = "regen small",
+        ["Label"] = "regen strong",
+        ["Number"] = "regen strong",
     },
     stepslist = {
         ["Main"] = "regen small",
     },
     mainmenu = {
-        ["Main"] = "ubuntu regular",
+        ["Main"] = "titillium regular",
         ["Info"] = "regen strong",
     },
     information = {
         ["Main"] = "roboto regular",
     },
     noteskins = {
-        ["Main"] = "ubuntu regular",
+        ["Main"] = "titillium regular",
     },
     speeds = {
         ["Speed"] = "regen silver",
-        ["Options"] = "ubuntu regular",
+        ["Options"] = "titillium regular",
     },
     eval = {
         ["Caption"] = "regen small",
@@ -56,6 +56,6 @@ Fonts = {
         ["Labels"] = "regen strong",
         ["Numbers"] = "roboto numbers",
         ["Options"] = "regen strong",
-        ["Award"] = "ubuntu regular",
+        ["Award"] = "titillium regular",
     }
 }

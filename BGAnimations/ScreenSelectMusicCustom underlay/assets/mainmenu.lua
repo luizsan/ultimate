@@ -273,7 +273,7 @@ for i=1,#menutable do
 	t[#t+1] = Def.BitmapText{
 			Font = Fonts.mainmenu["Main"];
 			Text = menutable[i].name;
-			InitCommand=cmd(zoomx,0.4;zoomy,0.41;y,originY-1;strokecolor,0.15,0.15,0.15,0.8;draworder,3;playcommand,"MainMenu");
+			InitCommand=cmd(zoom,0.42;y,originY-1;strokecolor,0.15,0.15,0.15,0.8;draworder,3;playcommand,"MainMenu");
 			StateChangedMessageCommand=cmd(playcommand,"MainMenu");
 			MainMenuMessageCommand=function(self) 
 
