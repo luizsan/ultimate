@@ -222,7 +222,7 @@ end
 for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 
 	t[#t+1] = Def.ActorFrame{
-		InitCommand=cmd(y,SCREEN_CENTER_Y-140;x,SCREEN_CENTER_X+(240*pnSide(pn));diffusealpha,0);
+		InitCommand=cmd(y,SCREEN_CENTER_Y-136;x,SCREEN_CENTER_X+(240*pnSide(pn));diffusealpha,0);
 		OnCommand=function(self)
 			if GAMESTATE:IsSideJoined(pn) then
 				playerchoices[pn]["Mode"] = GetModeNumber(GetSpeedAndMode(pn)[2]);

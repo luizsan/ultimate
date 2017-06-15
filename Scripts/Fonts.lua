@@ -57,5 +57,6 @@ Fonts = {
         ["Numbers"] = "roboto numbers",
         ["Options"] = "regen strong",
         ["Award"] = "titillium regular",
+        ["Scores"] = "titillium regular",
     }
 }

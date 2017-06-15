@@ -18,12 +18,7 @@ for pn in ivalues({PLAYER_1,PLAYER_2}) do
 		OnCommand=cmd(playcommand,"Refresh");
 		PlayerJoinedMessageCommand=cmd(playcommand,"Refresh");
 		RefreshCommand=function(self)
-			if pn == PLAYER_1 then
-				self:settext("P1");
-			elseif pn == PLAYER_2 then
-				self:settext("P2");
-			end;
-
+			self:settext(ToEnumShortString(pn));
 			if SideJoined(pn) then
 				if IsRoutine() and Global.master ~= pn then
 					self:diffusealpha(0.33); 

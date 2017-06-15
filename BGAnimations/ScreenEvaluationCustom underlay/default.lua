@@ -47,6 +47,7 @@ end;
 t[#t+1] = LoadActor(THEME:GetPathB("","_assets/fulldisplay"));
 t[#t+1] = LoadActor("assets/information");
 t[#t+1] = LoadActor("assets/grading");
+t[#t+1] = LoadActor("assets/scores");
 t[#t+1] = LoadActor("assets/menu");
 
 t[#t+1] = LoadActor(THEME:GetPathB("","_assets/cursteps"));

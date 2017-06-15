@@ -227,49 +227,6 @@ end;
 function StepsList(song)
 
     if song then
-
-        --[[
-        local singles = {};
-        local solos = {};
-        local doubles = {};
-        local halfdoubles = {};
-        
-        local routines = {};
-        local steps = {};
-        
-        singles = song:GetStepsByStepsType("StepsType_"..Game().."_Single");
-        
-        if Game() ~= "Kb7" then
-            doubles = song:GetStepsByStepsType("StepsType_"..Game().."_Double");
-            routines = song:GetStepsByStepsType("StepsType_"..Game().."_Routine");
-        end;
-        
-        if Game() == "Dance" then
-            solos = song:GetStepsByStepsType("StepsType_Dance_Solo");
-        elseif Game() == "Pump" then
-            halfdoubles = song:GetStepsByStepsType("StepsType_Pump_Halfdouble");
-        end;
-
-        for s=1,#singles do
-            steps[#steps+1] = singles[s];
-        end 
-
-        if GAMESTATE:GetNumSidesJoined()~=2 and Game() ~= "Kb7" then
-            for d=1,#doubles do
-                steps[#steps+1] = doubles[d];
-            end;
-            for c=1,#solos do
-                steps[#steps+1] = solos[c];
-            end
-            for h=1,#halfdoubles do
-                steps[#steps+1] = halfdoubles[h];
-            end;
-            for r=1,#routines do
-                steps[#steps+1] = routines[r];
-            end;
-        end;
-        ]]
-
         local allsteps = song:GetAllSteps();
         local steps = {};
 
@@ -351,20 +308,6 @@ function GetFolder(song)
     return str;
 
 end
-
---//================================================================
-
-function HighScoreBlockedState()
-    if  Global.state == "GroupSelect" or 
-        Global.state == "SpeedMods" or 
-        Global.state == "Noteskins" or 
-        (Global.state == "MainMenu" and Global.confirm[PLAYER_1]+Global.confirm[PLAYER_2] >= GAMESTATE:GetNumSidesJoined()) then
-        return true;
-    else
-        return false;
-    end;
-end;
-
 
 --//================================================================
 

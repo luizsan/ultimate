@@ -30,7 +30,8 @@ local function FetchStatsForPlayer(pn)
         pss[pn] = curstats:GetPlayerStageStats(pn);
         curdp = pss[pn]:GetActualDancePoints();
         maxdp = pss[pn]:GetCurrentPossibleDancePoints();
-        dp = curdp / clamp(maxdp,1,maxdp);
+        dp = pss[pn]:GetPercentDancePoints();
+        --dp = curdp / clamp(maxdp,1,maxdp);
 
         stats = {
             ["Percent"]  = string.format("%.2f",dp*100), 
