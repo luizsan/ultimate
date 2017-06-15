@@ -99,12 +99,12 @@ local choices = {
 function SpeedController(self,param)
 	if playerchoices[param.Player]["SubState"] == "Menu" then
 
-		if param.Input == "Prev" and GAMESTATE:IsSideJoined(param.Player) and playerchoices[param.Player]["Menu"] > 1 then
+		if param.Input == "Prev" and SideJoined(param.Player) and playerchoices[param.Player]["Menu"] > 1 then
 			playerchoices[param.Player]["Menu"] = playerchoices[param.Player]["Menu"] - 1;
 			MESSAGEMAN:Broadcast("SpeedMenu");
 		end;
 
-		if param.Input == "Next" and GAMESTATE:IsSideJoined(param.Player) and playerchoices[param.Player]["Menu"] < #choices then
+		if param.Input == "Next" and SideJoined(param.Player) and playerchoices[param.Player]["Menu"] < #choices then
 			playerchoices[param.Player]["Menu"] = playerchoices[param.Player]["Menu"] + 1;
 			MESSAGEMAN:Broadcast("SpeedMenu");
 		end;
@@ -231,7 +231,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 	t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(y,SCREEN_CENTER_Y-136;x,SCREEN_CENTER_X+(240*pnSide(pn));diffusealpha,0);
 		OnCommand=function(self)
-			if GAMESTATE:IsSideJoined(pn) then
+			if SideJoined(pn) then
 				playerchoices[pn]["Mode"] = GetModeNumber(GetSpeedAndMode(pn)[2]);
 			end;
 		end;

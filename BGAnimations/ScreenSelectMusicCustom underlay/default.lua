@@ -37,7 +37,7 @@ function MainController(self,param)
 		MESSAGEMAN:Broadcast("OptionsListOpened");
 	end;
 
-	if param.Input == "Center" or param.Name == "Start" then 
+	if param.Input == "Center" or param.Input == "Start" then 
 		MainMenuDecision({ Player = param.Player });
 	end;
 

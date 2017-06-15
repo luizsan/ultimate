@@ -25,12 +25,7 @@ local t = Def.ActorFrame{
 	OnCommand=function(self)
 		Global.disqualified = false;
 		if IsRoutine() then
-
-			if Global.master == PLAYER_1 then
-				find_pactor_in_gameplay(SCREENMAN:GetTopScreen(), PLAYER_2):hibernate(math.huge);
-			else
-				find_pactor_in_gameplay(SCREENMAN:GetTopScreen(), PLAYER_1):hibernate(math.huge);
-			end;
+			find_pactor_in_gameplay(SCREENMAN:GetTopScreen(), OtherPlayer[Global.master]):hibernate(math.huge);
 		end;
 	end;
 	

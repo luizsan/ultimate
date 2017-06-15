@@ -167,6 +167,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 
 	t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(x,SCREEN_CENTER_X+spacing*pnSide(pn);y,SCREEN_CENTER_Y-vert);
+		OnCommand=cmd(visible,SideJoined(pn))
 		StepsChangedMessageCommand=function(self) MESSAGEMAN:Broadcast("ResetNoteskin", {silent=true}); end;
 		ResetNoteskinMessageCommand=function(self,param)
 			if GAMESTATE:IsSideJoined(pn) and Global.pncursteps[pn] then
@@ -246,6 +247,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 		k[#k+1] = Def.ActorFrame{
 			Name="Item"..i;
 			InitCommand=cmd(Center);
+			OnCommand=cmd(visible,SideJoined(pn));
 			NoteskinChangedMessageCommand=function(self,param)
 				if param.Player == pn then
 					local offset = playerchoices[pn]["Noteskin"];
@@ -318,6 +320,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 		s[#s+1] = actor..{
 			Name = ns[j];
 			InitCommand=cmd(zoomy,0.5;zoomx,0.5*-pnSide(pn);x,SCREEN_CENTER_X + ((spacing - 30)*pnSide(pn));y,SCREEN_CENTER_Y-vert;shadowlengthy,1.5);
+			OnCommand=cmd(visible,SideJoined(pn));
 			NoteskinChangedMessageCommand=function(self,param)
 
 				local sel = noteskins[pn][playerchoices[pn]["Noteskin"]];

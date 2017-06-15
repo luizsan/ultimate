@@ -94,6 +94,9 @@ local t = Def.ActorFrame{
 
 --//================================================================
 
+--<Kyzentun> NEWSKIN:get_all_skin_names will fetch all skin names, including ones that don't support the current stepstype.
+--<Kyzentun> get_skin_names_for_stepstype will fetch the ones for a given stepstype.
+
 local function GetNoteskins()
 	local g = GAMESTATE:GetCurrentGame();
 	local st = GAMEMAN:GetFirstStepsTypeForGame(g);
@@ -111,7 +114,12 @@ end;
 
 function GetPreferredNoteskin(pn)
 	local g = GAMESTATE:GetCurrentGame()
-	local st = GAMEMAN:GetFirstStepsTypeForGame(g)
+	local st = "";
+	if Global.pncursteps[pn] then
+		st = Global.pncursteps[pn]:GetStepsType();
+	else
+		st = GAMEMAN:GetFirstStepsTypeForGame(g)
+	end;
 	return PROFILEMAN:GetProfile(pn):get_preferred_noteskin(st)
 end;
 
@@ -119,16 +127,18 @@ end;
 
 local function SetNoteskin(pn, ns)
 	local g = GAMESTATE:GetCurrentGame()
-	local st = GAMEMAN:GetFirstStepsTypeForGame(g)
+	local st = "";
+	if Global.pncursteps[pn] then
+		st = Global.pncursteps[pn]:GetStepsType();
+	else
+		st = GAMEMAN:GetFirstStepsTypeForGame(g)
+	end;
 	PROFILEMAN:GetProfile(pn):set_preferred_noteskin(st, ns)
 end;
 
 --//================================================================
 			
 local function GetNoteskinSelection(pn)
-	
-	--<Kyzentun> NEWSKIN:get_all_skin_names will fetch all skin names, including ones that don't support the current stepstype.
-	--<Kyzentun> get_skin_names_for_stepstype will fetch the ones for a given stepstype.
 
 	Global.noteskins = GetNoteskins();
 
@@ -173,6 +183,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 
 	t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(x,SCREEN_CENTER_X+spacing*pnSide(pn);y,SCREEN_CENTER_Y-vert);
+		OnCommand=cmd(visible,SideJoined(pn));
 		StepsChangedMessageCommand=function(self) MESSAGEMAN:Broadcast("ResetNoteskin", {silent=true}); end;
 		ResetNoteskinMessageCommand=function(self,param)
 			if GAMESTATE:IsSideJoined(pn) and Global.pncursteps[pn] then
@@ -246,6 +257,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 		k[#k+1] = Def.ActorFrame{
 			Name="Item"..i;
 			InitCommand=cmd(Center);
+			OnCommand=cmd(visible,SideJoined(pn));
 			NoteskinChangedMessageCommand=function(self,param)
 				if param.Player == pn then
 					local offset = playerchoices[pn]["Noteskin"];
@@ -318,6 +330,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 		s[#s+1] = Def.Sprite{
 			Name = ns[j];
 			InitCommand=cmd(zoomy,0.5;zoomx,0.5*-pnSide(pn);x,SCREEN_CENTER_X + ((spacing - 30)*pnSide(pn));y,SCREEN_CENTER_Y-vert;shadowlengthy,1.5;animate,false);
+			OnCommand=cmd(visible,SideJoined(pn));
 			NoteskinChangedMessageCommand=function(self,param)
 
 				local sel = noteskins[pn][playerchoices[pn]["Noteskin"]];

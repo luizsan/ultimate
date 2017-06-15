@@ -11,15 +11,16 @@ function SetSSM()
 
     if IsRoutine() then
         GAMESTATE:UnjoinPlayer(OtherPlayer[Global.master]);
+        GAMESTATE:SetCurrentStyle("single");
     end;
 
     for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
-        if not Global.pncursteps[pn] then
+        if not Global.pncursteps[pn] and SideJoined(pn) then
             Global.pnsteps[pn] = GetEntry(GAMESTATE:GetCurrentSteps(pn), Global.steps);
             Global.pncursteps[pn] = Global.steps[Global.pnsteps[pn]];
             --GAMESTATE:SetCurrentSteps(pn, Global.pncursteps[pn]);
         else
-            Global.pncursteps[pn] = Global.steps[Global.pnsteps[pn]];
+            --Global.pncursteps[pn] = Global.steps[Global.pnsteps[pn]];
         end;
     end;
 

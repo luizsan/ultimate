@@ -16,7 +16,11 @@ local options = {
     {
         Name = "Retry",
         Action = function(param)
-            SCREENMAN:SetNewScreen("ScreenGameplay")
+            if IsRoutine then
+                SCREENMAN:SetNewScreen("ScreenGameplayShared")
+            else
+                SCREENMAN:SetNewScreen("ScreenGameplay")
+            end;
         end;
     },
     {

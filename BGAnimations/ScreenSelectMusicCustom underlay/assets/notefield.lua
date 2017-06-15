@@ -84,8 +84,12 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
                 local speed = prefs.speed_mod;
                 local mode = prefs.speed_type;
                 local bpm = Global.song:GetDisplayBpms()[2];
-
                 apply_notefield_prefs_nopn(bpm, self, prefs)
+                
+                if prefs.speed_type == "multiple" then
+                    self:set_speed_mod(false, prefs.speed_mod/100);
+                end;
+
                 self:playcommand("WidthSet");
                 self:set_curr_second(curTime);  
             end;
