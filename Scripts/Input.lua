@@ -20,7 +20,6 @@ end;
 function MouseInputActor()
     return Def.ActorFrame{
         UnlockCommand=function() Global.lockinput = false; MESSAGEMAN:Broadcast("Unlock"); end;
-        MenuRightP2MessageCommand=function(self,param) MESSAGEMAN:Broadcast("MenuInput", { Input = "Next", Player = PLAYER_2 }); end; 
         LeftClickMessageCommand=function(self,param) MESSAGEMAN:Broadcast("MenuInput", { Input = "LMB", Player = Global.master }); end;
         RightClickMessageCommand=function(self,param) MESSAGEMAN:Broadcast("MenuInput", { Input = "RMB", Player = Global.master }); end;
         MiddleClickMessageCommand=function(self,param) MESSAGEMAN:Broadcast("MenuInput", { Input = "MMB", Player = Global.master }); end;
