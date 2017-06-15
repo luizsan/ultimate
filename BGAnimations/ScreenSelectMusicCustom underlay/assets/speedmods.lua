@@ -36,7 +36,11 @@ local choices = {
 		end;
 
 		if param.Input == "Next" and speed < 9999 then
-			speed = speed + modifiers[playerchoices[param.Player]["Modifier"]];
+			if speed < modifiers[playerchoices[param.Player]["Modifier"]] then
+				speed = modifiers[playerchoices[param.Player]["Modifier"]];
+			else
+				speed = speed + modifiers[playerchoices[param.Player]["Modifier"]];
+			end;
 			if speed > 9999 then speed = 9999; end;
 			SetPlayerSpeed(param.Player, playerchoices[param.Player]["Mode"], speed)
 			MESSAGEMAN:Broadcast("SpeedChanged", { Player = param.Player, increase = true });
