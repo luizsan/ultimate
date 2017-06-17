@@ -9,10 +9,11 @@ Fonts = {
         ["Label"] = "regen small",
         ["Accuracy"] = "corbel",
     },
-    mainmenu = {
+    titlemenu = {
         ["Title"] = "regen silver",
         ["Subtitle"] = "titillium regular",
         ["Choice"] = "titillium regular",
+        ["Version"] = "regen strong",
     },
     groupselect = {
         ["Name"] = "titillium regular",
