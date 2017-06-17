@@ -207,62 +207,31 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
     -- numbers
     for n=1,#dance_grade do
 
-        if VersionBranch("5.0") then
+        numbers[#numbers+1] = Def.ActorFrame{
+        InitCommand=cmd(x,SCREEN_CENTER_X;y,labelspacing * (n-1);visible,SideJoined(pn));
+        OnCommand=cmd(diffusealpha,0;sleep,n/10;linear,0.3;diffusealpha,1);
 
-            numbers[#numbers+1] = Def.ActorFrame{
-            InitCommand=cmd(x,SCREEN_CENTER_X;y,labelspacing * (n-1);visible,SideJoined(pn));
-            OnCommand=cmd(diffusealpha,0;sleep,n/10;linear,0.3;diffusealpha,1);
-
-                Def.BitmapText{
-                    Font = Fonts.eval["Numbers"];
-                    InitCommand=cmd(zoom,number_zoom;x,numberspacing*pnSide(pn);horizalign,pnAlign(OtherPlayer[pn]);strokecolor,0.125,0.125,0.125,0.5);
-                    OnCommand=function(self)
-                        local digits = math.max(stats[PLAYER_1]["Digits"],stats[PLAYER_2]["Digits"]);
-                        local value = stats[pn][dance_grade[n].Key];
-                        if dance_grade[n].Enabled then
-                            self:settext(CapDigits(value,"0",digits));
-                            if dance_grade[n].Key ~= "Score" then
-                                self:diffuse(color("#777777FF"));
-                                self:AddAttribute(2, { Length = -1, Diffuse = color("#FFFFFFFF")});
-                            else
-                                self:diffuse(1,1,1,1);
-                            end;
+            Def.BitmapText{
+                Font = Fonts.eval["Numbers"];
+                InitCommand=cmd(zoom,number_zoom;x,numberspacing*pnSide(pn);horizalign,pnAlign(OtherPlayer[pn]);strokecolor,0.125,0.125,0.125,0.5);
+                OnCommand=function(self)
+                    local digits = math.max(stats[PLAYER_1]["Digits"],stats[PLAYER_2]["Digits"]);
+                    local value = stats[pn][dance_grade[n].Key];
+                    if dance_grade[n].Enabled then
+                        self:settext(CapDigits(value,"0",digits));
+                        if dance_grade[n].Key ~= "Score" then
+                            self:diffuse(color("#777777FF"));
+                            self:AddAttribute(digits - string.len(value), { Length = -1, Diffuse = color("#FFFFFFFF")});
                         else
-                            self:diffuse(color("#77777788"));
-                            self:settext(CapDigits(0,"0",digits));
+                            self:diffuse(1,1,1,1);
                         end;
+                    else
+                        self:diffuse(color("#77777788"));
+                        self:settext(CapDigits(0,"0",digits));
                     end;
-                }
+                end;
             }
-
-        else
-
-            numbers[#numbers+1] = Def.ActorFrame{
-            InitCommand=cmd(x,SCREEN_CENTER_X;y,labelspacing * (n-1);visible,SideJoined(pn));
-            OnCommand=cmd(diffusealpha,0;sleep,n/10;linear,0.3;diffusealpha,1);
-                Def.RollingNumbers{
-                    Font = Fonts.eval["Numbers"];
-                    InitCommand=cmd(zoom,number_zoom;x,numberspacing*pnSide(pn);horizalign,pnAlign(OtherPlayer[pn]);strokecolor,0.125,0.125,0.125,0.5);
-                    OnCommand=function(self)
-                        self:set_chars_wide(math.max(stats[PLAYER_1]["Digits"],stats[PLAYER_2]["Digits"]));
-                        self:set_leading_attribute{Diffuse= color("#777777FF")};
-                        self:set_number_attribute{Diffuse= color("#FFFFFFFF")};
-                        self:set_approach_seconds(1.25);
-
-                        if dance_grade[n].Enabled then
-                            self:target_number(stats[pn][dance_grade[n].Key]);
-                        else
-                            self:set_leading_attribute{Diffuse = color("#77777788")};
-                            self:set_number_attribute{Diffuse = color("#77777788")};
-                            self:target_number(0);
-                        end;
-                    end;
-                }
-            }
-
-        end;
-
-
+        };
 
     end;
 
