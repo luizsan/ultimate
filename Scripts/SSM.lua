@@ -1,6 +1,11 @@
 --//================================================================    
 
 function SetSSM()
+    if IsRoutine() then
+        GAMESTATE:UnjoinPlayer(OtherPlayer[Global.master]);
+        GAMESTATE:SetCurrentStyle("single");
+    end;
+
     Global.pnskin[PLAYER_1] = -1;
     Global.pnskin[PLAYER_2] = -1;
 
@@ -9,19 +14,15 @@ function SetSSM()
     Global.selection = SetWheelSelection()
     Global.steps = FilterSteps(Global.song);
 
-    if IsRoutine() then
-        GAMESTATE:UnjoinPlayer(OtherPlayer[Global.master]);
-        GAMESTATE:SetCurrentStyle("single");
-    end;
-
     for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
-        if not Global.pncursteps[pn] and SideJoined(pn) then
-            Global.pnsteps[pn] = GetEntry(GAMESTATE:GetCurrentSteps(pn), Global.steps);
-            Global.pncursteps[pn] = Global.steps[Global.pnsteps[pn]];
-            --GAMESTATE:SetCurrentSteps(pn, Global.pncursteps[pn]);
-        else
-            --Global.pncursteps[pn] = Global.steps[Global.pnsteps[pn]];
-        end;
+        --if not Global.pncursteps[pn] and SideJoined(pn) then
+            local entry = GetEntry(GAMESTATE:GetCurrentSteps(pn), Global.steps);
+            if Global.pncursteps[pn] ~= Global.steps[Global.pnsteps[pn]] then
+                Global.pnsteps[pn] = entry;
+                Global.pncursteps[pn] = Global.steps[Global.pnsteps[pn]];
+                GAMESTATE:SetCurrentSteps(pn, Global.pncursteps[pn]);
+            end;
+        --end
     end;
 
     FixStyleForSteps(Global.pncursteps[Global.master]);
