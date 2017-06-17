@@ -212,23 +212,24 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
             numbers[#numbers+1] = Def.ActorFrame{
             InitCommand=cmd(x,SCREEN_CENTER_X;y,labelspacing * (n-1);visible,SideJoined(pn));
             OnCommand=cmd(diffusealpha,0;sleep,n/10;linear,0.3;diffusealpha,1);
+
                 Def.BitmapText{
                     Font = Fonts.eval["Numbers"];
                     InitCommand=cmd(zoom,number_zoom;x,numberspacing*pnSide(pn);horizalign,pnAlign(OtherPlayer[pn]);strokecolor,0.125,0.125,0.125,0.5);
                     OnCommand=function(self)
-                        --self:set_chars_wide(math.max(stats[PLAYER_1]["Digits"],stats[PLAYER_2]["Digits"]));
-                        --self:set_leading_attribute{Diffuse= color("#777777FF")};
-                        --self:set_number_attribute{Diffuse= color("#FFFFFFFF")};
-                        --self:set_approach_seconds(1.25);
-
+                        local digits = math.max(stats[PLAYER_1]["Digits"],stats[PLAYER_2]["Digits"]);
+                        local value = stats[pn][dance_grade[n].Key];
                         if dance_grade[n].Enabled then
-                            --self:target_number(stats[pn][dance_grade[n].Key]);
-                            self:settext(stats[pn][dance_grade[n].Key]);
+                            self:settext(CapDigits(value,"0",digits));
+                            if dance_grade[n].Key ~= "Score" then
+                                self:diffuse(color("#777777FF"));
+                                self:AddAttribute(2, { Length = -1, Diffuse = color("#FFFFFFFF")});
+                            else
+                                self:diffuse(1,1,1,1);
+                            end;
                         else
-                            --self:set_leading_attribute{Diffuse = color("#77777788")};
-                            --self:set_number_attribute{Diffuse = color("#77777788")};
-                            --self:target_number(0);
-                            self:settext(0);
+                            self:diffuse(color("#77777788"));
+                            self:settext(CapDigits(0,"0",digits));
                         end;
                     end;
                 }
@@ -262,6 +263,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
         end;
 
 
+
     end;
 
     -- sub data
@@ -276,7 +278,6 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
                 InitCommand=cmd(vertalign,bottom;strokecolor,0.2,0.2,0.2,0.8;zoomx,0.3125;zoomy,0.3;y,-17;shadowlength,1);
                 OnCommand=function(self)
                     self:settext(string.upper(sub_sections[n].Label));
-                    --self:settext(sub_sections[n].Label);
 
                     if sub_sections[n].Enabled then
                         self:diffuse(1,1,1,1);
@@ -289,7 +290,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
             },
 
             Def.BitmapText{
-                Font = "titillium regular"; --Fonts.eval["Numbers"];
+                Font = Fonts.eval["Scores"];
                 Name = "SUB";
                 InitCommand=cmd(vertalign,top;strokecolor,0.2,0.2,0.2,0.5;shadowlength,1);
                 OnCommand=function(self)
