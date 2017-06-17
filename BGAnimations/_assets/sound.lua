@@ -8,9 +8,8 @@ local _volume = 1.0;
 t[#t+1] = Def.Actor{
 	OnCommand=function(self)
 		self:sleep(0.535);
-
-		local scr = SCREENMAN:GetTopScreen():GetName();
-		if scr == "ScreenSelectMusicCustom" then self:queuecommand("PreviewStart");
+		if SCREENMAN:GetTopScreen():GetName() == "ScreenSelectMusicCustom" then 
+			self:queuecommand("PreviewStart"); 
 		end;
 	end;
 

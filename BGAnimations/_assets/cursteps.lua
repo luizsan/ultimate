@@ -1,6 +1,6 @@
 local t = Def.ActorFrame{}
 
-local spacing = 266;
+local spacing = 272;
 local originY = SCREEN_BOTTOM-64
 
 --//================================================================
@@ -46,7 +46,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 		
 	t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(x,SCREEN_CENTER_X + spacing * pnSide(pn);y,originY);
-		OnCommand=cmd(stoptweening;diffusealpha,0;sleep,0.5;linear,0.5;diffusealpha,1);
+		OnCommand=cmd(stoptweening;diffusealpha,0;sleep,0.5;linear,0.5;diffusealpha,1;visible,SideJoined(pn));
 		StateChangedMessageCommand=function(self)
 			self:stoptweening();
 			self:decelerate(0.2);
@@ -58,13 +58,11 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 		end;
 
 		LoadActor(THEME:GetPathG("","dim"))..{
-			InitCommand=cmd(zoomto,364,96;diffuse,BoostColor(Global.bgcolor,0.75);fadeleft,0.66666;faderight,0.66666;x,64 + pnSide(pn));
-			OnCommand=cmd(visible,SideJoined(pn));
+			InitCommand=cmd(zoomto,364,96;diffuse,BoostColor(Global.bgcolor,0.75);fadeleft,0.66666;faderight,0.66666;x,64 * -pnSide(pn));
 		};
 		
 		LoadActor(THEME:GetPathG("","separator"))..{
-			InitCommand=cmd(zoom,0.45;x,24 * -pnSide(pn);y,-2;diffuse,0,0,0,0.5);
-			OnCommand=cmd(visible,SideJoined(pn));
+			InitCommand=cmd(zoom,0.45;x,25 * -pnSide(pn);y,-2;diffuse,0,0,0,0.5);
 		};
 
 		-- meter
@@ -74,7 +72,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 				OnCommand=cmd(playcommand,"Refresh");
 				StepsChangedMessageCommand=cmd(playcommand,"Refresh");
 				RefreshCommand=function(self)
-					if SideJoined(pn) and Global.pncursteps[pn] then
+					if Global.pncursteps[pn] then
 						local steps = Global.pncursteps[pn] 
 						if TotalNotes(steps,pn) == 0 then
 							self:settext("00");
@@ -93,14 +91,14 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 				OnCommand=cmd(playcommand,"Refresh");
 				StepsChangedMessageCommand=cmd(playcommand,"Refresh");
 				RefreshCommand=function(self)
-					if SideJoined(pn) and Global.pncursteps[pn] then
+					if Global.pncursteps[pn] then
 						local steps = Global.pncursteps[pn]
 						self:settext(string.upper(PureType(steps)));
 					
 						local tint = StepsColor(steps);
 
 						if PureType(steps) == "Halfdouble" then
-							self:settext("halfdb");
+							self:settext(string.upper("halfdb"));
 						end
 						
 						self:diffuse(tint);
@@ -113,11 +111,11 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 		-- maker
 		Def.BitmapText{
 				Font = Fonts.cursteps["Info"];
-				InitCommand=cmd(horizalign,pnAlign(pn);x,34 * -pnSide(pn);y,-11;zoom,0.4;strokecolor,0.2,0.2,0.2,1;maxwidth,560);
+				InitCommand=cmd(horizalign,pnAlign(pn);x,36 * -pnSide(pn);y,-11;zoom,0.4;strokecolor,0.2,0.2,0.2,1;maxwidth,560);
 				OnCommand=cmd(playcommand,"Refresh");
 				StepsChangedMessageCommand=cmd(playcommand,"Refresh");
 				RefreshCommand=function(self)
-					if SideJoined(pn) and Global.pncursteps[pn] then
+					if Global.pncursteps[pn] then
 						local steps = Global.pncursteps[pn]
 						local maker = steps:GetAuthorCredit()
 						maker = FilterStepmaker(maker);
@@ -136,11 +134,11 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 		-- notes
 		Def.BitmapText{
 				Font = Fonts.cursteps["Info"];
-				InitCommand=cmd(horizalign,pnAlign(pn);x,34 * -pnSide(pn);y,3;zoom,0.4;diffuse,BoostColor(PlayerColor(pn),0.95);strokecolor,BoostColor(PlayerColor(pn),0.3);maxwidth,560);
+				InitCommand=cmd(horizalign,pnAlign(pn);x,36 * -pnSide(pn);y,3;zoom,0.4;diffuse,BoostColor(PlayerColor(pn),0.95);strokecolor,BoostColor(PlayerColor(pn),0.3);maxwidth,560);
 				OnCommand=cmd(playcommand,"Refresh");
 				StepsChangedMessageCommand=cmd(playcommand,"Refresh");
 				RefreshCommand=function(self)
-					if SideJoined(pn) and Global.pncursteps[pn] then
+					if Global.pncursteps[pn] then
 						local steps = Global.pncursteps[pn]
 						self:settext("Avg. notes/sec: "..AvgNotesSec(steps,pn));
 						--self:settext("Total notes: "..TotalNotes(steps,pn));

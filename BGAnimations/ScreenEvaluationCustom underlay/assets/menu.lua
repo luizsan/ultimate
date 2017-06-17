@@ -3,7 +3,7 @@ local t = Def.ActorFrame{
     UnlockMessageCommand=cmd(stoptweening;linear,0.2;diffusealpha,1);
 }
 
-local originY = SCREEN_CENTER_Y + 144;
+local originY = SCREEN_CENTER_Y + 160;
 local selection = 1;
 local options = {
     {
@@ -16,7 +16,7 @@ local options = {
     {
         Name = "Retry",
         Action = function(param)
-            if IsRoutine then
+            if IsRoutine or GAMESTATE:GetNumSidesJoined() == 2 then
                 SCREENMAN:SetNewScreen("ScreenGameplayShared")
             else
                 SCREENMAN:SetNewScreen("ScreenGameplay")
@@ -72,7 +72,7 @@ function EvaluationController(param)
  
 end;
 
-local spacing = 18;
+local spacing = 16;
 local arrowspacing = 72;
 for i=1,#options do
 
@@ -100,9 +100,10 @@ for i=1,#options do
         Def.BitmapText{
             Font = Fonts.eval["Menu"];
             Text = string.upper(options[i].Name);
-            InitCommand=cmd(zoom,0.433333);
-            GainFocusCommand=cmd(stoptweening;linear,0.1;diffuse,1,1,1,1;strokecolor,0.25,0.25,0.25,1);
-            LoseFocusCommand=cmd(stoptweening;linear,0.1;diffuse,HighlightColor();strokecolor,BoostColor(HighlightColor(),0.3));
+            InitCommand=cmd(diffuse,HighlightColor();strokecolor,BoostColor(HighlightColor(),0.3));
+            OnCommand=cmd(textglowmode,'TextGlowMode_Inner');
+            GainFocusCommand=cmd(stoptweening;linear,0.1;zoom,0.45;diffuseshift;effectcolor1,1,1,1,1;effectcolor2,BoostColor(HighlightColor(),2);effectperiod,0.5);
+            LoseFocusCommand=cmd(stoptweening;linear,0.1;zoom,0.40;stopeffect);
         }
 
     };

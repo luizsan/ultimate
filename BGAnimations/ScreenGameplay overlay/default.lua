@@ -21,14 +21,7 @@ local lifeMaster = 0.5
 
 local t = Def.ActorFrame{
 	InitCommand=cmd(SetUpdateFunction,UpdateGameplay);
-
-	OnCommand=function(self)
-		Global.disqualified = false;
-		if IsRoutine() then
-			find_pactor_in_gameplay(SCREENMAN:GetTopScreen(), OtherPlayer[Global.master]):hibernate(math.huge);
-		end;
-	end;
-	
+	OnCommand=function() Global.disqualified = false; end;
 	PausedMessageCommand=function(self) Global.disqualified = true; end;
 	LifeChangedMessageCommand=function(self,params)
 	
@@ -281,9 +274,7 @@ end;
 
 ]]
 
-
-
-
+--[[
 t[#t+1] = Def.Quad{
 	OnCommand=function(self,params)
 		local s = SCREENMAN:GetTopScreen();
@@ -295,12 +286,12 @@ t[#t+1] = Def.Quad{
 		self:visible(false);
 	end;
 }
+]]--
 
 t[#t+1] = LoadActor("assets/pause");
 
 if not VersionBranch("5.0") then
-	t[#t+1] = notefield_prefs_actor();
-	t[#t+1] = notefield_mods_actor()
+	t[#t+1] = LoadActor("assets/newfield");
 end;
 
 return t;

@@ -167,7 +167,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 
 	t[#t+1] = Def.ActorFrame{
 		InitCommand=cmd(x,SCREEN_CENTER_X+spacing*pnSide(pn);y,SCREEN_CENTER_Y-vert);
-		OnCommand=cmd(visible,SideJoined(pn))
+		OnCommand=cmd(visible,SideJoined(pn));
 		StepsChangedMessageCommand=function(self) MESSAGEMAN:Broadcast("ResetNoteskin", {silent=true}); end;
 		ResetNoteskinMessageCommand=function(self,param)
 			if GAMESTATE:IsSideJoined(pn) and Global.pncursteps[pn] then
