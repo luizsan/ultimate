@@ -27,13 +27,14 @@ function InputController(self,param)
 	if Global.state == "SelectSteps" then StepsController(self,param) end;
 	if Global.state == "SpeedMods" then SpeedController(self,param); end;
 	if Global.state == "Noteskins" then NoteskinController(self,param); end;
+	if Global.state == "OptionsMenu" then OptionsController(self,param); end;
 end;
 
 --//================================================================	
 
 function MainController(self,param)
 	if param.Input == "Options" then
-		InputController(self, { Player = param.Player, Input = "Next"})
+		InputController(self, { Player = param.Player, Input = "Next", Button = "Right" })
 		MESSAGEMAN:Broadcast("OptionsListOpened");
 	end;
 
@@ -76,7 +77,9 @@ t[#t+1] = LoadActor("assets/groupselect");
 t[#t+1] = LoadActor("assets/bannerwheel");
 t[#t+1] = LoadActor("assets/information");
 t[#t+1] = LoadActor("assets/stepslist");
+t[#t+1] = LoadActor("assets/optionsmenu");
 t[#t+1] = LoadActor("assets/mainmenu");	
+
 t[#t+1] = LoadActor(THEME:GetPathB("","_assets/cursteps"));
 t[#t+1] = LoadActor(THEME:GetPathB("","_assets/transition"));
 

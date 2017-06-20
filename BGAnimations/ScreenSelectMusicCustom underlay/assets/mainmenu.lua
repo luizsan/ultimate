@@ -7,13 +7,13 @@ local spacing = 79;
 local vert = 14
 
 local menutable = {
-	{ name = "Group", state = "GroupSelect", enabled = true },
-	{ name = "Song", state = "MusicWheel", enabled = true },
-	{ name = "Steps", state = "SelectSteps", enabled = true },
-	{ name = "Ready!", state = "MainMenu", enabled = true },
-	{ name = "Speed", state = "SpeedMods", enabled = true },
-	{ name = "Noteskin", state = "Noteskins", enabled = true },
-	{ name = "Options", state = "OptionSelect", enabled = false },
+	{ name = "Group", 		state = "GroupSelect", 	enabled = true },
+	{ name = "Song", 		state = "MusicWheel", 	enabled = true },
+	{ name = "Steps", 		state = "SelectSteps", 	enabled = true },
+	{ name = "Ready!", 		state = "MainMenu", 	enabled = true },
+	{ name = "Speed", 		state = "SpeedMods", 	enabled = true },
+	{ name = "Noteskin", 	state = "Noteskins", 	enabled = true },
+	{ name = "Options", 	state = "Options", 		enabled = false },
 };
 
 --//================================================================
@@ -114,6 +114,7 @@ function MainMenuDecision(param)
 		if Global.selection == 4 then MainMenuReady(param); return; end;
 		if Global.selection == 5 then MainMenuSpeeds(); return; end;
 		if Global.selection == 6 then MainMenuNoteskins(); return; end;
+		if Global.selection == 7 then MainMenuOptions(); return; end;
 	--level 2
 	elseif Global.level == 2 then
 		if Global.state == "GroupSelect" then SelectFolder(); return; end;	
@@ -121,6 +122,7 @@ function MainMenuDecision(param)
 		if Global.state == "SelectSteps" then SelectStep(param); return; end;
 		if Global.state == "SpeedMods" then	SelectSpeed(param); return; end;
 		if Global.state == "Noteskins" then SelectNoteskin(param); return; end;
+		if Global.state == "OptionsMenu" then SelectOptions(param); return; end;
 	end;
 end;	
 
@@ -192,7 +194,17 @@ function MainMenuNoteskins()
 	MESSAGEMAN:Broadcast("StateChanged");
 	MESSAGEMAN:Broadcast("ResetNoteskin", { silent = true });
 	MESSAGEMAN:Broadcast("NoteskinChanged", { silent = true }); 
+end;
 
+
+--//================================================================
+
+function MainMenuOptions()
+	Global.prevstate = "MainMenu"
+	Global.level = 2;
+	Global.state = "OptionsMenu";
+	MESSAGEMAN:Broadcast("StateChanged");
+	Global.selection = 1;
 end;
 
 --//================================================================
@@ -245,25 +257,9 @@ for i=1,#menutable do
 				self:setstate(state+4);
 				
 					if Global.level == 1 then 
-
-						if Global.selection == i then
-							self:visible(true);
-						else
-							self:visible(false);
-						end
-
+						self:visible(Global.selection == i);
 					else 
-
-						if i == 1 and Global.state == "GroupSelect" then self:visible(true);
-						elseif i == 2 and Global.state == "MusicWheel" then self:visible(true);
-						elseif i == 3 and Global.state == "SelectSteps" then self:visible(true);
-						elseif i == 5 and Global.state == "SpeedMods" then self:visible(true);
-						elseif i == 6 and Global.state == "Noteskins" then self:visible(true);
-
-						else
-							self:visible(false)
-						end
-
+						self:visible(Global.state == menutable[i].state);
 					end;
 			end;
 		
@@ -442,26 +438,6 @@ t[#t+1] = Def.BitmapText{
 		end;
 	end;
 }
-
---[[
--- STAGE
-t[#t+1] = LoadFont("regen small")..{
-	InitCommand=cmd(horizalign,right;zoomx,0.306;zoomy,0.3;strokecolor,0.2,0.2,0.2,1;x,SCREEN_CENTER_X+100;y,originY-20;diffusealpha,0.5);
-	OnCommand=function(self)
-		self:settext("STAGE "..GAMESTATE:GetCurrentStageIndex()+1);
-	end;
-}
-	
--- GAMEMODE
-t[#t+1] = LoadFont("regen small")..{
-	InitCommand=cmd(horizalign,left;zoomx,0.31;zoomy,0.3;strokecolor,0.2,0.2,0.2,1;x,SCREEN_CENTER_X-100;y,originY-20;diffusealpha,0.5);
-	OnCommand=function(self)
-		self:settext("GAME: "..string.upper(Game()));
-	end;
-}
-
-]]--
-
 
 
 return t

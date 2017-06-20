@@ -31,7 +31,7 @@ selfcoords = coords;
 --//================================================================
 
 function WheelController(self,param)
-	if param.Input == "Prev" or param.Input == "Down" then 
+	if param.Input == "Prev" and param.Button == "Left" then 
 		if(Global.selection>1) then
 			Global.selection = Global.selection-1;
 		else
@@ -44,7 +44,7 @@ function WheelController(self,param)
 		MESSAGEMAN:Broadcast("StepsChanged"); 
 	end
 
-	if param.Input == "Next" or param.Input == "Up" then 
+	if param.Input == "Next" and param.Button == "Right" then 
 		if(Global.selection < #Global.songlist) then
 			Global.selection = Global.selection+1;
 		else

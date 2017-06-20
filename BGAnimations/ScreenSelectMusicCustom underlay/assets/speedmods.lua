@@ -92,7 +92,8 @@ local choices = {
 		playerchoices[param.Player]["Modifier"] = 3;
 		playerchoices[param.Player]["SubState"] = "Menu";
 		MESSAGEMAN:Broadcast("StateChanged"); 
-		MESSAGEMAN:Broadcast("SpeedMenu", { silent = true }); 
+		MESSAGEMAN:Broadcast("SpeedMenu", { silent = true });
+		MESSAGEMAN:Broadcast("SpeedChanged", { Player = param.Player, silent = true }); 
 		MESSAGEMAN:Broadcast("SpeedSelected");
 	end;
 	},
@@ -153,6 +154,11 @@ function SelectSpeed(param)
 		MESSAGEMAN:Broadcast("SpeedMenu", { silent = true }); 
 		MESSAGEMAN:Broadcast("SpeedSelected"); 
 		MESSAGEMAN:Broadcast("StateChanged");  
+	else
+ 		playerchoices[param.Player]["SubState"] = "Menu";
+ 		MESSAGEMAN:Broadcast("SpeedMenu", { silent = true }); 
+ 		MESSAGEMAN:Broadcast("SpeedSelected"); 
+ 		MESSAGEMAN:Broadcast("StateChanged"); 
 	end;
 
 end;
