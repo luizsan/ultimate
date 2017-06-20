@@ -1,18 +1,18 @@
 --global variables
 Global = {
-    realW = 0,
-    realH = 0,
-    delta = 0,
-    debounce = 0,
-    mouseX = 0,
-    mouseY = 0,
-    wheel = 0,
+    realW = 0, realH = 0,
+    delta = 0, debounce = 0,
+    mouseX = 0, mouseY = 0, wheel = 0,
     screen = "",
     ratio = "",
     state = "",
     substate = {
         [PLAYER_1] = "",
         [PLAYER_2] = "",
+    },
+    oplist = {
+        [PLAYER_1] = false,
+        [PLAYER_2] = false,
     },
     allgroups = {
         -- ["Name"] = "string"
@@ -69,6 +69,10 @@ function ResetState()
     Global.confirm = {
         [PLAYER_1] = 0,
         [PLAYER_2] = 0,
+    };
+    Global.oplist = {
+        [PLAYER_1] = false,
+        [PLAYER_2] = false,
     };
     Global.mastersteps = nil;
     Global.steps = {};

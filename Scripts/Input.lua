@@ -28,8 +28,8 @@ local function MenuInputGame(button)
             ["MenuRight"] = "Next",
         },
         ["default"] = {
-            ["MenuUp"] = "Back",
-            ["MenuDown"] = "Back",
+            ["MenuUp"] = "Prev",
+            ["MenuDown"] = "Next",
             ["MenuLeft"] = "Prev",
             ["MenuRight"] = "Next",
         },
@@ -57,7 +57,7 @@ function MenuInputActor()
         MenuLeftP2MessageCommand=function(self,param) MESSAGEMAN:Broadcast("MenuInput", { Input = MenuInputGame("MenuLeft"), Button = "Left", Player = PLAYER_2 }); end; 
         MenuRightP1MessageCommand=function(self,param) MESSAGEMAN:Broadcast("MenuInput", { Input = MenuInputGame("MenuRight"), Button = "Right", Player = PLAYER_1 }); end; 
         MenuRightP2MessageCommand=function(self,param) MESSAGEMAN:Broadcast("MenuInput", { Input = MenuInputGame("MenuRight"), Button = "Right", Player = PLAYER_2 }); end; 
-        CodeMessageCommand=function(self,param) MESSAGEMAN:Broadcast("MenuInput", { Input = param.Name, Button = "", Player = param.PlayerNumber }); end;
+        CodeMessageCommand=function(self,param) MESSAGEMAN:Broadcast("MenuInput", { Input = param.Name, Button = "", Player = param.PlayerNumber });  end;
     }
 end;
 
@@ -69,17 +69,19 @@ function MouseInputActor()
         LeftClickMessageCommand=function(self,param) MESSAGEMAN:Broadcast("MenuInput", { Input = "Choose", Button = "LMB", Player = Global.master }); end;
         RightClickMessageCommand=function(self,param) MESSAGEMAN:Broadcast("MenuInput", { Input = "Context", Button = "RMB", Player = Global.master }); end;
         MiddleClickMessageCommand=function(self,param) MESSAGEMAN:Broadcast("MenuInput", { Input = "", Button ="MMB", Player = Global.master }); end;
-        MouseWheelUpMessageCommand=function(self,dt) 
+        MouseWheelUpMessageCommand=function(self,param) 
             if Global.debounce <= 0 then 
-                MESSAGEMAN:Broadcast("MenuInput", { Input = "Up", Player = Global.master }); 
+                MESSAGEMAN:Broadcast("MenuInput", { Input = "Up", Button = "WheelUp", Player = Global.master }); 
             end; 
             Global.debounce = Global.delta/1.75; 
+            Global.wheel = Global.wheel - 1;
         end; 
-        MouseWheelDownMessageCommand=function(self,dt) 
+        MouseWheelDownMessageCommand=function(self,param) 
             if Global.debounce <= 0 then 
-                MESSAGEMAN:Broadcast("MenuInput", { Input = "Down", Player = Global.master }); 
+                MESSAGEMAN:Broadcast("MenuInput", { Input = "Down", Button = "WheelDown", Player = Global.master }); 
             end;
             Global.debounce = Global.delta/1.75;  
+            Global.wheel = Global.wheel + 1;
         end;
     }
 end;

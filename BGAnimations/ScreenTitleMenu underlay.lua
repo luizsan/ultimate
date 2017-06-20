@@ -24,7 +24,7 @@ t[#t+1] = Def.ActorFrame{
 		},
 		Def.BitmapText{
 			Font = Fonts.titlemenu["Version"];
-			Text = string.upper("ver."..themeInfo.Version);
+			Text = string.upper("ver. "..themeInfo.Version);
 			InitCommand=cmd(zoom,0.3;horizalign,right;y,(-boxsize/2)-10;strokecolor,0.1,0.1,0.1,0.25;diffusealpha,1/3;x,160);
 		},
 

@@ -25,7 +25,7 @@ end
 
 
 function GroupController(self,param)
-	if param.Input == "Prev" then
+	if param.Input == "Prev" and param.Button == "Left" then
 		if Global.selection > 1 then 
 			Global.selection = Global.selection-1;
 		else
@@ -34,7 +34,7 @@ function GroupController(self,param)
 		MESSAGEMAN:Broadcast("SongGroup",{direction=param.Input}); 
 	end
 
-	if param.Input == "Next" then 
+	if param.Input == "Next" and param.Button == "Right" then 
 		if Global.selection < #Global.allgroups then 
 			Global.selection = Global.selection+1;
 		else
@@ -250,11 +250,6 @@ end;
 			end;
 		end;
 
-			--[[
-			Def.Quad{
-				InitCommand=cmd(zoomto,cursorspacing*2,20;diffuse,0,0,0,0.2;fadetop,0.1;fadebottom,0.1);
-			};
-			]]--
 
 			LoadActor(THEME:GetPathG("ScrollBar","middle"))..{
 				InitCommand=cmd(y,5;rotationz,90;zoomto,6,80;diffusealpha,0.6;queuecommand,"StateChanged");

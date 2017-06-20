@@ -9,6 +9,7 @@ local options = {
     {
         Name = "Continue",
         Action = function(param)
+            Global.lockinput = true;
             MESSAGEMAN:Broadcast("FinalDecision");
             SCREENMAN:GetTopScreen():StartTransitioningScreen("SM_BeginFadingOut");
         end;
@@ -16,7 +17,7 @@ local options = {
     {
         Name = "Retry",
         Action = function(param)
-            if IsRoutine or GAMESTATE:GetNumSidesJoined() == 2 then
+            if IsRoutine() then
                 SCREENMAN:SetNewScreen("ScreenGameplayShared")
             else
                 SCREENMAN:SetNewScreen("ScreenGameplay")

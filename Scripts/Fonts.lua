@@ -1,6 +1,6 @@
 Fonts = {
     common = {
-        ["Loading"] = "roboto regular",
+        ["Loading"] = "titillium regular",
         ["ProfileName"] = "titillium regular",
         ["ProfileMini"] = "regen silver",
     },
@@ -9,11 +9,19 @@ Fonts = {
         ["Label"] = "regen small",
         ["Accuracy"] = "corbel",
     },
+    overlay = {
+        ["Overlay"] = "titillium regular",
+        ["Status"] = "titillium regular",
+        ["Adjustments"] = "titillium regular",
+    },
     titlemenu = {
         ["Title"] = "regen silver",
         ["Subtitle"] = "titillium regular",
         ["Choice"] = "titillium regular",
         ["Version"] = "regen strong",
+    },
+    gameplay = {
+        ["Main"] = "titillium regular",
     },
     groupselect = {
         ["Name"] = "titillium regular",
