@@ -274,22 +274,6 @@ end;
 
 --//================================================================
 
-function GetEntry(steps, steplist)
-    local entry;
-    local value = 1;
-    if steps then
-        for entry=1,#steplist do
-            if steplist[entry] == steps then
-                return entry;
-            end;
-        end;
-    else
-        return 1;
-    end;
-end;
-
---//================================================================
-
 function GetFolder(song)
 
     local path = song:GetSongDir();

@@ -96,6 +96,7 @@ t[#t+1] = LoadActor(THEME:GetPathS("","SSM_Steps"))..{
 	SongSelectedMessageCommand=cmd(play);
 	SpeedSelectedMessageCommand=cmd(play);
 	NoteskinSelectedMessageCommand=cmd(play);
+	OptionsSelectedMessageCommand=cmd(play);
 };	
 
 t[#t+1] = LoadActor(THEME:GetPathS("","SSM_Mainmenu"))..{
@@ -103,7 +104,9 @@ t[#t+1] = LoadActor(THEME:GetPathS("","SSM_Mainmenu"))..{
 	SpeedMenuMessageCommand=function(self,param) if not param or not param.silent then self:play() end; end;
 	SpeedChangedMessageCommand=function(self,param) if not param or not param.silent then self:play(); end; end;
 	NoteskinChangedMessageCommand=function(self,param) if not param or not param.silent then self:play(); end; end;
+	OptionsMenuMessageCommand=function(self,param) if not param or not param.silent then self:play(); end; end;
 	EvaluationMenuMessageCommand=function(self,param) if not param or not param.silent then self:play(); end; end;
+	ChangePropertyMessageCommand=function(self,param) if not param or not param.silent then self:play(); end; end;
 };	
 	
 t[#t+1] = LoadActor(THEME:GetPathS("Common","Cancel"))..{

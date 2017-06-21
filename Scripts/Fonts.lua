@@ -58,6 +58,9 @@ Fonts = {
         ["Speed"] = "regen silver",
         ["Options"] = "titillium regular",
     },
+    options = {
+        ["Main"] = "titillium regular",
+    },
     eval = {
         ["Caption"] = "regen small",
         ["Info"] = "roboto regular",

@@ -1,4 +1,5 @@
-local t = Def.ActorFrame{}
+local t = Def.ActorFrame{};
+
 local ratio = 1;
 local adjust = 0;
 
@@ -99,8 +100,10 @@ t[#t+1] = LoadActor(THEME:GetPathG("","bg"))..{
 	StateChangedMessageCommand=function(self)
 		self:stoptweening();
 		self:decelerate(0.2);
-		if(Global.state == "GroupSelect") then
-			self:diffusealpha(0.8);
+		if 	Global.state == "GroupSelect" or
+			Global.state == "SelectSteps" or
+			Global.state == "OptionsMenu" then
+			self:diffusealpha(0.85);
 		else
 			self:diffusealpha(0);
 		end

@@ -13,7 +13,7 @@ local menutable = {
 	{ name = "Ready!", 		state = "MainMenu", 	enabled = true },
 	{ name = "Speed", 		state = "SpeedMods", 	enabled = true },
 	{ name = "Noteskin", 	state = "Noteskins", 	enabled = true },
-	{ name = "Options", 	state = "Options", 		enabled = false },
+	{ name = "Options", 	state = "OptionsMenu",  enabled = true },
 };
 
 --//================================================================
@@ -202,9 +202,10 @@ end;
 function MainMenuOptions()
 	Global.prevstate = "MainMenu"
 	Global.level = 2;
+	Global.selection = 1;
 	Global.state = "OptionsMenu";
 	MESSAGEMAN:Broadcast("StateChanged");
-	Global.selection = 1;
+	MESSAGEMAN:Broadcast("OptionsMenu", { silent = true });
 end;
 
 --//================================================================

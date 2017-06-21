@@ -63,6 +63,21 @@ function NavigationAction(index)
 	SCREENMAN:SetNewScreen(Navigation.Screen[index]);
 end;
 
+
+--//================================================================
+
+function GetEntry(element, list)
+    local entry;
+    if element then
+        for entry=1,#list do
+            if list[entry] == element then
+                return entry;
+            end;
+        end;
+    end
+    return 1;
+end;
+
 --//================================================================
 
 function SideJoined(pn)

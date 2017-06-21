@@ -29,7 +29,8 @@ local t = Def.ActorFrame{
         if Global.state == "SelectSteps" or
            Global.state == "SpeedMods" or
            Global.state == "Noteskins" then
-           self:diffusealpha(1);
+           --Global.state == "OptionsMenu" then
+            self:diffusealpha(1);
         else
             self:diffusealpha(0);
         end;
@@ -55,6 +56,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
         StepsChangedMessageCommand=cmd(playcommand,"Refresh");
         SpeedChangedMessageCommand=cmd(playcommand,"Refresh");
         FolderChangedMessageCommand=cmd(playcommand,"Refresh");
+        PropertyChangedMessageCommand=cmd(playcommand,"Refresh");
         NoteskinChangedMessageCommand=function(self,param)
             if param and param.noteskin and param.Player == pn then
                 self:set_skin(param.noteskin, {});
@@ -126,10 +128,6 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 end;
 
 t[#t+1] = tex;
-
-t[#t+1] = LoadActor(THEME:GetPathG("","bg"))..{
-    InitCommand=cmd(diffuse,Global.bgcolor;diffusealpha,0.5;xy,_screen.cx,_screen.cy-177;FullScreen;fadeleft,0.2;faderight,0.2);
-};
 
 t[#t+1] = Def.Sprite{
     Texture = "notefield_overlay";
