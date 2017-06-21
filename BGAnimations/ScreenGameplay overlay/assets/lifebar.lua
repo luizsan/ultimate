@@ -15,7 +15,7 @@ local t = Def.ActorFrame{
         local dist = math.abs(player:GetX() - _screen.cx);
         local style = string.lower(GAMESTATE:GetCurrentStyle():GetName());
     
-        if style == "double" or style == "routine" then
+        if style == "double" or style == "routine" or (GAMESTATE:GetNumSidesJoined() == 1 and PREFSMAN:GetPreference("Center1Player")) then
             width = _screen.w - (spacing*4);
         else
             width = (dist*2) - (spacing*2);
@@ -248,6 +248,10 @@ local t = Def.ActorFrame{
                     if param.LifeMeter:IsFailing() then
                         self:diffuse(1,0,0,1);
                         self:stopeffect();
+                    else
+                        self:diffuseshift()
+                        self:effectcolor2(PlayerColor(pn));
+                        self:effectcolor1(1,1,1,0);
                     end;
                 end;
             end;
