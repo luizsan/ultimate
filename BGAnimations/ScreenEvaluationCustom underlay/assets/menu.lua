@@ -1,6 +1,10 @@
+local nextscreen = "";
 local t = Def.ActorFrame{
     InitCommand=cmd(diffusealpha,0);
     UnlockMessageCommand=cmd(stoptweening;linear,0.2;diffusealpha,1);
+    ExitCommand=function() 
+        SCREENMAN:SetNewScreen(nextscreen) ;
+    end;
 }
 
 local originY = SCREEN_CENTER_Y + 160;
@@ -11,16 +15,22 @@ local options = {
         Action = function(param)
             Global.lockinput = true;
             MESSAGEMAN:Broadcast("FinalDecision");
+            nextscreen = AfterGameplay();
             SCREENMAN:GetTopScreen():StartTransitioningScreen("SM_BeginFadingOut");
         end;
     },
     {
         Name = "Retry",
         Action = function(param)
+            reset_needs_defective_field_for_all_players()
+            MESSAGEMAN:Broadcast("FinalDecision");
             if IsRoutine() then
-                SCREENMAN:SetNewScreen("ScreenGameplayShared")
+                nextscreen = "ScreenGameplayShared";
+                SCREENMAN:GetTopScreen():StartTransitioningScreen("SM_BeginFadingOut");
             else
-                SCREENMAN:SetNewScreen("ScreenGameplay")
+                nextscreen = "ScreenGameplay";
+                SCREENMAN:GetTopScreen():StartTransitioningScreen("SM_BeginFadingOut");
+
             end;
         end;
     },
@@ -45,7 +55,9 @@ local options = {
     {
         Name = "Quit",
         Action = function(param)
-            SCREENMAN:SetNewScreen("ScreenTitleMenu")
+            nextscreen = ToTitleMenu();            
+            MESSAGEMAN:Broadcast("FinalDecision");
+            SCREENMAN:GetTopScreen():StartTransitioningScreen("SM_BeginFadingOut");
         end;
     },
 }

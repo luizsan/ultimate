@@ -2,7 +2,6 @@ local t = MenuInputActor()..{
     InitCommand=function(self) Global.lockinput = true; end;
     OnCommand=cmd(diffusealpha,1;sleep,2.5;queuecommand,"Unlock");
     OffCommand=cmd(linear,0.5;diffusealpha,0;sleep,0.75;queuecommand,"Exit");
-    ExitCommand=function() SCREENMAN:SetNewScreen(AfterGameplay()) end;
     PlayerJoinedMessageCommand=function(self,param)
         GAMESTATE:UnjoinPlayer(param.Player);
     end;
