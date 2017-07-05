@@ -30,18 +30,9 @@ local t = Def.ActorFrame{
         InitCommand=cmd(diffuse,0.2,0.2,0.2,1);
         BuildCommand=function(self,param)
             self:zoomto(width+2,height+4);
-        end;
-    },
-
-    -- background
-    LoadActor(THEME:GetPathG("","lifebg"))..{
-        BuildCommand=function(self,param)
-            self:zoomto(width,height);
-            self:diffuse(BoostColor(PlayerColor(pn),0.2));
+            self:diffuse(BoostColor(PlayerColor(pn),0.25));
             self:diffusetopedge(BoostColor(PlayerColor(pn),0.1));
-            self:customtexturerect(0,0,width/16,1); 
         end;
-
         LifeChangedMessageCommand=function(self,param)
             if param.Player == pn then
                 if param.LifeMeter:IsInDanger() and not param.LifeMeter:IsFailing() then
@@ -60,6 +51,46 @@ local t = Def.ActorFrame{
             end;
         end;
     },
+
+    -- sub meter
+    Def.Quad{
+        InitCommand=cmd(diffuseshift;effecttiming,0.25,0,0.75,0,0;effectclock,"bgm";blend,Blend.Add);
+        BuildCommand=function(self,param)
+            if style == "double" or style == "routine" then
+                self:x(-width*0.5);
+                self:horizalign(left);
+            else
+                self:x(width * 0.5 * pnSide(pn));
+                self:horizalign(pnAlign(pn));
+            end;
+            self:zoomto(width * 0.5,height);
+            self:effectcolor2(BoostColor(PlayerColor(pn),1));
+            self:effectcolor1(0,0,0,0);
+        end;
+        LifeChangedMessageCommand=function(self,param)
+            if param.Player == pn then
+                local life = param.LifeMeter:GetLife();
+                self:zoomto(width * life, height);
+                if param.LifeMeter:IsInDanger() then
+                    self:effectcolor2(1,0,0,1);
+                    self:effectcolor1(1,0,0,0);
+                else
+                    self:effectcolor2(BoostColor(PlayerColor(pn),1));
+                    self:effectcolor1(0,0,0,0);
+                end;
+            end;
+        end;
+    },
+
+    -- details
+    LoadActor(THEME:GetPathG("","lifebg"))..{
+        BuildCommand=function(self,param)
+            self:zoomto(width,height);
+            self:diffuse(0,0,0,0.25);
+            self:customtexturerect(0,0,width/16,1); 
+        end
+    },
+
 
     -- mask
     Def.Quad{
@@ -90,35 +121,6 @@ local t = Def.ActorFrame{
         end;
     },
 
-    -- sub meter
-    Def.Quad{
-        InitCommand=cmd(diffuseshift;effecttiming,0,0,1,0,0;effectclock,"bgm";blend,Blend.Add);
-        BuildCommand=function(self,param)
-            if style == "double" or style == "routine" then
-                self:x(-width*0.5);
-                self:horizalign(left);
-            else
-                self:x(width * 0.5 * pnSide(pn));
-                self:horizalign(pnAlign(pn));
-            end;
-            self:zoomto(width * 0.5,height);
-            self:effectcolor2(BoostColor(PlayerColor(pn),1));
-            self:effectcolor1(0,0,0,0);
-        end;
-        LifeChangedMessageCommand=function(self,param)
-            if param.Player == pn then
-                local life = param.LifeMeter:GetLife();
-                self:zoomto(width * life, height);
-                if param.LifeMeter:IsInDanger() then
-                    self:effectcolor2(1,0,0,1);
-                    self:effectcolor1(1,0,0,0);
-                else
-                    self:effectcolor2(BoostColor(PlayerColor(pn),1));
-                    self:effectcolor1(0,0,0,0);
-                end;
-            end;
-        end;
-    },
 
     -- meter
     Def.Quad{

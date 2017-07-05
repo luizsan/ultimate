@@ -36,7 +36,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 			-- player name
 			Def.BitmapText{
 				Font = Fonts.gameplay["Main"];
-				InitCommand=cmd(zoom,0.5;strokecolor,0.15,0.15,0.15,0.4;horizalign,pnAlign(pn);vertalign,bottom);
+				InitCommand=cmd(zoom,0.5;strokecolor,0.15,0.15,0.15,1;horizalign,pnAlign(pn);vertalign,bottom);
 				OnCommand=function(self)
 					local name = PROFILEMAN:GetProfile(pn):GetDisplayName();
 					if name == "" then
@@ -52,7 +52,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 			-- steps
 			Def.BitmapText{
 				Font = Fonts.gameplay["Main"];
-				InitCommand=cmd(zoom,0.375;strokecolor,0.15,0.15,0.15,0.4;horizalign,pnAlign(pn);y,12;vertalign,bottom);
+				InitCommand=cmd(zoom,0.375;strokecolor,0.15,0.15,0.15,1;horizalign,pnAlign(pn);y,12;vertalign,bottom);
 				OnCommand=function(self)
 					local steps = Global.pncursteps[pn] or GAMESTATE:GetCurrentSteps(pn);
 					local tint = StepsColor(steps);
