@@ -67,8 +67,9 @@ end;
 --//================================================================
 
 function GetEntry(element, list)
+	if not list or #list < 1 then return 1 end
     local entry;
-    if element then
+    if element ~= nil then
         for entry=1,#list do
             if list[entry] == element then
                 return entry;
@@ -102,19 +103,9 @@ function pnCrop(pn,self,amount) if pn == PLAYER_1 or pn == 1 then self:cropright
 --//================================================================
 
 function Setup()
-
-	if Game() == "Pump" then
-		PREFSMAN:SetPreference("EditorNoteSkinP1","delta-note");
-		PREFSMAN:SetPreference("EditorNoteSkinP2","delta-note");
-	elseif Game() == "Dance" then
-		PREFSMAN:SetPreference("EditorNoteSkinP1","midi-note");
-		PREFSMAN:SetPreference("EditorNoteSkinP2","midi-note");
-	end;
-	
 	PREFSMAN:SetPreference("EventMode",true);
 	PREFSMAN:SetPreference("MenuTimer",false);
 	PREFSMAN:SetPreference("PercentageScoring",true);
-
 end
 
 --//================================================================

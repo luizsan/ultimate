@@ -101,8 +101,8 @@ t[#t+1] = LoadActor(THEME:GetPathG("","bg"))..{
 		self:stoptweening();
 		self:decelerate(0.2);
 		if 	Global.state == "GroupSelect" or
-			Global.state == "SelectSteps" or
-			Global.state == "OptionsMenu" then
+			Global.state == "SelectSteps" then
+			--Global.state == "OptionsMenu" then
 			self:diffusealpha(0.85);
 		else
 			self:diffusealpha(0);

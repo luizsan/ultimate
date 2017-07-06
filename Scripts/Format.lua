@@ -136,3 +136,72 @@ function FormatFailType(fail)
     else return "" end;
 end;
 
+--//================================================================
+
+local function dict_bool(val)
+    return val and "On" or "Off";
+end;
+
+local function dict_rate(val)
+    if string.len(tostring(val)) == 1 then return tostring(val)..".00x" end;
+    if string.len(tostring(val)) == 3 then return tostring(val).."0x" end;
+    if string.len(tostring(val)) == 4 then return tostring(val).."x" end;
+end;
+
+local dict_fail = {
+    ["off"] = "Disabled",
+    ["delayed"] = "Delayed",
+    ["immediate"] = "Instant"
+}
+
+local dict_timing = {
+    "1 (Easiest)",
+    "2 (Easy)",
+    "3 (Easier)",
+    "4 (Normal)",
+    "5 (Medium)",
+    "6 (Hard)",
+    "7 (Very Hard)",
+    "8 (Hardest)",
+    "9 (Justice)",
+}
+
+local dict_life = {
+    "1 (Easiest)",
+    "2 (Easy)",
+    "3 (Easier)",
+    "4 (Normal)",
+    "5 (Hard)",
+    "6 (Very Hard)",
+    "7 (Hardest)",
+}
+
+function FormatOptionConfigs(str, val)
+    local dictionary = {
+        ["BGBrightness"]        = "Background Brightness",
+        ["DefaultBG"]           = "Use Default Background",
+        ["CenterPlayer"]        = "Center 1 Player",
+        ["MusicRate"]           = "Music Rate",
+        ["FailType"]            = "Fail Type",
+        ["FailMissCombo"]       = "Miss Combo Fail",
+        ["AllowW1"]             = "Flawless Timing",
+        ["TimingDifficulty"]    = "Timing Window Difficulty",
+        ["LifeDifficulty"]      = "Life Meter Difficulty",
+    }
+
+    local format = {
+        ["BGBrightness"]        = tostring(val).."%",
+        ["DefaultBG"]           = dict_bool(val),
+        ["CenterPlayer"]        = dict_bool(val),
+        ["MusicRate"]           = dict_rate(val),
+        ["FailType"]            = dict_fail[val],
+        ["FailMissCombo"]       = dict_bool(val),
+        ["AllowW1"]             = dict_bool(val),
+        ["TimingDifficulty"]    = dict_timing[val],
+        ["LifeDifficulty"]      = dict_life[val],
+    }
+
+    local a = dictionary[str] or str;
+    local b = format[str] or val;
+    return { Name = a, Value = b }
+end;

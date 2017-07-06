@@ -66,38 +66,35 @@ end;
 
 function ReadyDecision(param)
 
-		GAMESTATE:SetCurrentSong(Global.song);
-		GAMESTATE:SetPreferredSong(Global.song);
+	GAMESTATE:SetCurrentSong(Global.song);
+	GAMESTATE:SetPreferredSong(Global.song);
+	Global.master = GAMESTATE:GetMasterPlayerNumber();
+	Global.mastersteps = Global.pncursteps[Global.master];
 
-		Global.master = GAMESTATE:GetMasterPlayerNumber();
-		Global.mastersteps = Global.pncursteps[Global.master];
+	if GAMESTATE:GetNumSidesJoined() == 1 then 
 
-
-		if GAMESTATE:GetNumSidesJoined() == 1 then 
-
-			if PureType(Global.mastersteps) == "Routine" then
-				Global.blockjoin = false;
-				GAMESTATE:JoinPlayer(OtherPlayer[Global.master]);
-				GAMESTATE:SetCurrentStyle("routine");
-				GAMESTATE:SetCurrentSteps(PLAYER_1,Global.mastersteps);
-				GAMESTATE:SetCurrentSteps(PLAYER_2,Global.mastersteps);
-				Global.blockjoin = true;
-			else
-				FixStyleForSteps(Global.mastersteps);
-				GAMESTATE:SetCurrentSteps(Global.master,Global.mastersteps);
-			end;
+		if PureType(Global.mastersteps) == "Routine" then
+			Global.blockjoin = false;
+			GAMESTATE:JoinPlayer(OtherPlayer[Global.master]);
+			GAMESTATE:SetCurrentStyle("routine");
+			GAMESTATE:SetCurrentSteps(PLAYER_1,Global.mastersteps);
+			GAMESTATE:SetCurrentSteps(PLAYER_2,Global.mastersteps);
+			Global.blockjoin = true;
 		else
-
-			-- apply same failtype for both players
-			local fail = GAMESTATE:GetPlayerState(Global.master):GetPlayerOptions("ModsLevel_Preferred"):FailSetting();
-			GAMESTATE:GetPlayerState(OtherPlayer[Global.master]):GetPlayerOptions("ModsLevel_Preferred"):FailSetting(fail);
-
 			FixStyleForSteps(Global.mastersteps);
-			GAMESTATE:SetCurrentSteps(PLAYER_1,Global.pncursteps[PLAYER_1]);
-			GAMESTATE:SetCurrentSteps(PLAYER_2,Global.pncursteps[PLAYER_2]);
+			GAMESTATE:SetCurrentSteps(Global.master,Global.mastersteps);
+		end;
+	else
 
-		end
+		FixStyleForSteps(Global.mastersteps);
+		GAMESTATE:SetCurrentSteps(PLAYER_1,Global.pncursteps[PLAYER_1]);
+		GAMESTATE:SetCurrentSteps(PLAYER_2,Global.pncursteps[PLAYER_2]);
 
+	end
+
+
+	ApplyThemeSettings();
+	reset_needs_defective_field_for_all_players()
 	SCREENMAN:SetNewScreen("ScreenStageInformation");
 
 end;

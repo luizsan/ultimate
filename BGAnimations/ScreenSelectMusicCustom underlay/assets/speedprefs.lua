@@ -1,5 +1,3 @@
-reset_needs_defective_field_for_all_players()
-
 local t = Def.ActorFrame{}
 
 local spacing = 18;
