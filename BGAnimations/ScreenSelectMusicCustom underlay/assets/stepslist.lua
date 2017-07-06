@@ -46,10 +46,12 @@ function StepsController(self,param)
             Global.confirm[param.Player] = 0; 
             MESSAGEMAN:Broadcast("Deselect"); 
 
-            Global.pnsteps[param.Player] = Global.pnsteps[param.Player]-1; 
-            if Global.pnsteps[param.Player] < 1 then Global.pnsteps[param.Player] = #Global.steps; end;
-            Global.pncursteps[param.Player] = Global.steps[Global.pnsteps[param.Player]]; 
-            MESSAGEMAN:Broadcast("StepsChanged", { Prev = true , Player = param.Player }); 
+            if #Global.steps > 1 then
+                Global.pnsteps[param.Player] = Global.pnsteps[param.Player]-1; 
+                if Global.pnsteps[param.Player] < 1 then Global.pnsteps[param.Player] = #Global.steps; end;
+                Global.pncursteps[param.Player] = Global.steps[Global.pnsteps[param.Player]]; 
+                MESSAGEMAN:Broadcast("StepsChanged", { Prev = true , Player = param.Player }); 
+            end
 
         end;
 
@@ -57,10 +59,13 @@ function StepsController(self,param)
             Global.confirm[param.Player] = 0;
             MESSAGEMAN:Broadcast("Deselect"); 
 
-            Global.pnsteps[param.Player] = Global.pnsteps[param.Player]+1; 
-            if Global.pnsteps[param.Player] > #Global.steps then Global.pnsteps[param.Player] = 1; end;
-            Global.pncursteps[param.Player] = Global.steps[Global.pnsteps[param.Player]];
-            MESSAGEMAN:Broadcast("StepsChanged", { Next = true , Player = param.Player }); 
+            if #Global.steps > 1 then
+                Global.pnsteps[param.Player] = Global.pnsteps[param.Player]+1; 
+                if Global.pnsteps[param.Player] > #Global.steps then Global.pnsteps[param.Player] = 1; end;
+                Global.pncursteps[param.Player] = Global.steps[Global.pnsteps[param.Player]];
+                MESSAGEMAN:Broadcast("StepsChanged", { Next = true , Player = param.Player }); 
+            end;
+            
         end;
     end;
         
