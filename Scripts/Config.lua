@@ -2,7 +2,7 @@
 
 local theme_conf_default = {
     BGBrightness = 100,
-    DefaultBackground = false,
+    DefaultBG = false,
     CenterPlayer = false,
     MusicRate = 1.0,
     FailType = "delayed",
@@ -35,8 +35,34 @@ function ResetThemeSettings()
     tconf.AllowW1 = true;
     tconf.TimingDifficulty = 4;
     tconf.LifeDifficulty = 4;
+    THEMECONFIG:save();
 end;
 
+--//================================================================
+
+function ResetDisplayOptions()
+    local tconf = THEMECONFIG:get_data("ProfileSlot_Invalid");
+    tconf.BGBrightness = 100;
+    tconf.DefaultBackground = false;
+    tconf.CenterPlayer = false;
+    THEMECONFIG:save();
+end;
+
+function ResetSongOptions()
+    local tconf = THEMECONFIG:get_data("ProfileSlot_Invalid");
+    tconf.MusicRate = 1.0;
+    tconf.FailType = "delayed";
+    tconf.FailMissCombo = true;
+    THEMECONFIG:save();
+end;
+
+function ResetJudgmentOptions()
+    local tconf = THEMECONFIG:get_data("ProfileSlot_Invalid");
+    tconf.AllowW1 = true;
+    tconf.TimingDifficulty = 4;
+    tconf.LifeDifficulty = 4;
+    THEMECONFIG:save();
+end;
 
 --//================================================================
 
@@ -57,7 +83,7 @@ function ApplyThemeSettings()
     local timing_mapping = { 1.5, 1.33, 1.16, 1.00, 0.84, 0.66, 0.50, 0.33, 0.20 };
     local life_mapping = { 1.6, 1.40, 1.20, 1.00, 0.80, 0.60, 0.40 };
 
-    PREFSMAN:SetPreference("BGBrightness",          math.round(tconf.BGBrightness*100)/10000 );
+    PREFSMAN:SetPreference("BGBrightness",          tconf.DefaultBG and 0 or math.round(tconf.BGBrightness*100)/10000);
     PREFSMAN:SetPreference("Center1Player",         tconf.CenterPlayer);
     PREFSMAN:SetPreference("TimingWindowScale",     timing_mapping[tconf.TimingDifficulty] );
     PREFSMAN:SetPreference("LifeDifficultyScale",   life_mapping[tconf.LifeDifficulty] );
