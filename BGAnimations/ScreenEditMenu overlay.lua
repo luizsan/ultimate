@@ -11,7 +11,7 @@ local function stype_transform(self, item_index, num_items)
 end
 local stype_item_mt= edit_pick_menu_steps_display_item(
 	stype_transform, Def.BitmapText{
-		Font= "roboto", InitCommand= function(self)
+		Font = Fonts.edit["Steps"], InitCommand= function(self)
 			self:zoom(.5):horizalign(left):shadowlength(1)
 		end,
 		SetCommand= function(self, param)
@@ -19,7 +19,7 @@ local stype_item_mt= edit_pick_menu_steps_display_item(
 		end,
 																 },
 	steps_transform, Def.BitmapText{
-		Font= "roboto", InitCommand= function(self)
+		Font = Fonts.edit["Steps"], InitCommand= function(self)
 			self:zoom(.5):shadowlength(1)
 		end,
 		SetCommand= function(self, param)
@@ -68,13 +68,13 @@ local menu_params= {
 		height= _screen.h*.75, el_zoom= 0.75,
 		item_mt= cons_option_item_mt, item_params= {
 			text_commands= {
-				Font= "roboto", OnCommand= function(self)
+				Font= Fonts.edit["Menu"], OnCommand= function(self)
 					self:diffusealpha(0):linear(0.1):diffusealpha(1):shadowlength(1)
 				end,
 			},
 			text_width= .7,
 			value_text_commands= {
-				Font= "roboto", OnCommand= function(self)
+				Font= Fonts.edit["Menu"], OnCommand= function(self)
 					self:diffusealpha(0):linear(0.1):diffusealpha(1)
 				end,
 			},
@@ -141,7 +141,7 @@ local frame= Def.ActorFrame{
 		end,
 	},
 	Def.BitmapText{
-		Name= "length", Font= "roboto", InitCommand= function(self)
+		Name= "length", Font= Fonts.edit["Steps"], InitCommand= function(self)
 			self:xy(length_x, length_y):horizalign(right):zoom(.5):shadowlength(1)
 		end,
 		edit_menu_selection_changedMessageCommand= function(self, params)
@@ -154,7 +154,7 @@ local frame= Def.ActorFrame{
 		end,
 	},
 	Def.BitmapText{
-		Name= "bpm", Font= "roboto", InitCommand= function(self)
+		Name= "bpm", Font = Fonts.edit["Steps"], InitCommand= function(self)
 			self:xy(bpm_x, bpm_y):horizalign(right):zoom(.5):shadowlength(1)
 		end,
 		edit_menu_selection_changedMessageCommand= function(self, params)
@@ -172,7 +172,7 @@ local frame= Def.ActorFrame{
 		end,
 	},
 	Def.BitmapText{
- 		Name= "title", Font= "roboto", InitCommand= function(self)
+ 		Name= "title", Font = Fonts.edit["Steps"], InitCommand= function(self)
 			self:xy(title_x, title_y):horizalign(left):zoom(.5):shadowlength(1)
 		end,
 		edit_menu_selection_changedMessageCommand= function(self, params)
@@ -185,7 +185,7 @@ local frame= Def.ActorFrame{
 		end,
 	},
 	Def.BitmapText{
- 		Name= "artist", Font= "roboto", InitCommand= function(self)
+ 		Name= "artist", Font = Fonts.edit["Steps"], InitCommand= function(self)
 			self:xy(artist_x, artist_y):horizalign(left):zoom(.5):shadowlength(1)
 		end,
 		edit_menu_selection_changedMessageCommand= function(self, params)

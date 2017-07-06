@@ -20,6 +20,10 @@ Fonts = {
         ["Choice"] = "titillium regular",
         ["Version"] = "regen strong",
     },
+    edit = {
+        ["Menu"] = "titillium regular",
+        ["Steps"] = "titillium regular",
+    },
     gameplay = {
         ["Main"] = "titillium regular",
     },
@@ -60,6 +64,7 @@ Fonts = {
     },
     options = {
         ["Main"] = "titillium regular",
+        ["Sections"] = "regen strong",
     },
     eval = {
         ["Caption"] = "regen small",
