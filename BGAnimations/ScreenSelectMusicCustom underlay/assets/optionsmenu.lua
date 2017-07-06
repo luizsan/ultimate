@@ -12,6 +12,7 @@ local option_tree = {
             ConfigRange(THEMECONFIG, "BGBrightness", 100, 0, 100, 5),
             ConfigBool(THEMECONFIG, "DefaultBG", false),
             ConfigBool(THEMECONFIG, "CenterPlayer", false),
+            ConfigAction("Reset", function() ResetDisplayOptions() end),
             ConfigExit("Back"),
         },
     },
@@ -22,6 +23,7 @@ local option_tree = {
             ConfigRange(THEMECONFIG, "MusicRate", 1, 0.5, 2, 0.05),
             ConfigChoices(THEMECONFIG, "FailType", "delayed", { "immediate", "delayed", "off" }),
             ConfigBool(THEMECONFIG, "FailMissCombo", true),
+            ConfigAction("Reset", function() ResetSongOptions() end),
             ConfigExit("Back"),
         },
     },
@@ -32,10 +34,19 @@ local option_tree = {
             ConfigBool(THEMECONFIG, "AllowW1"),
             ConfigRange(THEMECONFIG, "TimingDifficulty", 4, 1, 9, 1),
             ConfigRange(THEMECONFIG, "LifeDifficulty", 4, 1, 7, 1),
+            ConfigAction("Reset", function() ResetJudgmentOptions() end),
             ConfigExit("Back"),
         },
     },
-    ConfigReset("Reset"),
+
+    {
+        Name = "Reset All",
+        Options = {
+            ConfigAction("Reset Default Options", function() ResetThemeSettings() end),
+            ConfigExit("Back"),
+        }
+    },
+
     ConfigExit("Exit"),
 
 };
@@ -79,6 +90,7 @@ function OptionsController(self,param)
     if param.Input == "Cancel" or param.Input == "Back" then
 
         if currentoption then
+
             Global.selection = GetEntry(currentoption, option_stack[#option_stack]);
             currentoption = nil;
             MESSAGEMAN:Broadcast("Return");
@@ -131,8 +143,9 @@ function SelectOptions()
 
         elseif topstack.Type then
 
-            if topstack.Type == "reset" then
-                ResetThemeSettings();
+            if topstack.Action then
+
+                topstack.Action();
                 MESSAGEMAN:Broadcast("OptionsSelected");
                 MESSAGEMAN:Broadcast("OptionsMenu", { silent = true });
                 THEMECONFIG:save("ProfileSlot_Invalid");
@@ -177,7 +190,7 @@ end;
 
 
 -- panel
-local window_w = 320;
+local window_w = 300;
 local window_h = 164;
 
 local itemspacing = 16;
@@ -192,7 +205,7 @@ local item_mt = {
         create_actors = function(self, params)
             self.name = params.name;
             local sidespacing = (window_w/2) - 24;
-            local fontsize = 0.475;
+            local fontsize = 0.45;
             return Def.ActorFrame{
                 Name = name;
                 InitCommand=function(subself)
@@ -277,7 +290,7 @@ local function GetCurrentStackInfo()
 
         local info = {}
         info.Name = cur[i].Name; 
-        if cur[i].Type and cur[i].Type ~= "reset" then
+        if cur[i].Type and cur[i].Type ~= "action" then
             local optiondata = { 
                 Option = cur[i],
                 Config = THEMECONFIG,

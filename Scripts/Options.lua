@@ -46,10 +46,11 @@ function ConfigBool(conf, field, default)
     }
 end;
 
-function ConfigReset(label)
+function ConfigAction(label, func)
     return { 
         Name = label,
-        Type = "reset",
+        Type = "action",
+        Action = func,
     }
 end;
 
