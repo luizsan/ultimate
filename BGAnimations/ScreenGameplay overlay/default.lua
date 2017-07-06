@@ -1,4 +1,5 @@
 local paused = false;
+local missfail = THEMECONFIG:get_data("ProfileSlot_Invalid").FailMissCombo;
 
 local function Update(self,dt)
     MESSAGEMAN:Broadcast("Update");
@@ -10,6 +11,28 @@ local t = Def.ActorFrame{
 	PausedMessageCommand=function() Global.disqualified = true; paused = true; end;
 	UnpausedMessageCommand=function() paused = false; end;
 	LifeChangedMessageCommand=function(self,param) end;
+	ComboChangedMessageCommand=function(self,param) 
+		if not missfail then return end;
+
+        local curstats = STATSMAN:GetCurStageStats();
+        local pss = curstats:GetPlayerStageStats(param.Player);
+        local misscombo = pss:GetCurrentMissCombo();
+
+        if SideJoined(OtherPlayer[param.Player]) then
+        	local otherpn = OtherPlayer[param.Player];
+        	local otherstats = curstats:GetPlayerStageStats(otherpn);
+        	local othermiss = otherstats:GetCurrentMissCombo();
+        	misscombo = math.max(misscombo,othermiss);
+        end;
+
+        if misscombo >= FailCombo() then
+        	for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
+        		STATSMAN:GetCurStageStats():GetPlayerStageStats(pn):FailPlayer();
+        	end;
+        	SCREENMAN:SetNewScreen("ScreenEvaluationCustom");
+        end;
+
+	end;
 }
 
 for pn in ivalues(GAMESTATE:GetHumanPlayers()) do

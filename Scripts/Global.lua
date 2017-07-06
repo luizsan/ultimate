@@ -52,10 +52,6 @@ Global = {
         [PLAYER_1] = 0,
         [PLAYER_2] = 0,
     },
-    life = {
-        [PLAYER_1] = 0,
-        [PLAYER_2] = 0,
-    },
     volume = 1,
     blockjoin = false,
     prevstate = "",
@@ -85,10 +81,6 @@ function ResetState()
         [PLAYER_2] = -1,
     };
     Global.piuscoring = {
-        [PLAYER_1] = 0,
-        [PLAYER_2] = 0,
-    };
-    Global.life = {
         [PLAYER_1] = 0,
         [PLAYER_2] = 0,
     };
