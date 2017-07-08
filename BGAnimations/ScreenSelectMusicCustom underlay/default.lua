@@ -21,27 +21,45 @@ local t = MenuInputActor()..{
 --//================================================================	
 
 function InputController(self,param)
-	if Global.state == "MainMenu" then MainMenuController(self,param) end;
-	if Global.state == "GroupSelect" then GroupController(self,param) end;
-	if Global.state == "MusicWheel" then WheelController(self,param) end;
-	if Global.state == "SelectSteps" then StepsController(self,param) end;
-	if Global.state == "SpeedMods" then SpeedController(self,param); end;
-	if Global.state == "Noteskins" then NoteskinController(self,param); end;
-	if Global.state == "OptionsMenu" then OptionsController(self,param); end;
+	if Global.oplist[param.Player] then
+		OptionsListController(self,param);
+	else
+		if Global.state == "MainMenu" then MainMenuController(self,param) end;
+		if Global.state == "GroupSelect" then GroupController(self,param) end;
+		if Global.state == "MusicWheel" then WheelController(self,param) end;
+		if Global.state == "SelectSteps" then StepsController(self,param) end;
+		if Global.state == "SpeedMods" then SpeedController(self,param); end;
+		if Global.state == "Noteskins" then NoteskinController(self,param); end;
+		if Global.state == "OptionsMenu" then OptionsMenuController(self,param); end;
+	end;
 end;
 
 --//================================================================	
 
 function MainController(self,param)
-	if param.Input == "Options" then
+	if param.Input == "Options" and not Global.oplist[param.Player] then
 		InputController(self, { Player = param.Player, Input = "Next", Button = "Right" })
-		MESSAGEMAN:Broadcast("OptionsListOpened");
+		Global.oplist[param.Player] = true
+		MESSAGEMAN:Broadcast("OptionsListOpened", param);
+	end;
+
+	if param.Input == "PressSelect" then
+		if not Global.oplist[param.Player] then
+			Global.oplist[param.Player] = true
+			MESSAGEMAN:Broadcast("OptionsListOpened", param);
+			return;
+		else
+			Global.oplist[param.Player] = false
+			MESSAGEMAN:Broadcast("OptionsListClosed", param);
+			return;
+		end
 	end;
 
 	if param.Input == "Center" or param.Input == "Start" then 
 		MainMenuDecision({ Player = param.Player });
 	end;
 
+	--[[
 	if param.Input == "PressSelect" and not HighScoreBlockedState() then
 		Global.toggle = true;
 		MESSAGEMAN:Broadcast("ToggleSelect", { Toggled = true });
@@ -51,6 +69,7 @@ function MainController(self,param)
 		Global.toggle = false;
 		MESSAGEMAN:Broadcast("ToggleSelect", { Toggled = false })
 	end
+	]]
 
 	if param.Input == "Return" and Global.level == 1 then 
 		Global.blockjoin = false;
@@ -78,6 +97,7 @@ t[#t+1] = LoadActor("assets/bannerwheel");
 t[#t+1] = LoadActor("assets/information");
 t[#t+1] = LoadActor("assets/stepslist");
 t[#t+1] = LoadActor("assets/optionsmenu");
+t[#t+1] = LoadActor("assets/optionslist");
 t[#t+1] = LoadActor("assets/mainmenu");	
 
 t[#t+1] = LoadActor(THEME:GetPathB("","_assets/cursteps"));

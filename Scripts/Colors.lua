@@ -26,31 +26,18 @@ local _GradeColor = {
 
 --//================================================================
 
-function HighlightColor() 
-    return color("0.3,1,0.775,1");
+function HighlightColor(alpha) 
+    return {0.3,1,0.775,alpha or 1}
 end;
 
 --//================================================================
 
 function PlayerColor(pn,alpha)
-
-    if pn == PLAYER_1 then 
-        if alpha then
-            return color("0.40,0.85,1,"..alpha) 
-        else
-            return color("0.40,0.85,1")
-        end
-    end;
-
-    if pn == PLAYER_2 then 
-        if alpha then
-            return color("0.20,1,0.40,"..alpha) 
-        else
-            return color("0.20,1,0.40") 
-        end;
-    end;
-    
-    return color("1,1,1")
+    local pncolor = {
+        [PLAYER_1] = {0.40,0.85,1,alpha or 1},
+        [PLAYER_2] = {0.20,1,0.40,alpha or 1}, 
+    }
+    return pncolor[pn] or {1,1,1,1}
 end
 
 --//================================================================

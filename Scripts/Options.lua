@@ -1,3 +1,84 @@
+function DefaultOptionScrollerActor(fontsize,sidespacing)
+    return Def.ActorFrame{
+        -- name
+        Def.BitmapText{
+            Name = "Name";
+            Font = Fonts.options["Main"];
+            InitCommand=cmd(horizalign,left;x,-sidespacing;zoom,fontsize;strokecolor,0.2,0.2,0.2,1);
+            GainFocusCommand=cmd(stoptweening;decelerate,0.15;diffuse,HighlightColor();strokecolor,BoostColor(HighlightColor(),0.2));
+            LoseFocusCommand=cmd(stoptweening;decelerate,0.15;diffuse,1,1,1,1;strokecolor,0.2,0.2,0.2,0.8);
+            DisabledCommand=cmd(stoptweening;decelerate,0.15;diffuse,0.6,0.6,0.6,0.5;strokecolor,0.2,0.2,0.2,0.8);
+        },
+        -- value
+        Def.BitmapText{
+            Name = "Value";
+            Font = Fonts.options["Main"];
+            InitCommand=cmd(horizalign,right;x,sidespacing;zoom,fontsize;strokecolor,0.2,0.2,0.2,1);
+            GainFocusCommand=cmd(stoptweening;decelerate,0.15;diffuse,HighlightColor();strokecolor,BoostColor(HighlightColor(),0.2));
+            LoseFocusCommand=cmd(stoptweening;decelerate,0.15;diffuse,1,1,1,1;strokecolor,0.2,0.2,0.2,0.8);
+            DisabledCommand=cmd(stoptweening;decelerate,0.15;diffuse,0.6,0.6,0.6,0.5;strokecolor,0.2,0.2,0.2,0.8);
+        },  
+    }
+end;
+
+function OptionScrollerItem(spacing, actor)
+    local spacing = spacing or 16;
+    local move_time = 0.15;
+    local item_mt = {
+        __index = {
+            prev_index = -1;
+            create_actors = function(self, params)
+                self.name = params.name;
+                self.spacing = spacing;
+                self.move_time = move_time;
+                if actor then 
+                    return actor..{
+                        InitCommand=function(subself)
+                            self.container = subself;
+                        end;
+                    } 
+                else 
+                    return DefaultOptionScrollerActor(self,0.5,64)..{
+                        InitCommand=function(subself)
+                            self.container = subself;
+                        end;
+                    } 
+                end;
+            end;
+
+            transform = function(self, item_index, num_items, is_focus)
+                self.container:stoptweening();
+                --local diff = item_index - self.prev_index;
+                --if math.abs(diff) > 1 then
+                --    self.container:diffusealpha(0);
+                --    self.container:y(item_index * self.spacing);
+                --    self.container:decelerate(self.move_time);
+                --    self.container:diffusealpha(1);
+                --else
+                --    self.container:decelerate(self.move_time);
+                --    self.container:diffusealpha(1);
+                    self.container:y(item_index * self.spacing);
+                --end;
+                self.prev_index = item_index;
+            end;
+
+            set = function(self, info)
+                if info and info.Name then
+                    self.container:GetChild("Name"):settext(info.Name);
+                else
+                    self.container:GetChild("Name"):settext("");
+                end;
+                if info and info.Value then
+                    self.container:GetChild("Value"):settext(info.Value);
+                else
+                    self.container:GetChild("Value"):settext("");
+                end;
+            end;
+        }
+    }
+    return item_mt;
+end;
+
 --//================================================================
 --[[
         param.Input = "Prev", "Next"

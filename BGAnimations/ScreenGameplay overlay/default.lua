@@ -12,7 +12,7 @@ local t = Def.ActorFrame{
 	UnpausedMessageCommand=function() paused = false; end;
 	LifeChangedMessageCommand=function(self,param) end;
 	ComboChangedMessageCommand=function(self,param) 
-		if not missfail then return end;
+		if not missfail or FailCombo() < 1 then return end;
 
         local curstats = STATSMAN:GetCurStageStats();
         local pss = curstats:GetPlayerStageStats(param.Player);
@@ -22,7 +22,7 @@ local t = Def.ActorFrame{
         	local otherpn = OtherPlayer[param.Player];
         	local otherstats = curstats:GetPlayerStageStats(otherpn);
         	local othermiss = otherstats:GetCurrentMissCombo();
-        	misscombo = math.max(misscombo,othermiss);
+        	misscombo = math.min(misscombo,othermiss);
         end;
 
         if misscombo >= FailCombo() then

@@ -466,3 +466,46 @@ function GetRadar(steps,pn,index)
 end;
 
 --//================================================================
+
+function GetCurrentStackInfo(stack, pn)
+    if not stack then return {} end;
+
+    local infotable = {};
+    local cur = {}
+    if pn then cur = stack[pn][#stack] else cur = stack[#stack] end;
+
+    for i=1,#cur do
+        local info = {}
+        info.Name = cur[i].Name; 
+        if cur[i].Type == "action" then
+            info.Value = "";
+        elseif cur[i].Options then
+            info.Value = "→";
+        elseif cur[i].Type then
+            local optiondata = { 
+                Option = cur[i],
+                Config = THEMECONFIG,
+            }
+            info.Value = GetConfig(optiondata);
+        else
+            info.Value = "";
+        end;
+        info = FormatOptionConfigs(info.Name, info.Value);
+        table.insert(infotable, info);
+    end
+    return infotable;
+end
+
+--//================================================================
+
+function ScrollerFocus(s, index, currentoption)
+    local focused = s:get_items_by_info_index(index)[1];
+    for i=1,#s.items do
+        if s.items[i] == focused then
+            s.items[i].container:playcommand("GainFocus");
+        else
+            s.items[i].container:playcommand(currentoption ~= nil and "Disabled" or "LoseFocus");
+        end;
+    end;
+    return focused;
+end;

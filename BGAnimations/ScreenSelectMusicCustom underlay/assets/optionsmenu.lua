@@ -55,7 +55,7 @@ table.insert(option_stack, option_tree);
 
 --//================================================================
 
-function OptionsController(self,param)
+function OptionsMenuController(self,param)
 
     if param.Input == "Prev" then
         if currentoption then
@@ -197,128 +197,7 @@ local itemspacing = 16;
 local sidespacing = window_w/2-24;
 
 local scroll_index = 1;
-local item_mt = {
-    __index = {
-        prev_index = -1;
-        move_time = 0.15;
-        spacing = itemspacing;
-        create_actors = function(self, params)
-            self.name = params.name;
-            local sidespacing = (window_w/2) - 24;
-            local fontsize = 0.45;
-            return Def.ActorFrame{
-                Name = name;
-                InitCommand=function(subself)
-                    self.container = subself;
-                end;
-
-                -- name
-                Def.BitmapText{
-                    Name = "Name";
-                    Font = Fonts.options["Main"];
-                    InitCommand=cmd(horizalign,left;x,-sidespacing;zoom,fontsize;strokecolor,0.2,0.2,0.2,1);
-                    GainFocusCommand=cmd(stoptweening;decelerate,0.15;diffuse,HighlightColor();strokecolor,BoostColor(HighlightColor(),0.2));
-                    LoseFocusCommand=cmd(stoptweening;decelerate,0.15;diffuse,1,1,1,1;strokecolor,0.2,0.2,0.2,0.8);
-                    DisabledCommand=cmd(stoptweening;decelerate,0.15;diffuse,0.6,0.6,0.6,0.5;strokecolor,0.2,0.2,0.2,0.8);
-                },
-                -- value
-                Def.BitmapText{
-                    Name = "Value";
-                    Font = Fonts.options["Main"];
-                    InitCommand=cmd(horizalign,right;x,sidespacing;zoom,fontsize;strokecolor,0.2,0.2,0.2,1);
-                    GainFocusCommand=cmd(stoptweening;decelerate,0.15;diffuse,HighlightColor();strokecolor,BoostColor(HighlightColor(),0.2));
-                    LoseFocusCommand=cmd(stoptweening;decelerate,0.15;diffuse,1,1,1,1;strokecolor,0.2,0.2,0.2,0.8);
-                    DisabledCommand=cmd(stoptweening;decelerate,0.15;diffuse,0.6,0.6,0.6,0.5;strokecolor,0.2,0.2,0.2,0.8);
-                },  
-            }
-        end;
-
-        transform = function(self, item_index, num_items, is_focus)
-            self.container:stoptweening();
-
-            if math.abs(item_index - self.prev_index) > 1 then
-                if item_index == 1 and self.prev_index == num_items then
-                    self.container:y(0);
-                    self.container:diffusealpha(0);
-                    self.container:decelerate(self.move_time);
-                    self.container:diffusealpha(1);
-                    self.container:y(1 * self.spacing);
-                elseif item_index == num_items and self.prev_index == 1 then 
-                    self.container:y(num_items * self.spacing);
-                    self.container:diffusealpha(0);
-                    self.container:decelerate(self.move_time);
-                    self.container:y(item_index * self.spacing);
-                    self.container:diffusealpha(1);
-                else
-                    self.container:diffusealpha(0);
-                    self.container:y(item_index * self.spacing);
-                    self.container:decelerate(self.move_time*2);
-                    self.container:diffusealpha(1);
-                end
-            else
-                self.container:decelerate(self.move_time);
-                self.container:diffusealpha(1);
-                self.container:y(item_index * self.spacing);
-            end;
-            self.prev_index = item_index;
-        end;
-
-        set = function(self, info)
-            if info and info.Name then
-                self.container:GetChild("Name"):settext(info.Name);
-            else
-                self.container:GetChild("Name"):settext("");
-            end;
-            if info and info.Value then
-                self.container:GetChild("Value"):settext(info.Value);
-            else
-                self.container:GetChild("Value"):settext("");
-            end;
-        end;
-    }
-}
-
 local scroller = setmetatable({disable_wrapping = true}, item_scroller_mt)
-
---//================================================================
-
-local function GetCurrentStackInfo()
-    local infotable = {};
-    local cur = option_stack[#option_stack];
-
-    for i=1,#cur do
-
-        local info = {}
-        info.Name = cur[i].Name; 
-        if cur[i].Type and cur[i].Type ~= "action" then
-            local optiondata = { 
-                Option = cur[i],
-                Config = THEMECONFIG,
-            }
-            info.Value = GetConfig(optiondata);
-        else
-            info.Value = "";
-        end;
-
-        info = FormatOptionConfigs(info.Name, info.Value);
-        table.insert(infotable, info);
-    end
-    return infotable;
-end
-
---//================================================================
-
-local function ScrollerFocus(s, index)
-    local focused = s:get_items_by_info_index(index)[1];
-    for i=1,#s.items do
-        if s.items[i] == focused then
-            s.items[i].container:playcommand("GainFocus");
-        else
-            s.items[i].container:playcommand(currentoption ~= nil and "Disabled" or "LoseFocus");
-        end;
-    end;
-    return focused;
-end;
 
 --//================================================================
 
@@ -345,11 +224,11 @@ local t = PropertyActor()..{
     PropertyChangedMessageCommand=cmd(playcommand,"Refresh");
     OptionsMenuMessageCommand=function(self,param)
         scroller:scroll_to_pos(Global.selection);
-        MESSAGEMAN:Broadcast("ScrollerCursor", { Focused = ScrollerFocus(scroller,Global.selection) });
+        MESSAGEMAN:Broadcast("ScrollerCursor", { Focused = ScrollerFocus(scroller,Global.selection, currentoption) });
     end;
 
     RefreshCommand=function()
-        scroller:set_info_set(GetCurrentStackInfo(), 1);
+        scroller:set_info_set(GetCurrentStackInfo(option_stack), 1);
     end;
 };
 
@@ -475,7 +354,30 @@ t[#t+1] = Def.ActorFrame{
     },
 };
 
+local fontsize = 0.45;
+local sidespacing = (window_w/2)-20;
+local scroller_actor = Def.ActorFrame{
+    -- name
+    Def.BitmapText{
+        Name = "Name";
+        Font = Fonts.options["Main"];
+        InitCommand=cmd(horizalign,left;x,-sidespacing;zoom,fontsize;strokecolor,0.2,0.2,0.2,1);
+        GainFocusCommand=cmd(stoptweening;decelerate,0.15;diffuse,HighlightColor();strokecolor,BoostColor(HighlightColor(),0.2));
+        LoseFocusCommand=cmd(stoptweening;decelerate,0.15;diffuse,1,1,1,1;strokecolor,0.2,0.2,0.2,0.8);
+        DisabledCommand=cmd(stoptweening;decelerate,0.15;diffuse,0.6,0.6,0.6,0.5;strokecolor,0.2,0.2,0.2,0.8);
+    },
+    -- value
+    Def.BitmapText{
+        Name = "Value";
+        Font = Fonts.options["Main"];
+        InitCommand=cmd(horizalign,right;x,sidespacing;zoom,fontsize;strokecolor,0.2,0.2,0.2,1);
+        GainFocusCommand=cmd(stoptweening;decelerate,0.15;diffuse,HighlightColor();strokecolor,BoostColor(HighlightColor(),0.2));
+        LoseFocusCommand=cmd(stoptweening;decelerate,0.15;diffuse,1,1,1,1;strokecolor,0.2,0.2,0.2,0.8);
+        DisabledCommand=cmd(stoptweening;decelerate,0.15;diffuse,0.6,0.6,0.6,0.5;strokecolor,0.2,0.2,0.2,0.8);
+    },  
+}
 
-t[#t+1] = scroller:create_actors("OptionsMenu", 5, item_mt, 0, 0);
+local scroller_item = OptionScrollerItem(16,scroller_actor);
+t[#t+1] = scroller:create_actors("OptionsMenu", 5, scroller_item, 0, 0);
 
 return t;

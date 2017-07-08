@@ -119,7 +119,7 @@ local player_conf_default= {
     ShowPacemaker = false,
     PacemakerTarget = "none",
     ScreenFilter = 0,
-    PreferredSpeedModifier = 25,
+    SpeedModifier = 25,
 }
 
 PLAYERCONFIG = create_lua_config{
