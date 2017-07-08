@@ -103,7 +103,7 @@ local option_tree = {
         },
     },
     {
-        Name = "Reset",
+        Name = "Reset All",
         Options = {
             ConfigAction("Reset To Default", function(pn) 
                 ResetPlayerSpeed(pn);
@@ -281,7 +281,7 @@ end;
 local t = Def.ActorFrame{};
 
 local fontsize = 0.45;
-local lineheight = 17;
+local lineheight = 18;
 local spacing = 210;
 local sidespacing = 170;
 

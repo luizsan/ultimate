@@ -231,6 +231,8 @@ local function ChangeConfig(param)
     conf:set_dirty(pn);
 end;
 
+--//================================================================
+
 function PropertyActor()
     return Def.ActorFrame{
         ChangePropertyMessageCommand=function(self,param)
