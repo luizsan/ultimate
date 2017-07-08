@@ -48,28 +48,18 @@ function OptionScrollerItem(spacing, actor)
 
             transform = function(self, item_index, num_items, is_focus)
                 self.container:stoptweening();
-                --local diff = item_index - self.prev_index;
-                --if math.abs(diff) > 1 then
-                --    self.container:diffusealpha(0);
-                --    self.container:y(item_index * self.spacing);
-                --    self.container:decelerate(self.move_time);
-                --    self.container:diffusealpha(1);
-                --else
-                --    self.container:decelerate(self.move_time);
-                --    self.container:diffusealpha(1);
-                    self.container:y(item_index * self.spacing);
-                --end;
+                self.container:y(item_index * self.spacing);
                 self.prev_index = item_index;
             end;
 
             set = function(self, info)
                 if info and info.Name then
-                    self.container:GetChild("Name"):settext(info.Name);
+                    self.container:GetChild("Name"):settext(tostring(info.Name));
                 else
                     self.container:GetChild("Name"):settext("");
                 end;
                 if info and info.Value then
-                    self.container:GetChild("Value"):settext(info.Value);
+                    self.container:GetChild("Value"):settext(tostring(info.Value));
                 else
                     self.container:GetChild("Value"):settext("");
                 end;
@@ -77,6 +67,53 @@ function OptionScrollerItem(spacing, actor)
         }
     }
     return item_mt;
+end;
+
+--//================================================================
+
+function GetCurrentStackInfo(stack, pn)
+    if not stack then return {} end;
+
+    local infotable = {};
+    local cur = stack[#stack] 
+
+    for i=1,#cur do
+        local info = {}
+        info.Name = cur[i].Name; 
+        if cur[i].Type ~= "noteskin" then
+            if cur[i].Type == "action" then
+                info.Value = "";
+            elseif cur[i].Options then
+                info.Value = "";
+            elseif cur[i].Type then
+                local optiondata = { 
+                    Option = cur[i],
+                    Player = pn,
+                }
+                info.Value = GetConfig(optiondata);
+            else
+                info.Value = "";
+            end;
+        end;
+
+        info = FormatOptionConfigs(info.Name, info.Value, pn);
+        table.insert(infotable, info);
+    end
+    return infotable;
+end
+
+--//================================================================
+
+function ScrollerFocus(s, index, currentoption)
+    local focused = s:get_items_by_info_index(index)[1];
+    for i=1,#s.items do
+        if s.items[i] == focused then
+            s.items[i].container:playcommand("GainFocus");
+        else
+            s.items[i].container:playcommand(currentoption ~= nil and "Disabled" or "LoseFocus");
+        end;
+    end;
+    return focused;
 end;
 
 --//================================================================
@@ -116,14 +153,22 @@ function ConfigChoices(conf, field, default, choices)
     }
 end;
 
-function ConfigBool(conf, field, default)
+function ConfigBool(conf, field, default, choices)
     return { 
         Name = field,
         Type = "bool",
         Field = field, 
         Config = conf, 
         Default = default, 
-        Choices = { true, false },
+        Choices = choices or { true, false },
+    }
+end;
+
+function ConfigNoteskin(name)
+    return {
+        Name = name,
+        Field = name,
+        Type = "noteskin",
     }
 end;
 
@@ -184,7 +229,6 @@ local function ChangeConfig(param)
 
     set_element_by_path(conf:get_data(pn), field, newvalue);
     conf:set_dirty(pn);
-
 end;
 
 function PropertyActor()

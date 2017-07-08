@@ -60,14 +60,14 @@ function OptionsMenuController(self,param)
     if param.Input == "Prev" then
         if currentoption then
             MESSAGEMAN:Broadcast("ChangeProperty", { Player = nil, Input = param.Input, Option = currentoption });
-            MESSAGEMAN:Broadcast("OptionsMenu", { Player = param.Player, Direction = "Prev", silent = true });
+            MESSAGEMAN:Broadcast("OptionsMenuChanged", { Player = param.Player, Direction = "Prev", silent = true });
             THEMECONFIG:save("ProfileSlot_Invalid");
             return;
         else
             Global.selection = Global.selection-1;
             if Global.selection < 1 then Global.selection = #option_stack[#option_stack] end;
             if Global.selection > #option_stack[#option_stack] then Global.selection = 1 end;
-            MESSAGEMAN:Broadcast("OptionsMenu", { Player = param.Player, Direction = "Prev", silent = false });
+            MESSAGEMAN:Broadcast("OptionsMenuChanged", { Player = param.Player, Direction = "Prev", silent = false });
             return;
         end;
     end;
@@ -75,14 +75,14 @@ function OptionsMenuController(self,param)
     if param.Input == "Next" then
         if currentoption then
             MESSAGEMAN:Broadcast("ChangeProperty", { Player = nil, Input = param.Input, Option = currentoption });
-            MESSAGEMAN:Broadcast("OptionsMenu", { Player = param.Player, Direction = "Next", silent = true });
+            MESSAGEMAN:Broadcast("OptionsMenuChanged", { Player = param.Player, Direction = "Next", silent = true });
             THEMECONFIG:save("ProfileSlot_Invalid");
             return;
         else
             Global.selection = Global.selection+1;
             if Global.selection > #option_stack[#option_stack] then Global.selection = 1 end;
             if Global.selection < 1 then Global.selection = #option_stack[#option_stack] end;
-            MESSAGEMAN:Broadcast("OptionsMenu", { Player = param.Player, Direction = "Next", silent = false });
+            MESSAGEMAN:Broadcast("OptionsMenuChanged", { Player = param.Player, Direction = "Next", silent = false });
             return;
         end;
     end;
@@ -94,7 +94,7 @@ function OptionsMenuController(self,param)
             Global.selection = GetEntry(currentoption, option_stack[#option_stack]);
             currentoption = nil;
             MESSAGEMAN:Broadcast("Return");
-            MESSAGEMAN:Broadcast("OptionsMenu", { silent = true });
+            MESSAGEMAN:Broadcast("OptionsMenuChanged", { silent = true });
             return;
 
         elseif #option_stack > 1 then
@@ -103,7 +103,7 @@ function OptionsMenuController(self,param)
             table.remove(selection_stack, #selection_stack);
             table.remove(option_stack, #option_stack);
             MESSAGEMAN:Broadcast("Return");
-            MESSAGEMAN:Broadcast("OptionsMenu", { silent = true });
+            MESSAGEMAN:Broadcast("OptionsMenuChanged", { silent = true });
             return;
 
         else
@@ -120,14 +120,14 @@ end;
 
 --//================================================================
 
-function SelectOptions()
+function SelectOptionsMenu()
 
 
     if currentoption ~= nil then
 
         currentoption = nil;
-        MESSAGEMAN:Broadcast("OptionsSelected");
-        MESSAGEMAN:Broadcast("OptionsMenu", { silent = true });
+        MESSAGEMAN:Broadcast("OptionsMenuSelected");
+        MESSAGEMAN:Broadcast("OptionsMenuChanged", { silent = true });
 
     else
 
@@ -137,8 +137,8 @@ function SelectOptions()
             table.insert(selection_stack, Global.selection);
             table.insert(option_stack, topstack.Options);
             Global.selection = 1;
-            MESSAGEMAN:Broadcast("OptionsSelected");
-            MESSAGEMAN:Broadcast("OptionsMenu", { silent = true });
+            MESSAGEMAN:Broadcast("OptionsMenuSelected");
+            MESSAGEMAN:Broadcast("OptionsMenuChanged", { silent = true });
             return;
 
         elseif topstack.Type then
@@ -146,19 +146,19 @@ function SelectOptions()
             if topstack.Action then
 
                 topstack.Action();
-                MESSAGEMAN:Broadcast("OptionsSelected");
-                MESSAGEMAN:Broadcast("OptionsMenu", { silent = true });
+                MESSAGEMAN:Broadcast("OptionsMenuSelected");
+                MESSAGEMAN:Broadcast("OptionsMenuChanged", { silent = true });
                 THEMECONFIG:save("ProfileSlot_Invalid");
 
             elseif topstack.Type == "bool" then
                 MESSAGEMAN:Broadcast("ChangeProperty", { Input = "Next", Option = topstack, silent = true });
-                MESSAGEMAN:Broadcast("OptionsSelected");
-                MESSAGEMAN:Broadcast("OptionsMenu", { silent = true });
+                MESSAGEMAN:Broadcast("OptionsMenuSelected");
+                MESSAGEMAN:Broadcast("OptionsMenuChanged", { silent = true });
                 THEMECONFIG:save("ProfileSlot_Invalid");
             else
                 currentoption = topstack;
-                MESSAGEMAN:Broadcast("OptionsSelected");
-                MESSAGEMAN:Broadcast("OptionsMenu", { silent = true });
+                MESSAGEMAN:Broadcast("OptionsMenuSelected");
+                MESSAGEMAN:Broadcast("OptionsMenuChanged", { silent = true });
                 return;
             end
 
@@ -170,7 +170,7 @@ function SelectOptions()
                 table.remove(selection_stack, #selection_stack);
                 table.remove(option_stack, #option_stack);
                 MESSAGEMAN:Broadcast("Return");
-                MESSAGEMAN:Broadcast("OptionsMenu", { silent = true });
+                MESSAGEMAN:Broadcast("OptionsMenuChanged", { silent = true });
                 return;
             else
                 Global.level = 1; 
@@ -188,9 +188,8 @@ end;
 
 --//================================================================
 
-
 -- panel
-local window_w = 300;
+local window_w = 280;
 local window_h = 164;
 
 local itemspacing = 16;
@@ -219,16 +218,12 @@ local t = PropertyActor()..{
 
     OnCommand=cmd(playcommand,"Refresh");
     ReturnMessageCommand=cmd(playcommand,"Refresh");
-    OptionsMenuMessageCommand=cmd(playcommand,"Refresh");
-    OptionsSelectedMessageCommand=cmd(playcommand,"Refresh");
+    OptionsMenuChangedMessageCommand=cmd(playcommand,"Refresh");
+    OptionsMenuSelectedMessageCommand=cmd(playcommand,"Refresh");
     PropertyChangedMessageCommand=cmd(playcommand,"Refresh");
-    OptionsMenuMessageCommand=function(self,param)
-        scroller:scroll_to_pos(Global.selection);
-        MESSAGEMAN:Broadcast("ScrollerCursor", { Focused = ScrollerFocus(scroller,Global.selection, currentoption) });
-    end;
-
     RefreshCommand=function()
-        scroller:set_info_set(GetCurrentStackInfo(option_stack), 1);
+        scroller:set_info_set(GetCurrentStackInfo(option_stack), Global.selection);
+        MESSAGEMAN:Broadcast("ScrollerCursor", { Focused = ScrollerFocus(scroller, Global.selection, currentoption) });
     end;
 };
 
@@ -297,7 +292,7 @@ t[#t+1] = Def.ActorFrame{
         InitCommand=cmd(diffuse,HighlightColor();fadeleft,0.1;faderight,0.1;diffusealpha,0);
         OnCommand=cmd(zoomto,window_w*0.95,1);
         ReturnMessageCommand=cmd(stoptweening;decelerate,0.15;diffusealpha,0);
-        OptionsSelectedMessageCommand=function(self,param)
+        OptionsMenuSelectedMessageCommand=function(self,param)
             self:stoptweening();
             self:decelerate(0.15);
             if currentoption ~= nil then
@@ -312,7 +307,7 @@ t[#t+1] = Def.ActorFrame{
     Def.ActorFrame{
         Name = "Normal";
         ReturnMessageCommand=cmd(playcommand,"Refresh");
-        OptionsSelectedMessageCommand=cmd(playcommand,"Refresh");
+        OptionsMenuSelectedMessageCommand=cmd(playcommand,"Refresh");
         RefreshCommand=function(self)
             self:stoptweening();
             self:decelerate(0.2);
@@ -336,7 +331,7 @@ t[#t+1] = Def.ActorFrame{
         LoadActor(THEME:GetPathG("","miniarrow"))..{
             InitCommand=cmd(animate,false;setstate,1;x,-cursorspacing;zoom,cursorzoom;diffusealpha,0;blend,"BlendMode_Add");
             GlowCommand=cmd(stoptweening;diffusealpha,1;sleep,0.1;decelerate,0.2;diffusealpha,0);
-            OptionsMenuMessageCommand=function(self,param)
+            OptionsMenuChangedMessageCommand=function(self,param)
                 if param and param.Direction == "Prev" and currentoption then
                     self:playcommand("Glow");
                 end;
@@ -345,7 +340,7 @@ t[#t+1] = Def.ActorFrame{
         LoadActor(THEME:GetPathG("","miniarrow"))..{
             InitCommand=cmd(animate,false;setstate,1;x,cursorspacing;zoom,cursorzoom;zoomx,-cursorzoom;diffusealpha,0;blend,"BlendMode_Add");
             GlowCommand=cmd(stoptweening;diffusealpha,1;sleep,0.1;decelerate,0.2;diffusealpha,0);
-            OptionsMenuMessageCommand=function(self,param)
+            OptionsMenuChangedMessageCommand=function(self,param)
                 if param and param.Direction == "Next" and currentoption then
                     self:playcommand("Glow");
                 end;

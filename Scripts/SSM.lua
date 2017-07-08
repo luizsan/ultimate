@@ -465,47 +465,58 @@ function GetRadar(steps,pn,index)
     end;
 end;
 
---//================================================================
-
-function GetCurrentStackInfo(stack, pn)
-    if not stack then return {} end;
-
-    local infotable = {};
-    local cur = {}
-    if pn then cur = stack[pn][#stack] else cur = stack[#stack] end;
-
-    for i=1,#cur do
-        local info = {}
-        info.Name = cur[i].Name; 
-        if cur[i].Type == "action" then
-            info.Value = "";
-        elseif cur[i].Options then
-            info.Value = "→";
-        elseif cur[i].Type then
-            local optiondata = { 
-                Option = cur[i],
-                Config = THEMECONFIG,
-            }
-            info.Value = GetConfig(optiondata);
-        else
-            info.Value = "";
-        end;
-        info = FormatOptionConfigs(info.Name, info.Value);
-        table.insert(infotable, info);
-    end
-    return infotable;
-end
 
 --//================================================================
 
-function ScrollerFocus(s, index, currentoption)
-    local focused = s:get_items_by_info_index(index)[1];
-    for i=1,#s.items do
-        if s.items[i] == focused then
-            s.items[i].container:playcommand("GainFocus");
-        else
-            s.items[i].container:playcommand(currentoption ~= nil and "Disabled" or "LoseFocus");
-        end;
-    end;
-    return focused;
+--<Kyzentun> NEWSKIN:get_all_skin_names will fetch all skin names, including ones that don't support the current stepstype.
+--<Kyzentun> get_skin_names_for_stepstype will fetch the ones for a given stepstype.
+
+function GetNoteskins()
+    local g = GAMESTATE:GetCurrentGame();
+    local st = GAMEMAN:GetFirstStepsTypeForGame(g);
+    return NOTESKIN:get_skin_names_for_stepstype(st);
 end;
+
+--//================================================================
+
+function SetNoteskinByIndex(pn, num)
+    local g = GAMESTATE:GetCurrentGame();
+    local st = GAMEMAN:GetFirstStepsTypeForGame(g);
+    local noteskins = GetNoteskins();
+    local index = clamp(num,1,#noteskins)
+    PROFILEMAN:GetProfile(pn):set_preferred_noteskin(st, noteskins[index])
+    return noteskins[index];
+end;
+
+
+--//================================================================
+
+function SetNoteskin(pn, ns)
+    local g = GAMESTATE:GetCurrentGame()
+    local st = "";
+    if Global.pncursteps[pn] then
+        st = Global.pncursteps[pn]:GetStepsType();
+    else
+        st = GAMEMAN:GetFirstStepsTypeForGame(g)
+    end;
+    PROFILEMAN:GetProfile(pn):set_preferred_noteskin(st, ns)
+end;
+
+--//================================================================
+            
+function GetNoteskinSelection(pn)
+    Global.noteskins = GetNoteskins();
+    local curskin = GetPreferredNoteskin(pn);
+    local defaultselection = 1;
+    local selection = -1;
+
+    for i=1,#Global.noteskins do
+        if string.lower(Global.noteskins[i]) == "default" then defaultselection = i; end;
+        if string.lower(curskin) == string.lower(Global.noteskins[i]) then selection = i; end;
+    end;
+
+    if selection == -1 then selection = defaultselection end;
+    return selection
+end;
+
+--//================================================================

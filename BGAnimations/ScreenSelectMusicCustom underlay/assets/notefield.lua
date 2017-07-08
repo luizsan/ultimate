@@ -57,6 +57,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
         SpeedChangedMessageCommand=cmd(playcommand,"Refresh");
         FolderChangedMessageCommand=cmd(playcommand,"Refresh");
         PropertyChangedMessageCommand=cmd(playcommand,"Refresh");
+        OptionsListSelectedMessageCommand=cmd(playcommand,"Refresh");
         NoteskinChangedMessageCommand=function(self,param)
             if param and param.noteskin and param.Player == pn then
                 self:set_skin(param.noteskin, {});
@@ -87,11 +88,6 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
                 local mode = prefs.speed_type;
                 local bpm = Global.song:GetDisplayBpms()[2];
                 apply_notefield_prefs_nopn(bpm, self, prefs)
-                
-                if prefs.speed_type == "multiple" then
-                    self:set_speed_mod(false, prefs.speed_mod/100);
-                end;
-
                 self:playcommand("WidthSet");
                 self:set_curr_second(curTime);  
             end;

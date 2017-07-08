@@ -11,8 +11,8 @@ local menutable = {
 	{ name = "Song", 		state = "MusicWheel", 	enabled = true },
 	{ name = "Steps", 		state = "SelectSteps", 	enabled = true },
 	{ name = "Ready!", 		state = "MainMenu", 	enabled = true },
-	{ name = "Speed", 		state = "SpeedMods", 	enabled = true },
-	{ name = "Noteskin", 	state = "Noteskins", 	enabled = true },
+	{ name = "Speed", 		state = "SpeedMods", 	enabled = false },
+	{ name = "Noteskin", 	state = "Noteskins", 	enabled = false },
 	{ name = "Options", 	state = "OptionsMenu",  enabled = true },
 };
 
@@ -119,7 +119,7 @@ function MainMenuDecision(param)
 		if Global.state == "SelectSteps" then SelectStep(param); return; end;
 		if Global.state == "SpeedMods" then	SelectSpeed(param); return; end;
 		if Global.state == "Noteskins" then SelectNoteskin(param); return; end;
-		if Global.state == "OptionsMenu" then SelectOptions(param); return; end;
+		if Global.state == "OptionsMenu" then SelectOptionsMenu(param); return; end;
 	end;
 end;	
 

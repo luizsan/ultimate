@@ -49,14 +49,19 @@ function MainController(self,param)
 			MESSAGEMAN:Broadcast("OptionsListOpened", param);
 			return;
 		else
-			Global.oplist[param.Player] = false
+			Global.oplist[param.Player] = false;
+			MESSAGEMAN:Broadcast("Return", param);
 			MESSAGEMAN:Broadcast("OptionsListClosed", param);
 			return;
 		end
 	end;
 
 	if param.Input == "Center" or param.Input == "Start" then 
-		MainMenuDecision({ Player = param.Player });
+		if Global.oplist[param.Player] then
+			SelectOptionsList(param);
+		else
+			MainMenuDecision({ Player = param.Player });
+		end;
 	end;
 
 	--[[
@@ -72,8 +77,12 @@ function MainController(self,param)
 	]]
 
 	if param.Input == "Return" and Global.level == 1 then 
-		Global.blockjoin = false;
-		SCREENMAN:SetNewScreen(SCREENMAN:GetTopScreen():GetPrevScreenName()); 
+		if not Global.oplist[param.Player] then
+			Global.blockjoin = false;
+			SCREENMAN:SetNewScreen(SCREENMAN:GetTopScreen():GetPrevScreenName()); 
+		else
+			OptionsListController(self,param);
+		end;
 	end;
 end;
 

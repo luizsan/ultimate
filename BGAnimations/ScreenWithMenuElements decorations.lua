@@ -65,17 +65,18 @@ local spacing = 290;
 ]]--
 
 --=======================================================================================================================
---HELPERS
+-- RESOLUTION DEBUG HELPERS
 --=======================================================================================================================
 
---[[
-t[#t+1] = Def.Quad{InitCommand=cmd(zoomto,300,SCREEN_HEIGHT;CenterY;x,SCREEN_CENTER_X-320;horizalign,right;diffuse,0,0,0,0.5);};  --right 16:9 fill
-t[#t+1] = Def.Quad{InitCommand=cmd(zoomto,300,SCREEN_HEIGHT;CenterY;x,SCREEN_CENTER_X+320;horizalign,left;diffuse,0,0,0,0.5);};   --left 16:9 fill
-t[#t+1] = Def.Quad{InitCommand=cmd(zoomto,1,SCREEN_HEIGHT;CenterY;x,SCREEN_CENTER_X+320;diffusealpha,0.25);}; --right 4:3 line
-t[#t+1] = Def.Quad{InitCommand=cmd(zoomto,1,SCREEN_HEIGHT;CenterY;x,SCREEN_CENTER_X-320;diffusealpha,0.25);}; --left 4:3 line
-t[#t+1] = Def.Quad{InitCommand=cmd(zoomto,1,SCREEN_HEIGHT;CenterY;x,SCREEN_CENTER_X;diffusealpha,0.25);}; --center vertical line
-t[#t+1] = Def.Quad{InitCommand=cmd(zoomto,SCREEN_WIDTH,1;CenterY;x,SCREEN_CENTER_X;diffusealpha,0.25);}; --center horizontal line
-]]
+if not true then
+	local lines_color = {1,0,0,1};
+	t[#t+1] = Def.Quad{ InitCommand=cmd(zoomto,300,SCREEN_HEIGHT;CenterY;x,SCREEN_CENTER_X-320;horizalign,right;diffuse,0,0,0,0.5) }; --right 16:9 fill
+	t[#t+1] = Def.Quad{ InitCommand=cmd(zoomto,300,SCREEN_HEIGHT;CenterY;x,SCREEN_CENTER_X+320;horizalign,left;diffuse,0,0,0,0.5) }; --left 16:9 fill
+	t[#t+1] = Def.Quad{ InitCommand=cmd(zoomto,1,SCREEN_HEIGHT;CenterY;x,SCREEN_CENTER_X+320;diffuse,lines_color) }; --right 4:3 line
+	t[#t+1] = Def.Quad{ InitCommand=cmd(zoomto,1,SCREEN_HEIGHT;CenterY;x,SCREEN_CENTER_X-320;diffuse,lines_color) }; --left 4:3 line
+	t[#t+1] = Def.Quad{ InitCommand=cmd(zoomto,1,SCREEN_HEIGHT;CenterY;x,SCREEN_CENTER_X;diffuse,lines_color) }; --center vertical line
+	t[#t+1] = Def.Quad{ InitCommand=cmd(zoomto,SCREEN_WIDTH,1;CenterY;x,SCREEN_CENTER_X;diffuse,lines_color) }; --center horizontal line
+end;
 
 --=======================================================================================================================
 --CONTROLS

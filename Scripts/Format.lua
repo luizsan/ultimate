@@ -60,12 +60,13 @@ end
 
 --//================================================================
 
-function FormatSpeed(value, mode)
-    if mode == 3 or mode == "M" then
+function FormatSpeed(value, stype)
+    local mode = stype and string.lower(stype) or ""
+    if mode == 3 or mode == "m" or mode == "maximum" then
         return "M"..value;
-    elseif mode == 2 or mode == "C" then
+    elseif mode == 2 or mode == "c" or mode == "constant" then
         return "C"..value;
-    elseif mode == 1 or mode == "X" then
+    elseif mode == 1 or mode == "x" or mode == "multiple" then
         return string.format("%.2f",value/100).."X";
     else
         LuaError("Invalid or nil speed mode");
@@ -142,10 +143,15 @@ local function dict_bool(val)
     return val and "On" or "Off";
 end;
 
-local function dict_rate(val)
-    if string.len(tostring(val)) == 1 then return tostring(val)..".00x" end;
-    if string.len(tostring(val)) == 3 then return tostring(val).."0x" end;
-    if string.len(tostring(val)) == 4 then return tostring(val).."x" end;
+local function dict_reverse(val)
+    return val == -1 and "On" or "Off";
+end;
+
+local function dict_float(val, suf)
+    local suffix = suf or ""
+    if string.len(tostring(val)) == 1 then return tostring(val)..".00"..suffix end;
+    if string.len(tostring(val)) == 3 then return tostring(val).."0"..suffix end;
+    if string.len(tostring(val)) == 4 then return tostring(val)..suffix end;
 end;
 
 local dict_fail = {
@@ -176,32 +182,37 @@ local dict_life = {
     "7 (Hardest)",
 }
 
-function FormatOptionConfigs(str, val)
-    local dictionary = {
-        ["BGBrightness"]        = "Background Brightness",
-        ["DefaultBG"]           = "Use Default Background",
-        ["CenterPlayer"]        = "Center 1 Player",
-        ["MusicRate"]           = "Music Rate",
-        ["FailType"]            = "Fail Type",
-        ["FailMissCombo"]       = "Miss Combo Fail",
-        ["AllowW1"]             = "Flawless Timing",
-        ["TimingDifficulty"]    = "Timing Window Difficulty",
-        ["LifeDifficulty"]      = "Life Meter Difficulty",
-    }
+function FormatOptionConfigs(str, val, pn)
+    local prefs = pn and notefield_prefs_config:get_data(pn)
 
     local format = {
         ["BGBrightness"]        = tostring(val).."%",
         ["DefaultBG"]           = dict_bool(val),
         ["CenterPlayer"]        = dict_bool(val),
-        ["MusicRate"]           = dict_rate(val),
+        ["MusicRate"]           = dict_float(val,"x"),
         ["FailType"]            = dict_fail[val],
         ["FailMissCombo"]       = dict_bool(val),
         ["AllowW1"]             = dict_bool(val),
         ["TimingDifficulty"]    = dict_timing[val],
         ["LifeDifficulty"]      = dict_life[val],
+
+        ["speed_mod"]           = prefs and FormatSpeed(prefs.speed_mod, prefs.speed_type) or val,
+        ["speed_type"]          = prefs and UppercaseFirst(prefs.speed_type) or val,
+        ["hidden"]              = dict_bool(val),
+        ["sudden"]              = dict_bool(val),
+        ["glow_during_fade"]    = dict_bool(val),
+        ["reverse"]             = dict_reverse(val),
+
+        ["zoom"]                = prefs and (prefs.zoom * 100).."%" or val,
+        ["zoom_x"]              = prefs and (prefs.zoom_x * 100).."%" or val,
+        ["zoom_y"]              = prefs and (prefs.zoom_y * 100).."%" or val,
+        ["zoom_z"]              = prefs and (prefs.zoom_z * 100).."%" or val,
+        ["rotation_x"]          = tostring(val).."°",
+        ["rotation_y"]          = tostring(val).."°",
+        ["rotation_z"]          = tostring(val).."°",
     }
 
-    local a = dictionary[str] or str;
+    local a = THEME:HasString("Configs", str) and THEME:GetString("Configs", str) or str;
     local b = format[str] or val;
     return { Name = a, Value = b }
 end;

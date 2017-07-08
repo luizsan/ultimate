@@ -26,6 +26,12 @@ local _GradeColor = {
 
 --//================================================================
 
+function AlphaColor(color,alpha)
+    return { color[1], color[2], color[3], alpha }
+end;    
+
+--//================================================================
+
 function HighlightColor(alpha) 
     return {0.3,1,0.775,alpha or 1}
 end;
