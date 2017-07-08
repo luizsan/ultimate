@@ -144,12 +144,12 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 
             -- fade quad
             Def.Quad{
-                InitCommand=cmd(skewx,-0.1;zoomto,_screen.h*(16/9)*-pnSide(pn),_screen.h;horizalign,right;diffuse,BoostColor(Global.bgcolor,0.5);diffusealpha,0.75;Center;faderight,1/4);
+                InitCommand=cmd(skewx,-0.1;zoomto,_screen.h*(16/9)*-pnSide(pn),_screen.h;halign,1.225;diffuse,BoostColor(Global.bgcolor,0.5);diffusealpha,0.75;Center);
             },
 
             -- color quad
             Def.Quad{
-                InitCommand=cmd(skewx,-0.5;zoomto,_screen.h*(16/9)*-pnSide(pn),_screen.h;horizalign,right;diffuse,BoostColor(PlayerColor(pn,0.75),0.9);diffusebottomedge,PlayerColor(pn,0);Center;faderight,1/2);
+                InitCommand=cmd(skewx,-0.1;zoomto,_screen.h*(16/9)*-pnSide(pn),_screen.h;halign,1.225;diffuse,BoostColor(PlayerColor(pn,0.75),0.9);diffusebottomedge,PlayerColor(pn,0);Center);
             },
 
             Def.ActorFrame{
