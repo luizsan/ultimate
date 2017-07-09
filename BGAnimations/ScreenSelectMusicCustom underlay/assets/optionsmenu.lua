@@ -93,7 +93,7 @@ function OptionsMenuController(self,param)
 
             Global.selection = GetEntry(currentoption, option_stack[#option_stack]);
             currentoption = nil;
-            MESSAGEMAN:Broadcast("Return");
+            MESSAGEMAN:Broadcast("Return", { Target = "OptionsMenu" });
             MESSAGEMAN:Broadcast("OptionsMenuChanged", { silent = true });
             return;
 
@@ -102,14 +102,14 @@ function OptionsMenuController(self,param)
             Global.selection = selection_stack[#selection_stack];
             table.remove(selection_stack, #selection_stack);
             table.remove(option_stack, #option_stack);
-            MESSAGEMAN:Broadcast("Return");
+            MESSAGEMAN:Broadcast("Return", { Target = "OptionsMenu" });
             MESSAGEMAN:Broadcast("OptionsMenuChanged", { silent = true });
             return;
 
         else
 
             Global.level = 1; 
-            Global.selection = 7; 
+            Global.selection = 6; 
             Global.state = "MainMenu";  
             MESSAGEMAN:Broadcast("StateChanged"); 
             MESSAGEMAN:Broadcast("Return");
@@ -169,7 +169,7 @@ function SelectOptionsMenu()
                 Global.selection = selection_stack[#selection_stack];
                 table.remove(selection_stack, #selection_stack);
                 table.remove(option_stack, #option_stack);
-                MESSAGEMAN:Broadcast("Return");
+                MESSAGEMAN:Broadcast("Return", { Target = "OptionsMenu" });
                 MESSAGEMAN:Broadcast("OptionsMenuChanged", { silent = true });
                 return;
             else
@@ -189,7 +189,7 @@ end;
 --//================================================================
 
 -- panel
-local window_w = 280;
+local window_w = 300;
 local window_h = 164;
 
 local itemspacing = 16;
@@ -201,15 +201,14 @@ local scroller = setmetatable({disable_wrapping = true}, item_scroller_mt)
 --//================================================================
 
 local t = PropertyActor()..{
-    InitCommand=cmd(CenterX;y,SCREEN_CENTER_Y-96;diffusealpha,0;zoom,0.8);
+    InitCommand=cmd(CenterX;y,SCREEN_CENTER_Y-106;diffusealpha,0;zoom,0.8);
     StateChangedMessageCommand=function(self)
-        self:playcommand("Refresh");
         self:stoptweening();
-        self:linear(0.1);
+        self:decelerate(0.125);
         if Global.state == "OptionsMenu" then
+            self:playcommand("Refresh");
             self:diffusealpha(1);
             self:zoom(1)
-            offset = 0;
         else
             self:diffusealpha(0);
             self:zoom(0.8);
@@ -217,17 +216,20 @@ local t = PropertyActor()..{
     end;
 
     OnCommand=cmd(playcommand,"Refresh");
-    ReturnMessageCommand=cmd(playcommand,"Refresh");
     OptionsMenuChangedMessageCommand=cmd(playcommand,"Refresh");
     OptionsMenuSelectedMessageCommand=cmd(playcommand,"Refresh");
     PropertyChangedMessageCommand=cmd(playcommand,"Refresh");
+    ReturnMessageCommand=function(self,param) if param and param.Target == "OptionsMenu" then self:playcommand("Refresh"); end end;
     RefreshCommand=function()
-        scroller:set_info_set(GetCurrentStackInfo(option_stack), Global.selection);
+        local info = GetCurrentStackInfo(option_stack);
+        scroller:set_info_set(info, Global.selection);
         MESSAGEMAN:Broadcast("ScrollerCursor", { Focused = ScrollerFocus(scroller, Global.selection, currentoption) });
+        MESSAGEMAN:Broadcast("OptionMenuDescription", { Description = info and info[Global.selection] and info[Global.selection].Description or "" });
     end;
 };
 
 --//================================================================
+
 
 t[#t+1] = Def.ActorFrame{
     InitCommand=cmd(y,(window_h/2) - 32);
@@ -259,8 +261,21 @@ t[#t+1] = Def.ActorFrame{
         InitCommand=cmd(zoomto,window_w*1.5,window_h*1.5;y,window_h/2;diffuse,BoostColor(HighlightColor(),0.5);diffusealpha,0.4;cropbottom,0.5;cropleft,0.165;cropright,0.165;diffusetopedge,0,0,0,0;blend,Blend.Add);
     },
     -- description area
-    Def.Quad{ InitCommand=cmd(y,window_h/2;zoomto,window_w,32;diffuse,HighlightColor();diffusealpha,0.1;blend,Blend.Add;vertalign,bottom); },  
+    Def.Quad{ InitCommand=cmd(y,window_h/2;zoomto,window_w,36;diffuse,HighlightColor();diffusealpha,0.1;blend,Blend.Add;vertalign,bottom); },  
     Def.Quad{ InitCommand=cmd(y,-window_h/2;zoomto,window_w,30;diffuse,0.1,0.1,0.1,0.5;vertalign,top); },  
+
+    -- title
+    Def.BitmapText{
+        Font = Fonts.options["Main"];
+        InitCommand=cmd(y,window_h/2-18;zoom,0.39;diffuse,HighlightColor();wrapwidthpixels,(window_w-20)/self:GetZoom();vertspacing,-12);
+        OptionMenuDescriptionMessageCommand=function(self,param)
+            self:stoptweening();
+            self:cropright(1);
+            self:settext(param and param.Description or "");
+            self:linear(string.len(param and param.Description or "")/150);
+            self:cropright(0);
+        end;
+    },
 
     -- title
     Def.BitmapText{
@@ -277,7 +292,16 @@ local cursorzoom = 0.4;
 local cursorspacing = (window_w+4) / 2;
 
 t[#t+1] = Def.ActorFrame{
-    StateChangedMessageCommand=cmd(y,itemspacing;visible,Global.state == "OptionsMenu");
+    OnCommand=cmd(y,itemspacing);
+    StateChangedMessageCommand=function(self)
+        if Global.state == "OptionsMenu" then 
+            self:stoptweening();
+            self:y(itemspacing);
+            self:visible(true);
+        else
+            self:visible(false);
+        end;
+    end;
     ScrollerCursorMessageCommand=function(self,param)
         self:stoptweening();
         self:decelerate(0.15)
@@ -352,6 +376,7 @@ t[#t+1] = Def.ActorFrame{
 local fontsize = 0.45;
 local sidespacing = (window_w/2)-20;
 local scroller_actor = Def.ActorFrame{
+
     -- name
     Def.BitmapText{
         Name = "Name";
@@ -375,4 +400,34 @@ local scroller_actor = Def.ActorFrame{
 local scroller_item = OptionScrollerItem(16,scroller_actor);
 t[#t+1] = scroller:create_actors("OptionsMenu", 5, scroller_item, 0, 0);
 
-return t;
+
+-- QUADS BG
+local bg = Def.ActorFrame{
+    InitCommand=cmd(CenterX;y,SCREEN_CENTER_Y-10.5;diffusealpha,0);
+    StateChangedMessageCommand=function(self)
+        self:stoptweening();
+        self:decelerate(0.2);
+        self:diffusealpha(Global.state == "OptionsMenu" and 1 or 0);
+    end;
+
+    Def.Quad{
+        InitCommand=cmd(zoomto,_screen.h*(16/9)*(2/3),_screen.h;cropbottom,1/3;
+            diffuse,BoostColor(Global.bgcolor,0.5);diffusebottomedge,BoostColor(AlphaColor(Global.bgcolor,0.5),0.5);fadeleft,0.25;faderight,0.25);
+    },
+
+    Def.Quad{
+        InitCommand=cmd(zoomto,_screen.h*(16/9)*(2/3),_screen.h;
+            diffuse,0.15,0.15,0.15,1;diffuse,0.2,0.2,0.2,0.75;cropbottom,1/3;fadeleft,0.25;faderight,0.25);
+    },
+
+    LoadActor(THEME:GetPathG("","_pattern"))..{
+        InitCommand=cmd(zoomto,_screen.h*(16/9)*(2/3),_screen.h;blend,Blend.Add;
+            diffuse,BoostColor(HighlightColor(),0.125);diffusebottomedge,0.1,0.1,0.1,0.25;cropbottom,1/3;fadeleft,0.25;faderight,0.25;
+                customtexturerect,0,0,(_screen.h*(16/9)) / 384 * 2.5 *(2/3),_screen.h / 384 * 2.5;texcoordvelocity,0,-0.075);
+    },
+};
+
+
+
+
+return Def.ActorFrame{ bg, t };

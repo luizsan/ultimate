@@ -43,7 +43,7 @@ end;
 function ResetDisplayOptions()
     local tconf = THEMECONFIG:get_data("ProfileSlot_Invalid");
     tconf.BGBrightness = 100;
-    tconf.DefaultBackground = false;
+    tconf.DefaultBG = false;
     tconf.CenterPlayer = false;
     THEMECONFIG:save();
 end;
@@ -116,8 +116,8 @@ local player_conf_default= {
     ShowOffsetMeter = false,
     ShowEarlyLate = false,
     ShowJudgmentList = false,
-    ShowPacemaker = false,
-    PacemakerTarget = "none",
+    ShowPacemaker = "off",
+    ReverseJudgment = false,
     ScreenFilter = 0,
     SpeedModifier = 25,
 }
@@ -133,6 +133,20 @@ add_standard_lua_config_save_load_hooks(PLAYERCONFIG);
 
 --//================================================================
 
+pacemaker_targets = {
+    "off",
+    "no target", 
+    "best score", 
+    "grade: D", 
+    "grade: C", 
+    "grade: B", 
+    "grade: A", 
+    "grade: AA", 
+    "grade: AAA"
+}
+
+--//================================================================
+
 function ResetPlayerSpeed(pn)
     local nconf = NOTESCONFIG:get_data(pn);
     local pconf = PLAYERCONFIG:get_data(pn);
@@ -140,8 +154,8 @@ function ResetPlayerSpeed(pn)
     pconf.SpeedModifier = 25;
     nconf.speed_type = "maximum";
 
-    NOTESCONFIG:save(pn);
-    PLAYERCONFIG:save(pn);
+    NOTESCONFIG:set_dirty(pn);
+    PLAYERCONFIG:set_dirty(pn);
 end;
 
 function ResetPlayerZoom(pn)
@@ -151,7 +165,7 @@ function ResetPlayerZoom(pn)
     nconf.zoom_y = 1;
     nconf.zoom_z = 1;
 
-    NOTESCONFIG:save(pn);
+    NOTESCONFIG:set_dirty(pn);
 end;
 
 function ResetPlayerRotation(pn)
@@ -160,7 +174,7 @@ function ResetPlayerRotation(pn)
     nconf.rotation_y = 0;
     nconf.rotation_z = 0;
 
-    NOTESCONFIG:save(pn);
+    NOTESCONFIG:set_dirty(pn);
 end;
 
 function ResetPlayerView(pn)
@@ -169,19 +183,22 @@ function ResetPlayerView(pn)
     nconf.yoffset = 140;
     nconf.fov = 60;
 
-    NOTESCONFIG:save(pn);
+    NOTESCONFIG:set_dirty(pn);
 end;
 
 function ResetPlayerDisplay(pn)
     local nconf = NOTESCONFIG:get_data(pn);
+    local pconf = PLAYERCONFIG:get_data(pn);
     nconf.hidden = false;
     nconf.sudden = false;
     nconf.hidden_offset = 120;
     nconf.sudden_offset = 190;
     nconf.fade_distance = 40;
     nconf.glow_during_fade = true;
+    pconf.ReverseJudgment = false;
 
-    NOTESCONFIG:save(pn);
+    NOTESCONFIG:set_dirty(pn);
+    PLAYERCONFIG:set_dirty(pn);
 end;
 
 function ResetPlayerTransform(pn)

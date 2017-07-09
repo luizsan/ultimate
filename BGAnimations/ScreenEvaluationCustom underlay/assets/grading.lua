@@ -115,15 +115,15 @@ local function FetchSubStats(pn)
 end;
 
 local dance_grade = {
-    { Label = "Superb",     Key = "W1",        Color = color("#ffc4ed"),      Enabled = PREFSMAN:GetPreference("AllowW1") ~= "AllowW1_Never" },
-    { Label = "Perfect",    Key = "W2",        Color = color("#6ccfff"),      Enabled = true },
-    { Label = "Great",      Key = "W3",        Color = color("#a9ff63"),      Enabled = true },
-    { Label = "Good",       Key = "W4",        Color = color("#ffd075"),      Enabled = true },
-    { Label = "Bad",        Key = "W5",        Color = color("#ae84cf"),      Enabled = true },
-    { Label = "Miss",       Key = "Miss",      Color = color("#ff5252"),      Enabled = true },
-    { Label = "Held",       Key = "Held",      Color = color("#ffffff"),      Enabled = ShowHoldJudgments()  },
-    { Label = "Max Combo",  Key = "Combo",     Color = color("#ffffff"),      Enabled = true },
-    { Label = "Score",      Key = "Score",     Color = color("#ffffff"),      Enabled = true },
+    { Label = JudgmentLabels()[1].Value,       Key = "W1",        Color = JudgmentColor("Flawless"),      Enabled = PREFSMAN:GetPreference("AllowW1") ~= "AllowW1_Never" },
+    { Label = JudgmentLabels()[2].Value,       Key = "W2",        Color = JudgmentColor("Perfect"),      Enabled = true },
+    { Label = JudgmentLabels()[3].Value,       Key = "W3",        Color = JudgmentColor("Great"),      Enabled = true },
+    { Label = JudgmentLabels()[4].Value,       Key = "W4",        Color = JudgmentColor("Good"),      Enabled = true },
+    { Label = JudgmentLabels()[5].Value,       Key = "W5",        Color = JudgmentColor("Bad"),      Enabled = true },
+    { Label = JudgmentLabels()[6].Value,       Key = "Miss",      Color = JudgmentColor("Miss"),      Enabled = true },
+    { Label = JudgmentLabels()[7].Value,       Key = "Held",      Color = color("#ffffff"),      Enabled = ShowHoldJudgments()  },
+    { Label = "Max Combo",                     Key = "Combo",     Color = color("#ffffff"),      Enabled = true },
+    { Label = "Score",                         Key = "Score",     Color = color("#ffffff"),      Enabled = true },
 };
 
 local sub_sections = {

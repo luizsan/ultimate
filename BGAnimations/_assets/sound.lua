@@ -13,6 +13,8 @@ t[#t+1] = Def.Actor{
 		end;
 	end;
 
+	OffCommand=function(self) MESSAGEMAN:Broadcast("Volume", { volume = 0 }); end;
+
 	MusicWheelMessageCommand=function(self)
 		self:stoptweening(); 
 		self:playcommand("Volume", { volume = 1 });
@@ -59,7 +61,7 @@ t[#t+1] = Def.Actor{
 	end; 
 };
 	
-t[#t+1] = LoadActor(THEME:GetPathS("","SSM_Difficulty"))..{
+t[#t+1] = LoadActor(THEME:GetPathS("","Difficulty"))..{
 	StepsChangedMessageCommand=function(self, param) 
 		if Global.state == "SelectSteps" then 
 			if param and param.Player then 
@@ -69,29 +71,29 @@ t[#t+1] = LoadActor(THEME:GetPathS("","SSM_Difficulty"))..{
 	end;
 };	
 	
-t[#t+1] = LoadActor(THEME:GetPathS("","SSM_Confirm"))..{
+t[#t+1] = LoadActor(THEME:GetPathS("","Confirm"))..{
 	FinalDecisionMessageCommand=cmd(play);
 };	
 
-t[#t+1] = LoadActor(THEME:GetPathS("","SSM_Group"))..{
+t[#t+1] = LoadActor(THEME:GetPathS("","Group"))..{
 	FolderChangedMessageCommand=cmd(play);
 };	
 	
-t[#t+1] = LoadActor(THEME:GetPathS("","SSM_Select"))..{
+t[#t+1] = LoadActor(THEME:GetPathS("","Select"))..{
 	DecisionMessageCommand=cmd(play);
 };	
 	
-t[#t+1] = LoadActor(THEME:GetPathS("","SSM_Switch"))..{
+t[#t+1] = LoadActor(THEME:GetPathS("","Switch"))..{
 	MusicWheelMessageCommand=function(self,param) if param and not param.silent then self:play() end; end;
 	SongGroupMessageCommand=cmd(play);
 };	
 	
-t[#t+1] = LoadActor(THEME:GetPathS("","SSM_State"))..{
+t[#t+1] = LoadActor(THEME:GetPathS("","State"))..{
 	MainMenuDecisionMessageCommand=cmd(play);
 	OptionsListOpenedMessageCommand=cmd(play);
 };	
 
-t[#t+1] = LoadActor(THEME:GetPathS("","SSM_Steps"))..{
+t[#t+1] = LoadActor(THEME:GetPathS("","Steps"))..{
 	StepsSelectedMessageCommand=cmd(play);
 	SongSelectedMessageCommand=cmd(play);
 	SpeedSelectedMessageCommand=cmd(play);
@@ -100,7 +102,7 @@ t[#t+1] = LoadActor(THEME:GetPathS("","SSM_Steps"))..{
 	OptionsMenuSelectedMessageCommand=function(self,param) if not param or not param.silent then self:play(); end; end;
 };	
 
-t[#t+1] = LoadActor(THEME:GetPathS("","SSM_Mainmenu"))..{
+t[#t+1] = LoadActor(THEME:GetPathS("","Mainmenu"))..{
 	MainMenuMessageCommand=function(self,param) if param and param.Direction then self:play(); end; end;
 	SpeedMenuMessageCommand=function(self,param) if not param or not param.silent then self:play() end; end;
 	SpeedChangedMessageCommand=function(self,param) if not param or not param.silent then self:play(); end; end;
@@ -112,6 +114,7 @@ t[#t+1] = LoadActor(THEME:GetPathS("","SSM_Mainmenu"))..{
 };	
 	
 t[#t+1] = LoadActor(THEME:GetPathS("Common","Cancel"))..{
+	OptionsListClosedMessageCommand=cmd(play);
 	ReturnMessageCommand=function(self,param) 
 		self:play();
 	end;

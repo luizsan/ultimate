@@ -47,6 +47,16 @@ end;
 
 --//================================================================
 
+function RedirCheckpointTNS()
+	if PREFSMAN:GetPreference("AllowW1") == 'AllowW1_Never' then
+		return "TapNoteScore_W2"
+	else
+		return "TapNoteScore_W1"
+	end;
+end;
+
+--//================================================================
+
 function Game()
 	local game = string.upper(GAMESTATE:GetCurrentGame():GetName());
 	local temp1 = string.sub(string.lower(game), 2);

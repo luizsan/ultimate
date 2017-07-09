@@ -520,3 +520,15 @@ function GetNoteskinSelection(pn)
 end;
 
 --//================================================================
+
+function GetPreferredNoteskin(pn)
+    local g = GAMESTATE:GetCurrentGame()
+    local st = "";
+    if Global.pncursteps[pn] then
+        st = Global.pncursteps[pn]:GetStepsType();
+    else
+        st = GAMEMAN:GetFirstStepsTypeForGame(g)
+    end;
+    return PROFILEMAN:GetProfile(pn):get_preferred_noteskin(st)
+end;
+

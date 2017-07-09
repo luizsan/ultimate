@@ -66,6 +66,9 @@ Fonts = {
         ["Main"] = "titillium regular",
         ["Sections"] = "regen strong",
     },
+    counter = {
+        ["Main"] = "titillium regular",
+    },
     eval = {
         ["Caption"] = "regen small",
         ["Info"] = "roboto regular",

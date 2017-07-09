@@ -1,4 +1,4 @@
-local maxitems = 5;
+local maxitems = 7;
 local selection = {
     [PLAYER_1] = 1,
     [PLAYER_2] = 1,
@@ -52,6 +52,20 @@ local option_tree = {
     },
     ConfigAction("Noteskin", function(pn) NoteskinMenu(pn) end),
     {
+        Name = "Display",
+        Options = {
+            ConfigBool(NOTESCONFIG, "hidden", false),
+            ConfigBool(NOTESCONFIG, "sudden", false),
+            --ConfigRange(NOTESCONFIG, "hidden_offset", 0, 0, 0, 0), 
+            --ConfigRange(NOTESCONFIG, "sudden_offset", 0, 0, 0, 0), 
+            --ConfigRange(NOTESCONFIG, "fade_dist", 40, 0, 120, 5), 
+            ConfigBool(NOTESCONFIG, "glow_during_fade", true),
+            ConfigBool(PLAYERCONFIG, "ReverseJudgment", false),
+            ConfigAction("Reset", function(pn) ResetPlayerDisplay(pn) end),
+            ConfigExit("Back"),
+        },
+    },
+    {
         Name = "Transform",
         Options = {
             {   
@@ -90,17 +104,15 @@ local option_tree = {
         },
     },
     {
-        Name = "Display",
+        Name = "Extras",
         Options = {
-            ConfigBool(NOTESCONFIG, "hidden", false),
-            ConfigBool(NOTESCONFIG, "sudden", false),
-            --ConfigRange(NOTESCONFIG, "hidden_offset", 0, 0, 0, 0), 
-            --ConfigRange(NOTESCONFIG, "sudden_offset", 0, 0, 0, 0), 
-            --ConfigRange(NOTESCONFIG, "fade_dist", 40, 0, 120, 5), 
-            ConfigBool(NOTESCONFIG, "glow_during_fade", true),
-            ConfigAction("Reset", function(pn) ResetPlayerDisplay(pn) end),
+            ConfigRange(PLAYERCONFIG, "ScreenFilter", 0, 0, 100, 5),
+            ConfigBool(PLAYERCONFIG, "ShowEarlyLate", false),
+            ConfigBool(PLAYERCONFIG, "ShowJudgmentList", false),
+            --ConfigBool(PLAYERCONFIG, "ShowOffsetMeter", false),
+            --ConfigChoices(PLAYERCONFIG, "ShowPacemaker", "off", pacemaker_targets),
             ConfigExit("Back"),
-        },
+        }
     },
     {
         Name = "Reset All",
@@ -125,6 +137,7 @@ local option_tree = {
 function OptionsListController(self,param)
     local pn = param.Player;
     local stacksize = #option_stack[pn][#option_stack[pn]]
+    param.Target = "OptionsList"
 
     if param.Input == "Prev" then
         if currentoption[pn] then
@@ -188,7 +201,6 @@ function OptionsListController(self,param)
             return;
         else
             Global.oplist[param.Player] = false
-            MESSAGEMAN:Broadcast("Return", param);
             MESSAGEMAN:Broadcast("OptionsListClosed", param);
             return;
         end;
@@ -255,7 +267,6 @@ function SelectOptionsList(param)
                 return;
             else
                 Global.oplist[param.Player] = false
-                MESSAGEMAN:Broadcast("Return", param);
                 MESSAGEMAN:Broadcast("OptionsListClosed", param);
                 return;
             end
@@ -281,8 +292,8 @@ end;
 local t = Def.ActorFrame{};
 
 local fontsize = 0.45;
-local lineheight = 18;
-local spacing = 210;
+local lineheight = 17;
+local spacing = 186;
 local sidespacing = 170;
 
 for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
@@ -304,7 +315,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
             Def.BitmapText{
                 Name = "Value";
                 Font = Fonts.options["Main"];
-                InitCommand=cmd(x,10*-pnSide(pn);horizalign,pnAlign(pn);zoom,fontsize;playcommand,"LoseFocus");
+                InitCommand=cmd(x,10*-pnSide(pn);horizalign,pnAlign(pn);zoom,fontsize*0.95;playcommand,"LoseFocus");
                 GainFocusCommand=cmd(stoptweening;decelerate,0.15;diffuse,1,0.9,0.2,1;strokecolor,BoostColor({1,0.9,0.2,1},0.4));
                 LoseFocusCommand=cmd(stoptweening;decelerate,0.15;diffuse,1,1,1,1;strokecolor,0.25,0.25,0.25,0.8);
                 DisabledCommand=cmd(stoptweening;decelerate,0.15;diffuse,0.6,0.6,0.6,0.5;strokecolor,0.2,0.2,0.2,0.5);
@@ -317,7 +328,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
         local scroller_item = OptionScrollerItem(lineheight,scroller_actor);
         scroller_item.__index.transform = function(self, item_index, num_items, is_focus)
             self.container:stoptweening();
-            self.container:x(item_index * 2 * pnSide(pn));
+            self.container:x(item_index * 1.25 * pnSide(pn));
             self.container:y(item_index * self.spacing);
             self.prev_index = item_index;
         end;
@@ -344,7 +355,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 
                 Def.Quad{
                     InitCommand=cmd(Center;skewx,-0.075;zoomto,_screen.h*(16/9)*-pnSide(pn)*0.45,_screen.h;halign,1.2;
-                        diffuse,BoostColor(Global.bgcolor,0.5);diffusebottomedge,BoostColor(AlphaColor(Global.bgcolor,0),0.5);cropbottom,1/3;faderight,0.5);
+                        diffuse,BoostColor(Global.bgcolor,0.5);diffusebottomedge,BoostColor(AlphaColor(Global.bgcolor,0),0.5);cropbottom,1/3;faderight,0.75);
                 },
                 Def.Quad{
                     InitCommand=cmd(Center;skewx,-0.075;zoomto,_screen.h*(16/9)*-pnSide(pn)*0.45,_screen.h;halign,1.2;
@@ -389,7 +400,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
                 },
 
                 -- main scroller
-                scroller:create_actors("OptionsList", 8, scroller_item, 0, 0)..{
+                scroller:create_actors("OptionsList", maxitems, scroller_item, 0, 0)..{
                     InitCommand=cmd(y,4;x,16*pnSide(pn);diffusealpha,0);
                     OptionsListOpenedMessageCommand=function(self,param)
                         if param and param.Player == pn then

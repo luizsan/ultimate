@@ -1,3 +1,16 @@
+function JudgmentLabels()
+    return {
+        { Key = "TapNoteScore_W1", Value = "Flawless", Lite = "FL" },
+        { Key = "TapNoteScore_W2", Value = "Perfect", Lite = "PF" },
+        { Key = "TapNoteScore_W3", Value = "Great", Lite = "GR" },
+        { Key = "TapNoteScore_W4", Value = "Good", Lite = "GD" },
+        { Key = "TapNoteScore_W5", Value = "Bad", Lite = "BD" },
+        { Key = "TapNoteScore_Miss", Value = "Miss", Lite = "MS" },
+        { Key = "HoldNoteScore_Held", Value = "Held", Lite = "OK" },
+        { Key = "HoldNoteScore_LetGo", Value = "Let Go", Lite = "NG" },
+    }
+end;
+
 --//================================================================
 
 function PureType(steps)
@@ -201,6 +214,7 @@ function FormatOptionConfigs(str, val, pn)
         ["hidden"]              = dict_bool(val),
         ["sudden"]              = dict_bool(val),
         ["glow_during_fade"]    = dict_bool(val),
+        ["ReverseJudgment"]     = dict_bool(val),
         ["reverse"]             = dict_reverse(val),
 
         ["zoom"]                = prefs and (prefs.zoom * 100).."%" or val,
@@ -210,9 +224,16 @@ function FormatOptionConfigs(str, val, pn)
         ["rotation_x"]          = tostring(val).."°",
         ["rotation_y"]          = tostring(val).."°",
         ["rotation_z"]          = tostring(val).."°",
+
+        ["ScreenFilter"]        = tostring(val) == "0" and "Off" or tostring(val).."%",
+        ["ShowEarlyLate"]       = dict_bool(val),
+        ["ShowJudgmentList"]    = dict_bool(val),
+        ["ShowOffsetMeter"]     = dict_bool(val),
+        ["ShowPacemaker"]       = UppercaseFirst(tostring(val)),
     }
 
     local a = THEME:HasString("Configs", str) and THEME:GetString("Configs", str) or str;
     local b = format[str] or val;
-    return { Name = a, Value = b }
+    local c = THEME:HasString("ConfigsDescriptions", str) and THEME:GetString("ConfigsDescriptions", str) or "";
+    return { Name = a, Value = b, Description = c }
 end;

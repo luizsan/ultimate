@@ -6,6 +6,8 @@ local t = MenuInputActor()..{
 	end;
 
 	OnCommand=cmd(sleep,1;queuecommand,"Unlock");
+    OffCommand=cmd(linear,0.5;diffusealpha,0;sleep,0.75;queuecommand,"Exit");
+
 	PlayerJoinedMessageCommand=function() 
 		GAMESTATE:SetCurrentStyle("versus");
 		SCREENMAN:SetNewScreen("ScreenSelectMusicCustom");
@@ -28,8 +30,8 @@ function InputController(self,param)
 		if Global.state == "GroupSelect" then GroupController(self,param) end;
 		if Global.state == "MusicWheel" then WheelController(self,param) end;
 		if Global.state == "SelectSteps" then StepsController(self,param) end;
-		if Global.state == "SpeedMods" then SpeedController(self,param); end;
-		if Global.state == "Noteskins" then NoteskinController(self,param); end;
+		--if Global.state == "SpeedMods" then SpeedController(self,param); end;
+		--if Global.state == "Noteskins" then NoteskinController(self,param); end;
 		if Global.state == "OptionsMenu" then OptionsMenuController(self,param); end;
 	end;
 end;
@@ -50,7 +52,6 @@ function MainController(self,param)
 			return;
 		else
 			Global.oplist[param.Player] = false;
-			MESSAGEMAN:Broadcast("Return", param);
 			MESSAGEMAN:Broadcast("OptionsListClosed", param);
 			return;
 		end
@@ -91,6 +92,7 @@ end;
 t[#t+1] = LoadActor(THEME:GetPathB("","_assets/sound"));
 t[#t+1] = LoadActor(THEME:GetPathB("","_assets/fulldisplay"));
 
+--[[
 if VersionBranch("5.0") then 
 	t[#t+1] = LoadActor("assets/noteskin");
 	t[#t+1] = LoadActor("assets/speedmods");
@@ -99,14 +101,16 @@ else
 	t[#t+1] = LoadActor("assets/newskin");
 	t[#t+1] = LoadActor("assets/speedprefs");
 end;
+]]
 
+t[#t+1] = LoadActor("assets/notefield");
 t[#t+1] = LoadActor("assets/highscores");
 t[#t+1] = LoadActor("assets/groupselect");
 t[#t+1] = LoadActor("assets/bannerwheel");
 t[#t+1] = LoadActor("assets/information");
-t[#t+1] = LoadActor("assets/stepslist");
 t[#t+1] = LoadActor("assets/optionsmenu");
 t[#t+1] = LoadActor("assets/optionslist");
+t[#t+1] = LoadActor("assets/stepslist");
 t[#t+1] = LoadActor("assets/mainmenu");	
 
 t[#t+1] = LoadActor(THEME:GetPathB("","_assets/cursteps"));

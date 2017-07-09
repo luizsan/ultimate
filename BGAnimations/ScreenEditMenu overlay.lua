@@ -51,21 +51,21 @@ local steps_display_y= title_y + (spacer * 1.5)
 local steps_display_items= (_screen.h - steps_display_y) / steps_type_item_space
 
 local menu_params= {
-	name= "menu", x= (_screen.cx*0.5) + 8, y= _screen.h*.15, width= (_screen.cx) - 8,
+	name= "menu", x= (_screen.cx*0.5) + 16, y= _screen.h*.15, width= (_screen.cx) - 32,
 	translation_section= "ScreenEditMenu",
 	menu_sounds= {
-		pop= THEME:GetPathS("Common", "Cancel"),
-		push= THEME:GetPathS("_common", "row"),
-		act= THEME:GetPathS("Common", "value"),
-		move= THEME:GetPathS("_switch", "down"),
-		move_up= THEME:GetPathS("_switch", "up"),
-		move_down= THEME:GetPathS("_switch", "down"),
-		inc= THEME:GetPathS("_switch", "up"),
-		dec= THEME:GetPathS("_switch", "down"),
+		pop = THEME:GetPathS("Common", "Cancel"),
+		push = THEME:GetPathS("", "Steps"),
+		act = THEME:GetPathS("", "Steps"),
+		move = THEME:GetPathS("", "Switch"),
+		move_up = THEME:GetPathS("", "Switch"),
+		move_down = THEME:GetPathS("", "Switch"),
+		inc = THEME:GetPathS("", "Switch"),
+		dec = THEME:GetPathS("", "Switch"),
 	},
-	num_displays= 1, el_height= 24, display_params= {
+	num_displays= 1, el_height= 20, display_params= {
 		no_status= true,
-		height= _screen.h*.75, el_zoom= 0.75,
+		height= _screen.h*.75, el_zoom= 0.6,
 		item_mt= cons_option_item_mt, item_params= {
 			text_commands= {
 				Font= Fonts.edit["Menu"], OnCommand= function(self)
@@ -85,9 +85,9 @@ local menu_params= {
 			},
 			value_width= .25,
 			type_images= {
-				bool= THEME:GetPathG("", "menu_icons/bool"),
-				choice= THEME:GetPathG("", "menu_icons/bool"),
-				menu= THEME:GetPathG("", "menu_icons/menu"),
+				bool= THEME:GetPathG("", "NestyMenu icons/bool"),
+				choice= THEME:GetPathG("", "NestyMenu icons/bool"),
+				menu= THEME:GetPathG("", "NestyMenu icons/menu"),
 			},
 		},
 	},

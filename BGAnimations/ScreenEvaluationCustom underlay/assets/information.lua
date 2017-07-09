@@ -21,6 +21,7 @@ local t = Def.ActorFrame{
         translit_artist = Global.song:GetTranslitArtist()
         self:diffusealpha(0);
     end;
+
     OnCommand=cmd(stoptweening;sleep,0.1;linear,0.2;diffusealpha,1);
 }
 

@@ -1,6 +1,7 @@
 local player = Var "Player"
 local pulse = cmd(stoptweening;zoomx,1.3;zoomy,1.5;decelerate,0.075;zoom,1;sleep,0.725;linear,0.12;zoom,0.5;sleep,0.5;linear,0.15;zoom,0.25);
 local fadeout = cmd(stoptweening;sleep,0.8;linear,0.15;diffusealpha,0);
+local reverse_judgment = PLAYERCONFIG:get_data(player).ReverseJudgment;
 
 local t = Def.ActorFrame{
 
@@ -61,10 +62,9 @@ local t = Def.ActorFrame{
 			ComboCommand=function(self,param)
 				self:stoptweening();
 
-				if param.Misses then 
+				self:diffuse(1,1,1,1); 
+				if (not reverse_judgment and param.Misses) or (reverse_judgment and param.Combo) then
 					self:diffuse(1,0,0.2,1); 
-				elseif param.Combo then
-					self:diffuse(1,1,1,1); 
 				end;
 
 				local combo = param.Misses or param.Combo;
@@ -89,7 +89,6 @@ local t = Def.ActorFrame{
 
 				if param.Player or player then
 					stats = STATSMAN:GetCurStageStats():GetPlayerStageStats(player);
-		
 					if stats:FullComboOfScore("TapNoteScore_W1") then
 						self:settext("superb\ncombo");
 					elseif stats:FullComboOfScore("TapNoteScore_W2") then
@@ -99,10 +98,13 @@ local t = Def.ActorFrame{
 					elseif param.Combo then
 						self:settext("\ncombo");
 					elseif param.Misses then
-						self:diffuse(1,0,0.2,1);
 						self:settext("miss\ncombo");
 					end;
 				end
+
+				if (not reverse_judgment and param.Misses) or (reverse_judgment and param.Combo) then
+					self:diffuse(1,0,0.2,1);
+				end;
 
 				if not combo or combo < 4 then self:visible(false); else self:visible(true); end;
 				fadeout(self);

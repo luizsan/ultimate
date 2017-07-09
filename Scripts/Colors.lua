@@ -1,13 +1,17 @@
 --//================================================================
 
-JudgmentColor = {
-    ["Superb"]  = color("1.0, 0.4, 0.9, 1"),
-    ["Pefect"]  = color("0.2, 0.7, 1.0, 1"),
-    ["Great"]   = color("0.1, 1.0, 0.3, 1"),
-    ["Good"]    = color("1.0, 0.9, 0.2, 1"),
-    ["Bad"]     = color("0.8, 0.2, 0.9, 1"),
-    ["Miss"]    = color("1.0, 0.1, 0.1, 1"),
+local _JudgmentColor = {
+    ["Flawless"] = color("#ffc4ed"),
+    ["Perfect"]  = color("#6ccfff"),
+    ["Great"]    = color("#a9ff63"),
+    ["Good"]     = color("#ffd075"),
+    ["Bad"]      = color("#ae84cf"),
+    ["Miss"]     = color("#ff5252"),
 }
+
+function JudgmentColor(w)
+    return _JudgmentColor[w] or {1,1,1,1}
+end;
 
 local _GradeColor = {
     ["SS"]      = color("1.00, 0.85, 0.25, 1"),

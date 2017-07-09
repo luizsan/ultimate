@@ -3,7 +3,7 @@ local t = Def.ActorFrame{
     InitCommand=cmd(diffusealpha,0);
     UnlockMessageCommand=cmd(stoptweening;linear,0.2;diffusealpha,1);
     ExitCommand=function() 
-        SCREENMAN:SetNewScreen(nextscreen) ;
+        SCREENMAN:SetNewScreen(nextscreen);
     end;
 }
 

@@ -191,11 +191,11 @@ function GetConfig(param)
     local conf = param.Option.Config;
     local field = param.Option.Field;
     local ret = get_element_by_path(conf:get_data(pn), field)
-    return ret ~= nil and ret or false
+    return ((ret ~= nil or ret == 0) and ret) or false
 end;
 
 local function ChangeConfig(param)
-    local pn = param and param.Player or nil;
+    local pn = param.Player or nil;
     local conf = param.Option.Config;
     local field = param.Option.Field;
     local default = param.Option.Default;
@@ -220,7 +220,9 @@ local function ChangeConfig(param)
         local max = param.Option.Range.Max;
         local step = param.Option.Range.Step;
         if param.Input == "Prev" then newvalue = current - step; end;
-        if param.Input == "Next" then newvalue = current + step; end;
+        if param.Input == "Next" then 
+            if current < step then newvalue = step else newvalue = current + step; end;
+        end;
         newvalue = clamp(newvalue, min, max);
         newvalue = math.round(newvalue * 1000000)/1000000
     else

@@ -100,8 +100,8 @@ t[#t+1] = LoadActor(THEME:GetPathG("","bg"))..{
 	StateChangedMessageCommand=function(self)
 		self:stoptweening();
 		self:decelerate(0.2);
-		if 	Global.state == "GroupSelect" or
-			Global.state == "SelectSteps" then
+		if 	Global.state == "GroupSelect" then
+			--Global.state == "SelectSteps" then
 			--Global.state == "OptionsMenu" then
 			self:diffusealpha(0.85);
 		else
@@ -109,24 +109,5 @@ t[#t+1] = LoadActor(THEME:GetPathG("","bg"))..{
 		end
 	end
 };
-
--- DIM
-t[#t+1] = LoadActor(THEME:GetPathG("","glow"))..{
-	InitCommand=cmd(y,SCREEN_TOP+48;x,SCREEN_CENTER_X;diffuse,BoostColor(Global.bgcolor,0.45);zoomy,0.3;croptop,0.5;fadetop,0.1;zoomx,1.2;diffusealpha,0);
-	MainMenuMessageCommand=cmd(playcommand,"Refresh");
-	StateChangedMessageCommand=cmd(playcommand,"Refresh");
-	ToggleSelectMessageCommand=cmd(playcommand,"Refresh");
-	RefreshCommand=function(self)
-		self:stoptweening();
-		self:decelerate(0.3);
-
-		if((Global.confirm[PLAYER_1] + Global.confirm[PLAYER_2] >= GAMESTATE:GetNumSidesJoined()) or Global.state == "SelectSteps") and not Global.toggle then
-			self:diffusealpha(0.85);
-		else
-			self:diffusealpha(0);
-		end;
-	end;
-};
-
 
 return t

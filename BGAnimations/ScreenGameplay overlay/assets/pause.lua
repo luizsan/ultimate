@@ -282,7 +282,7 @@ local frame= Def.ActorFrame{
 		DecisionMessageCommand=cmd(play)
 	},
 
-	LoadActor(THEME:GetPathS("","SSM_Mainmenu"))..{
+	LoadActor(THEME:GetPathS("","Mainmenu"))..{
 		ChoiceMessageCommand=cmd(play)
 	},
 }
