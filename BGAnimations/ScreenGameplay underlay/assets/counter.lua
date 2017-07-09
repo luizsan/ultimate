@@ -25,7 +25,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
     if SideJoined(pn) and PLAYERCONFIG:get_data(pn).ShowJudgmentList then
 
         local p = Def.ActorFrame{
-            InitCommand=cmd(x,_screen.cx + (((_screen.w * 0.5) - 12) * pnSide(pn));y,SCREEN_BOTTOM-44);
+            InitCommand=cmd(x,_screen.cx + (((_screen.w * 0.5) ) * pnSide(pn));y,SCREEN_BOTTOM-44);
         };
 
         local spacing = 12;
@@ -40,7 +40,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
         end;
 
         p[#p+1] = Def.Quad{
-            InitCommand=cmd(horizalign,pnAlign(pn);vertalign,bottom;diffuse,BoostColor(PlayerColor(pn,0.8),0.05);zoomto,64,spacing * (#labels+2));
+            InitCommand=cmd(horizalign,left;vertalign,bottom;diffuse,0.1,0.1,0.1,0.9;zoomto,64*-pnSide(pn),(spacing * (#labels+2));diffuserightedge,0.1,0.1,0.1,0.6);
         };
 
         for i=1,#labels do
@@ -70,7 +70,8 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
                 Def.BitmapText{
                     Font = Fonts.counter["Main"];
                     Text = labels[i].Lite;
-                    InitCommand=cmd(zoomx,0.5;zoomy,0.4;diffuse,LabelColor(labels[i].Value);horizalign,pnAlign(pn);x,-12 * -pnSide(pn);maxwidth,24);
+                    InitCommand=cmd(zoomx,0.5;zoomy,0.4;diffuse,LabelColor(labels[i].Value);
+                        strokecolor,BoostColor(LabelColor(labels[i].Value),0.2);horizalign,pnAlign(pn);x,-12 * -pnSide(pn);maxwidth,24);
                 },
 
                 -- value
@@ -78,7 +79,8 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
                     Font = Fonts.counter["Main"];
                     Text = numjudge;
                     Name = labels[i].Key;
-                    InitCommand=cmd(zoom,0.4;diffuse,BoostColor(LabelColor(labels[i].Value),2);horizalign,pnAlign(pn);x,8* -pnSide(pn));
+                    InitCommand=cmd(zoom,0.4;diffuse,BoostColor(LabelColor(labels[i].Value),2);
+                        strokecolor,BoostColor(LabelColor(labels[i].Value),0.3);horizalign,pnAlign(pn);x,8* -pnSide(pn));
                 },
 
             };
@@ -111,7 +113,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
                 Font = Fonts.counter["Main"];
                 Text = numjudge;
                 Name = "Grade";
-                InitCommand=cmd(zoom,0.4;horizalign,pnAlign(pn);x,-8 * -pnSide(pn));
+                InitCommand=cmd(zoom,0.4;horizalign,pnAlign(pn);strokecolor,0.1,0.1,0.1,1;x,-8 * -pnSide(pn));
             },
         };
 

@@ -11,7 +11,7 @@ local menutable = {
     { name = "Song",        state = "MusicWheel",       enabled = true,     action = function(param) MainMenuSongs() end },
     { name = "Steps",       state = "SelectSteps",      enabled = true,     action = function(param) MainMenuSteps() end },
     { name = "Ready!",      state = "MainMenu",         enabled = true,     action = function(param) MainMenuReady(param) end },
-    { name = "Scores",      state = "HighScores",       enabled = true,     action = function(param) end },
+    { name = "Scores",      state = "HighScores",       enabled = false,    action = function(param) end },
     { name = "Options",     state = "OptionsMenu",      enabled = true,     action = function(param) MainMenuOptions() end },
     { name = "Exit",        state = "",                 enabled = true,     action = function(param) MainMenuReturn() end },
 };
