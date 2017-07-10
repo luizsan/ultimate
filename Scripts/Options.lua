@@ -203,7 +203,7 @@ local function ChangeConfig(param)
 
     current = GetConfig(param);
     if type(current) == "number" then
-        current = math.round(current * 1000000)/1000000
+        current = math.round(current * 100000)/100000
     end;
 
     if param.Option.Choices and #param.Option.Choices > 1 then
@@ -224,7 +224,7 @@ local function ChangeConfig(param)
             if current < step then newvalue = step else newvalue = current + step; end;
         end;
         newvalue = clamp(newvalue, min, max);
-        newvalue = math.round(newvalue * 1000000)/1000000
+        newvalue = math.round(newvalue * 100000)/100000
     else
         LuaError("Invalid option choices/range");
     end;

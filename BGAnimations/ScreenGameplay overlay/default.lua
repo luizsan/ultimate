@@ -128,10 +128,8 @@ t[#t+1] = Def.BitmapText{
 };
 
 
+t[#t+1] = LoadActor("assets/offset");
 t[#t+1] = LoadActor("assets/pause");
-
-if not VersionBranch("5.0") then
-	t[#t+1] = LoadActor("assets/newfield");
-end;
+t[#t+1] = LoadActor("assets/newfield");
 
 return t;

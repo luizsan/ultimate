@@ -60,7 +60,18 @@ local option_tree = {
             --ConfigRange(NOTESCONFIG, "sudden_offset", 0, 0, 0, 0), 
             --ConfigRange(NOTESCONFIG, "fade_dist", 40, 0, 120, 5), 
             ConfigBool(NOTESCONFIG, "glow_during_fade", true),
-            ConfigBool(PLAYERCONFIG, "ReverseJudgment", false),
+            {
+                Name = "Extras",
+                Options = {
+                    ConfigBool(PLAYERCONFIG, "ReverseJudgment", false),
+                    ConfigRange(PLAYERCONFIG, "ScreenFilter", 0, 0, 100, 5),
+                    ConfigBool(PLAYERCONFIG, "ShowEarlyLate", false),
+                    ConfigBool(PLAYERCONFIG, "ShowJudgmentList", false),
+                    ConfigBool(PLAYERCONFIG, "ShowOffsetMeter", false),
+                    --ConfigChoices(PLAYERCONFIG, "ShowPacemaker", "off", pacemaker_targets),
+                    ConfigExit("Back"),
+                }
+            },
             ConfigAction("Reset", function(pn) ResetPlayerDisplay(pn) end),
             ConfigExit("Back"),
         },
@@ -102,17 +113,6 @@ local option_tree = {
             ConfigAction("Reset", function(pn) ResetPlayerTransform(pn) end),
             ConfigExit("Back"),
         },
-    },
-    {
-        Name = "Extras",
-        Options = {
-            ConfigRange(PLAYERCONFIG, "ScreenFilter", 0, 0, 100, 5),
-            ConfigBool(PLAYERCONFIG, "ShowEarlyLate", false),
-            ConfigBool(PLAYERCONFIG, "ShowJudgmentList", false),
-            --ConfigBool(PLAYERCONFIG, "ShowOffsetMeter", false),
-            --ConfigChoices(PLAYERCONFIG, "ShowPacemaker", "off", pacemaker_targets),
-            ConfigExit("Back"),
-        }
     },
     {
         Name = "Reset All",
@@ -316,7 +316,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
                 Name = "Value";
                 Font = Fonts.options["Main"];
                 InitCommand=cmd(x,10*-pnSide(pn);horizalign,pnAlign(pn);zoom,fontsize*0.95;playcommand,"LoseFocus");
-                GainFocusCommand=cmd(stoptweening;decelerate,0.15;diffuse,1,0.9,0.2,1;strokecolor,BoostColor({1,0.9,0.2,1},0.4));
+                GainFocusCommand=cmd(stoptweening;decelerate,0.15;diffuse,1,0.85,0.4,1;strokecolor,BoostColor({1,0.85,0.4,1},0.4));
                 LoseFocusCommand=cmd(stoptweening;decelerate,0.15;diffuse,1,1,1,1;strokecolor,0.25,0.25,0.25,0.8);
                 DisabledCommand=cmd(stoptweening;decelerate,0.15;diffuse,0.6,0.6,0.6,0.5;strokecolor,0.2,0.2,0.2,0.5);
                 OptionsListClosedMessageCommand=cmd(stopeffect);

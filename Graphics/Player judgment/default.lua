@@ -39,8 +39,8 @@ else
 	end;
 end;
 
-local early_color = {1,0.9,0.5,1};
-local late_color = {0.4,0.8,1,1};
+local late_color = {1,0.9,0.5,1};
+local early_color = {0.4,0.8,1,1};
 
 local t = Def.ActorFrame{
 	InitCommand=function(self) 

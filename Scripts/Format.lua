@@ -162,6 +162,7 @@ end;
 
 local function dict_float(val, suf)
     local suffix = suf or ""
+    if tonumber(val) then val = math.round(tonumber(val)*10000)/10000 end
     if string.len(tostring(val)) == 1 then return tostring(val)..".00"..suffix end;
     if string.len(tostring(val)) == 3 then return tostring(val).."0"..suffix end;
     if string.len(tostring(val)) == 4 then return tostring(val)..suffix end;

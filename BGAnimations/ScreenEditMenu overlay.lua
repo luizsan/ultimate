@@ -85,9 +85,9 @@ local menu_params= {
 			},
 			value_width= .25,
 			type_images= {
-				bool= THEME:GetPathG("", "NestyMenu icons/bool"),
-				choice= THEME:GetPathG("", "NestyMenu icons/bool"),
-				menu= THEME:GetPathG("", "NestyMenu icons/menu"),
+				bool= THEME:GetPathG("", "menu_icons/bool"),
+				choice= THEME:GetPathG("", "menu_icons/bool"),
+				menu= THEME:GetPathG("", "menu_icons/menu"),
 			},
 		},
 	},

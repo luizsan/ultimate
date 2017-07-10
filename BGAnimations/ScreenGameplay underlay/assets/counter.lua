@@ -25,7 +25,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
     if SideJoined(pn) and PLAYERCONFIG:get_data(pn).ShowJudgmentList then
 
         local p = Def.ActorFrame{
-            InitCommand=cmd(x,_screen.cx + (((_screen.w * 0.5) ) * pnSide(pn));y,SCREEN_BOTTOM-44);
+            InitCommand=cmd(x,_screen.cx + (((_screen.w * 0.5) ) * pnSide(pn)));
         };
 
         local spacing = 12;
@@ -39,13 +39,16 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
             table.remove(labels, 1);
         end;
 
-        p[#p+1] = Def.Quad{
-            InitCommand=cmd(horizalign,left;vertalign,bottom;diffuse,0.1,0.1,0.1,0.9;zoomto,64*-pnSide(pn),(spacing * (#labels+2));diffuserightedge,0.1,0.1,0.1,0.6);
+        -- counter img
+        p[#p+1] = LoadActor(THEME:GetPathG("","counter"))..{
+            InitCommand=cmd(horizalign,left;zoomx,0.375 * -pnSide(pn);zoomy,0.375;y,((#labels/2+1) * -spacing) - 4;
+                x,0 * pnSide(pn);diffuse,0.75,0.75,0.75,1;diffusetopedge,0.4,0.4,0.4,1);
         };
+
+        p.OnCommand=cmd(y,SCREEN_CENTER_Y + ((#labels/2+1) * spacing));
 
         for i=1,#labels do
 
-            local numjudge = 0;
             p[#p+1] = Def.ActorFrame{
                 InitCommand=cmd(vertalign,bottom;horizalign,pnAlign(pn);y,((#labels-i+2)*-spacing);x,20 * -pnSide(pn));
                 UpdateMessageCommand=function(self)
@@ -66,6 +69,22 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
                     self:GetChild(labels[i].Key):settext(value);
                 end;
 
+                -- flash
+                LoadActor(THEME:GetPathG("","dim"))..{
+                    InitCommand=cmd(zoomto,160 * -pnSide(pn),8;diffuse,LabelColor(labels[i].Value);faderight,1;diffusealpha,0);
+                    JudgmentMessageCommand=function(self,param)
+                        if param.Player == pn then
+                            if (param.TapNoteScore and redir_tns[param.TapNoteScore] == labels[i].Key) or 
+                               (param.HoldNoteScore and redir_hns[param.HoldNoteScore] == labels[i].Key) then
+                                self:stoptweening();
+                                self:diffusealpha(1);
+                                self:decelerate(0.5);
+                                self:diffusealpha(0);
+                            end;
+                        end;
+                    end;
+                },
+
                 -- judgment
                 Def.BitmapText{
                     Font = Fonts.counter["Main"];
@@ -80,7 +99,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
                     Text = numjudge;
                     Name = labels[i].Key;
                     InitCommand=cmd(zoom,0.4;diffuse,BoostColor(LabelColor(labels[i].Value),2);
-                        strokecolor,BoostColor(LabelColor(labels[i].Value),0.3);horizalign,pnAlign(pn);x,8* -pnSide(pn));
+                        strokecolor,BoostColor(LabelColor(labels[i].Value),0.25);horizalign,pnAlign(pn);x,6* -pnSide(pn);maxwidth,64);
                 },
 
             };
