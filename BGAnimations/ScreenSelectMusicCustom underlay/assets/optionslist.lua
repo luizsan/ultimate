@@ -1,4 +1,4 @@
-local maxitems = 7;
+local maxitems = 8;
 local selection = {
     [PLAYER_1] = 1,
     [PLAYER_2] = 1,
