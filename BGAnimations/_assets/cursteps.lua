@@ -111,7 +111,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 		-- maker
 		Def.BitmapText{
 				Font = Fonts.cursteps["Info"];
-				InitCommand=cmd(horizalign,pnAlign(pn);x,36 * -pnSide(pn);y,-11;zoom,0.4;strokecolor,0.2,0.2,0.2,1;maxwidth,560);
+				InitCommand=cmd(horizalign,pnAlign(pn);x,36 * -pnSide(pn);y,-11;zoom,0.4;strokecolor,0.2,0.2,0.2,1;maxwidth,164/self:GetZoom());
 				OnCommand=cmd(playcommand,"Refresh");
 				StepsChangedMessageCommand=cmd(playcommand,"Refresh");
 				RefreshCommand=function(self)
@@ -134,7 +134,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 		-- notes
 		Def.BitmapText{
 				Font = Fonts.cursteps["Info"];
-				InitCommand=cmd(horizalign,pnAlign(pn);x,36 * -pnSide(pn);y,3;zoom,0.4;diffuse,BoostColor(PlayerColor(pn),0.95);strokecolor,BoostColor(PlayerColor(pn),0.3);maxwidth,560);
+				InitCommand=cmd(horizalign,pnAlign(pn);x,36 * -pnSide(pn);y,3;zoom,0.4;diffuse,BoostColor(PlayerColor(pn),0.95);strokecolor,BoostColor(PlayerColor(pn),0.3);maxwidth,164/self:GetZoom());
 				OnCommand=cmd(playcommand,"Refresh");
 				StepsChangedMessageCommand=cmd(playcommand,"Refresh");
 				RefreshCommand=function(self)

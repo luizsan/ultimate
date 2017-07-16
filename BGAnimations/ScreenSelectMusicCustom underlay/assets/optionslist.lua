@@ -93,9 +93,9 @@ local option_tree = {
             {   
                 Name = "Rotation", 
                 Options = {
-                    ConfigRange(NOTESCONFIG, "rotation_x", 0, -180, 180, 1), 
-                    ConfigRange(NOTESCONFIG, "rotation_y", 0, -180, 180, 1), 
-                    ConfigRange(NOTESCONFIG, "rotation_z", 0, -180, 180, 1), 
+                    ConfigRange(NOTESCONFIG, "rotation_x", 0, -180, 180, 5), 
+                    ConfigRange(NOTESCONFIG, "rotation_y", 0, -180, 180, 5), 
+                    ConfigRange(NOTESCONFIG, "rotation_z", 0, -180, 180, 5), 
                     ConfigAction("Reset", function(pn) ResetPlayerRotation(pn) end),
                     ConfigExit("Back"),
                 }

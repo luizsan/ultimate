@@ -11,7 +11,7 @@ local menutable = {
     { name = "Song",        state = "MusicWheel",       enabled = true,     action = function(param) MainMenuSongs() end },
     { name = "Steps",       state = "SelectSteps",      enabled = true,     action = function(param) MainMenuSteps() end },
     { name = "Ready!",      state = "MainMenu",         enabled = true,     action = function(param) MainMenuReady(param) end },
-    { name = "Scores",      state = "HighScores",       enabled = false,    action = function(param) end },
+    { name = "Scores",      state = "HighScores",       enabled = false,     action = function(param) MainMenuScores() end },
     { name = "Options",     state = "OptionsMenu",      enabled = true,     action = function(param) MainMenuOptions() end },
     { name = "Exit",        state = "",                 enabled = true,     action = function(param) MainMenuReturn() end },
 };
@@ -114,6 +114,7 @@ function MainMenuDecision(param)
         if Global.state == "GroupSelect" then SelectFolder(); return; end;  
         if Global.state == "MusicWheel" then SelectSong(); return end;
         if Global.state == "SelectSteps" then SelectStep(param); return; end;
+        if Global.state == "HighScores" then SelectHighScore(param); return; end;
         if Global.state == "OptionsMenu" then SelectOptionsMenu(param); return; end;
     end;
 end;    
@@ -163,8 +164,18 @@ function MainMenuSteps()
     Global.level = 2;
     Global.state = "SelectSteps";
     MESSAGEMAN:Broadcast("StateChanged");
-    Global.selection = 1;
 end;
+
+--//================================================================
+
+function MainMenuScores()
+    Global.prevstate = "MainMenu"
+    Global.level = 2;
+    Global.selection = 1;
+    Global.state = "HighScores";
+    MESSAGEMAN:Broadcast("StateChanged");
+end;
+
 
 --//================================================================
 

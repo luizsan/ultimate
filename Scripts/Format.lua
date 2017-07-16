@@ -1,3 +1,28 @@
+function JudgeToTNS(name)
+    local tns = {
+        ["Flawless"] = "TapNoteScore_W1",
+        ["Perfect"] = "TapNoteScore_W2",
+        ["Great"] = "TapNoteScore_W3",
+        ["Good"] = "TapNoteScore_W4",
+        ["Bad"] = "TapNoteScore_W5",
+        ["Miss"] = "TapNoteScore_Miss",
+    }
+
+    return tns[name] or ""
+end;
+
+function TNSToJudge(tns)
+    local names = {
+        ["TapNoteScore_W1"] = "Flawless",
+        ["TapNoteScore_W2"] = "Perfect",
+        ["TapNoteScore_W3"] = "Great",
+        ["TapNoteScore_W4"] = "Good",
+        ["TapNoteScore_W5"] = "Bad",
+        ["TapNoteScore_Miss"] = "Miss",
+    }
+    return names[tns] or ""
+end;
+
 function JudgmentLabels()
     return {
         { Key = "TapNoteScore_W1", Value = "Flawless", Lite = "FL" },
@@ -10,6 +35,22 @@ function JudgmentLabels()
         { Key = "HoldNoteScore_LetGo", Value = "Let Go", Lite = "NG" },
     }
 end;
+
+function JudgmentGrade()
+    return {
+        { Label = JudgmentLabels()[1].Value,       Key = "W1",        Color = JudgmentColor("Flawless"),    Enabled = THEMECONFIG:get_data().AllowW1 },
+        { Label = JudgmentLabels()[2].Value,       Key = "W2",        Color = JudgmentColor("Perfect"),     Enabled = true },
+        { Label = JudgmentLabels()[3].Value,       Key = "W3",        Color = JudgmentColor("Great"),       Enabled = true },
+        { Label = JudgmentLabels()[4].Value,       Key = "W4",        Color = JudgmentColor("Good"),        Enabled = true },
+        { Label = JudgmentLabels()[5].Value,       Key = "W5",        Color = JudgmentColor("Bad"),         Enabled = true },
+        { Label = JudgmentLabels()[6].Value,       Key = "Miss",      Color = JudgmentColor("Miss"),        Enabled = true },
+        { Label = JudgmentLabels()[7].Value,       Key = "Held",      Color = color("#ffffff"),             Enabled = ShowHoldJudgments() },
+        { Label = JudgmentLabels()[8].Value,       Key = "Let Go",    Color = color("#ffffff"),             Enabled = ShowHoldJudgments() },
+        { Label = "Max Combo",                     Key = "Combo",     Color = color("#ffffff"),             Enabled = true },
+        { Label = "Score",                         Key = "Score",     Color = color("#ffffff"),             Enabled = true },
+    }
+end;
+
 
 --//================================================================
 
@@ -135,7 +176,7 @@ function FormatAward(award)
     elseif award == "StageAward_FullComboW2" then return "Full Perfect!"
     elseif award == "StageAward_SingleDigitW2" then return "Single Digit Perfects!"
     elseif award == "StageAward_OneW2" then return "One Perfect!"
-    elseif award == "StageAward_FullComboW1" then return "Full Superb!"
+    elseif award == "StageAward_FullComboW1" then return "Absolutely Flawless!"
     else return ""
     end;
 end;

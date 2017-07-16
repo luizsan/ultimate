@@ -69,9 +69,25 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
                     self:GetChild(labels[i].Key):settext(value);
                 end;
 
-                -- flash
+                -- flash blend add
                 LoadActor(THEME:GetPathG("","dim"))..{
-                    InitCommand=cmd(zoomto,160 * -pnSide(pn),8;diffuse,LabelColor(labels[i].Value);faderight,1;diffusealpha,0);
+                    InitCommand=cmd(zoomto,160 * -pnSide(pn),16;diffuse,LabelColor(labels[i].Value);faderight,1;diffusealpha,0;blend,Blend.Add);
+                    JudgmentMessageCommand=function(self,param)
+                        if param.Player == pn then
+                            if (param.TapNoteScore and redir_tns[param.TapNoteScore] == labels[i].Key) or 
+                               (param.HoldNoteScore and redir_hns[param.HoldNoteScore] == labels[i].Key) then
+                                self:stoptweening();
+                                self:diffusealpha(0.5);
+                                self:decelerate(0.5);
+                                self:diffusealpha(0);
+                            end;
+                        end;
+                    end;
+                },
+
+                -- flash normal
+                LoadActor(THEME:GetPathG("","dim"))..{
+                    InitCommand=cmd(zoomto,160 * -pnSide(pn),4;diffuse,LabelColor(labels[i].Value);faderight,1;diffusealpha,0);
                     JudgmentMessageCommand=function(self,param)
                         if param.Player == pn then
                             if (param.TapNoteScore and redir_tns[param.TapNoteScore] == labels[i].Key) or 

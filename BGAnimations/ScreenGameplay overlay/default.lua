@@ -103,6 +103,7 @@ end;
 
 -- progress bar
 local p_height = 2;
+local total_time = clamp(Global.song:GetLastSecond(),1,math.huge);
 t[#t+1] = Def.ActorFrame{
 	Def.Quad{
 		InitCommand=cmd(diffuse,0,0,0,0.25;zoomto,SCREEN_WIDTH,p_height+2;horizalign,left;x,0;vertalign,top;y,SCREEN_TOP);
@@ -113,9 +114,8 @@ t[#t+1] = Def.ActorFrame{
 		OnCommand=cmd(diffuse,HighlightColor();;diffuserightedge,BoostColor(HighlightColor(),2));
 		UpdateMessageCommand=function(self)
 			if not paused then
-				local current = clamp(GAMESTATE:GetCurMusicSeconds(),0,math.huge);
-				local total = clamp(Global.song:GetStepsSeconds(),1,math.huge);
-				self:zoomto((SCREEN_WIDTH-2) * (current/total),p_height);
+				local current_time = clamp(GAMESTATE:GetCurMusicSeconds(),0,math.huge);
+				self:zoomto((SCREEN_WIDTH-2) * (current_time/total_time),p_height);
 			end;
 		end;
 	},

@@ -55,13 +55,13 @@ function PIUScoring(pn, param, beat)
 end;
 
 function PIUGrading(pn)
-    curstats = STATSMAN:GetCurStageStats();
-    pss = curstats:GetPlayerStageStats(pn);
-    curdp = pss:GetActualDancePoints();
-    maxdp = pss:GetCurrentPossibleDancePoints();
-    dp = curdp / clamp(maxdp,1,maxdp);
+    local curstats = STATSMAN:GetCurStageStats();
+    local pss = curstats:GetPlayerStageStats(pn);
+    local curdp = pss:GetActualDancePoints();
+    local maxdp = pss:GetCurrentPossibleDancePoints();
+    local dp = curdp / clamp(maxdp,1,maxdp);
 
-    misscount = pss:GetTapNoteScores('TapNoteScore_Miss') + pss:GetTapNoteScores('TapNoteScore_CheckpointMiss');
+    local misscount = pss:GetTapNoteScores('TapNoteScore_Miss') + pss:GetTapNoteScores('TapNoteScore_CheckpointMiss') + pss:GetHoldNoteScores('HoldNoteScore_MissedHold');
 
     if not pss:GetFailed() then
         if pss:FullComboOfScore('TapNoteScore_W1') then return "Grade_Tier01" -- SSS
@@ -75,8 +75,27 @@ function PIUGrading(pn)
         else return "Grade_Tier08" -- F
         end;
     end;
-
     return "Grade_Failed";
+end;
+
+function PIUHighScoreGrade(hs)
+    if hs:GetGrade() == "Grade_Failed" then return "Grade_Failed" end
+    local dp = hs:GetPercentDP()
+    local misscount = GetMissCount(hs);
+
+    if misscount == 0 and dp >= 0.75 then 
+        if hs:GetTapNoteScore(JudgeToTNS("Bad")) > 0 then return "Grade_Tier03"
+        elseif hs:GetTapNoteScore(JudgeToTNS("Good")) > 0 then return "Grade_Tier03"
+        elseif hs:GetTapNoteScore(JudgeToTNS("Great")) > 0 then return "Grade_Tier02"
+        elseif hs:GetTapNoteScore(JudgeToTNS("Perfect")) > 0 then return "Grade_Tier01"
+        else return "Grade_Tier01" end
+    else
+        if dp >= 0.8 then return "Grade_Tier04"
+        elseif dp >= 0.7 then return "Grade_Tier05"
+        elseif dp >= 0.6 then return "Grade_Tier06"
+        elseif dp >= 0.5 then return "Grade_Tier07"
+        else return "Grade_Tier08" end
+    end;
 
 end;
 

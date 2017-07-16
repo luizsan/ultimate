@@ -21,15 +21,20 @@ local function UpdateTime(self, delta)
     MESSAGEMAN:Broadcast("UpdateNotefield");
 end
 
+local function CanShowNotefield()
+    if Global.state == "SelectSteps" or Global.oplist[PLAYER_1] or Global.oplist[PLAYER_2] then return true end;
+    return false;
+end;
+
 local t = Def.ActorFrame{
     InitCommand=function(self) self:SetUpdateFunction(UpdateTime); self:diffusealpha(0); end;
-    StateChangedMessageCommand=function(self)
+    StateChangedMessageCommand=cmd(playcommand,"Refresh");
+    OptionsListOpenedMessageCommand=cmd(playcommand,"Refresh");
+    OptionsListClosedMessageCommand=cmd(playcommand,"Refresh");
+    RefreshCommand=function(self)
         self:stoptweening();
         self:linear(0.15);
-        if Global.state == "SelectSteps" or
-           Global.state == "SpeedMods" or
-           Global.state == "Noteskins" then
-           --Global.state == "OptionsMenu" then
+        if CanShowNotefield() then
             self:diffusealpha(1);
         else
             self:diffusealpha(0);
@@ -130,7 +135,9 @@ t[#t+1] = Def.Sprite{
     InitCommand=cmd(zoom,0.515;xy,_screen.cx,_screen.cy-177;vertalign,top;diffusealpha,0);
     OnCommand=cmd(playcommand,"Reload");
     MusicWheelMessageCommand=cmd(playcommand,"Reload");
+    StepsChangedMessageCommand=cmd(stoptweening;diffusealpha,0;linear,0.15;diffusealpha,1);
     ReloadCommand=cmd(stoptweening;diffusealpha,0;sleep,0.6;linear,0.25;diffusealpha,1);
+    StateChangedMessageCommand=cmd(finishtweening;linear,0.15;fadebottom,Global.state == "GroupSelect" and 0.2 or 0);
 }
 
 

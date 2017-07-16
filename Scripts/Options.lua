@@ -221,7 +221,7 @@ local function ChangeConfig(param)
         local step = param.Option.Range.Step;
         if param.Input == "Prev" then newvalue = current - step; end;
         if param.Input == "Next" then 
-            if current < step then newvalue = step else newvalue = current + step; end;
+            if current < step and min >= 0 then newvalue = step else newvalue = current + step; end;
         end;
         newvalue = clamp(newvalue, min, max);
         newvalue = math.round(newvalue * 100000)/100000

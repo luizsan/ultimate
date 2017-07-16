@@ -1,249 +1,282 @@
-local spacing = 66;
-local skewing = 16;
-local gap = 20;
-local latest;
-local scores = {
-	[PLAYER_1] = {},
-	[PLAYER_2] = {},
+local currentsort = 1;
+local sorts = { "dp", "misscount", "maxcombo", "date" };
+
+local maxdigits = 1;
+local hs_grade = JudgmentGrade();
+table.remove(hs_grade, #hs_grade);
+
+local personal_score = {
+	[PLAYER_1] = nil,
+	[PLAYER_2] = nil,
 };
 
---//================================================================
+local machine_score = {
+	[PLAYER_1] = nil,
+	[PLAYER_2] = nil,
+}
 
-function HighScoreBlockedState()
-	if  Global.state == "GroupSelect" or 
-		Global.state == "SpeedMods" or 
-		Global.state == "Noteskins" or 
-		(Global.state == "MainMenu" and Global.confirm[PLAYER_1]+Global.confirm[PLAYER_2] >= GAMESTATE:GetNumSidesJoined()) then
-		return true;
-	else
-		return false;
+function HighScoreController(self,param)
+	if param.Input == "Cancel" or param.Input == "Back" and Global.level == 2 then 
+		Global.level = 1; 
+		Global.selection = 5; 
+		Global.state = "MainMenu"; 
+		MESSAGEMAN:Broadcast("StateChanged"); 
+		MESSAGEMAN:Broadcast("Return");
 	end;
+end
+
+function SelectHighScore(param)
+
 end;
 
 --//================================================================
 
 local t = Def.ActorFrame{
-	MainMenuMessageCommand=cmd(playcommand,"StateChangedMessage");
+	InitCommand=cmd(diffusealpha,0);
+	MainMenuMessageCommand=cmd(playcommand,"StateChanged");
 	MusicWheelMessageCommand=function(self) MESSAGEMAN:Broadcast("GetScores"); end;
 	StepsChangedMessageCommand=function(self) MESSAGEMAN:Broadcast("GetScores"); end;
-	StateChangedMessageCommand=function(self)
-		if HighScoreBlockedState() then
-			Global.toggle = false;
-			MESSAGEMAN:Broadcast("ToggleSelect", { Toggled = false });
+	StateChangedMessageCommand=function(self) 
+		self:stoptweening(); 
+		self:decelerate(0.2); 
+		self:diffusealpha(Global.state == "HighScores" and 1 or 0); 
+		if Global.state == "HighScores" then MESSAGEMAN:Broadcast("GetScores"); end;
+	end;
+	GetScoresMessageCommand=function(self)
+		hs_grade = JudgmentGrade();
+		table.remove(hs_grade, #hs_grade);
+
+			local machinedigits = 1;
+			local personaldigits = 1;
+
+		for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
+			personal_score[pn] = FetchScores(pn, PROFILEMAN:GetProfile(pn), sorts[currentsort]);
+			machine_score[pn] = FetchScores(pn, PROFILEMAN:GetMachineProfile(), sorts[currentsort]);
+
+			for p=2,#hs_grade do
+				machinedigits = math.max(machinedigits,GetHighScoreValue(machine_score[pn], hs_grade[p].Label, GetHighScoreValue(machine_score[pn], hs_grade[p-1].Label))); 
+				personaldigits = math.max(personaldigits,GetHighScoreValue(personal_score[pn], hs_grade[p].Label, GetHighScoreValue(personal_score[pn], hs_grade[p-1].Label))); 
+			end;
+
+			maxdigits = math.max(machinedigits,personaldigits);
+			maxdigits = clamp(string.len(maxdigits),1,math.huge);
+
 		end;
+
+		MESSAGEMAN:Broadcast("UpdateScores");
 	end;
 };
 
-t[#t+1] = LoadActor(THEME:GetPathG("","bg"))..{
-	InitCommand=cmd(diffuse,BoostColor(Global.bgcolor,0.75);diffusealpha,0;FullScreen;fadebottom,0.33333);
-	ToggleSelectMessageCommand=function(self)
-		self:stoptweening();
-		self:decelerate(0.2);
-		if Global.toggle then
-			self:diffusealpha(0.5);
-		else
-			self:diffusealpha(0);
-		end;
-	end;
-};
-
+local spacing = 186;
 for pn in ivalues(GAMESTATE:GetHumanPlayers()) do 
 
-	t[#t+1] = LoadActor(THEME:GetPathG("","dim"))..{
-		Name = "DIM";
-		InitCommand=cmd(zoomto,854,SCREEN_HEIGHT;x,SCREEN_CENTER_X+(240*pnSide(pn));y,SCREEN_CENTER_Y-(SCREEN_HEIGHT/8);diffuse,BoostColor(Global.bgcolor,0.666666);diffusealpha,0);
-		ToggleSelectMessageCommand=function(self)
-			self:stoptweening();
-			if pn == PLAYER_1 then
-				self:faderight(0.5);
-			else
-				self:fadeleft(0.5);
-			end;
 
-			self:decelerate(0.2);
+	-- highscore panel
+	local panel = Def.ActorFrame{
+		InitCommand=cmd(x,SCREEN_CENTER_X + (140*pnSide(pn));y,SCREEN_CENTER_Y-148);
 
-			if Global.toggle then
-				self:diffusealpha(0.875);
-			else
-				self:diffusealpha(0);
+		-- bg
+		Def.Quad{
+			InitCommand=cmd(vertalign,top;zoomto,350*pnSide(pn),210;diffuse,0,0,0,0.25;diffusebottomedge,0,0,0,0;faderight,0.25;fadeleft,0.25);
+		},
+
+		-- machine best grade
+		Def.Sprite{
+			InitCommand=cmd(vertalign,top;x,-86 - 16;y,12;zoom,0.15;diffusealpha,0.2);
+			UpdateScoresMessageCommand=function(self)
+				local grade = nil;
+				if machine_score[pn] then
+					if IsGame("pump") then
+						grade = PIUHighScoreGrade(machine_score[pn]);
+						grade = FormatGradePIU(grade);
+					else
+						grade = machine_score[pn]:GetGrade();
+						grade = FormatGrade(grade);
+					end;
+				end;
+
+				self:Load(grade and THEME:GetPathG("","eval/"..string.gsub(grade,"+","").."_normal") or nil);
+				self:diffuse(GradeColor(grade));
+				self:diffusealpha(0.2);
+                self:diffusetopedge(1,1,1,0.2);
 			end;
-		end;
+		},
+
+		-- personal best grade
+		Def.Sprite{
+			InitCommand=cmd(vertalign,top;x,-86;y,12;zoom,0.3);
+			UpdateScoresMessageCommand=function(self)
+				local grade = nil;
+				if personal_score[pn] then
+					if IsGame("pump") then
+						grade = PIUHighScoreGrade(personal_score[pn]);
+						grade = FormatGradePIU(grade);
+					else
+						grade = personal_score[pn]:GetGrade();
+						grade = FormatGrade(grade);
+					end;
+				end;
+
+				self:Load(grade and THEME:GetPathG("","eval/"..string.gsub(grade,"+","").."_normal") or nil);
+				self:diffuse(GradeColor(grade));
+                self:diffusetopedge(1,1,1,1);
+			end;
+		},
+
+
+		-- award
+		Def.BitmapText{
+			Font = Fonts.highscores["Main"];
+			Text = "Single Digit Flawless!";
+			InitCommand=cmd(zoom,0.38;diffuse,PlayerColor(pn);strokecolor,BoostColor(PlayerColor(pn),0.3);vertalign,top;x,-86;y,74;wrapwidthpixels,200;maxwidth,200;vertspacing,-6);
+			UpdateScoresMessageCommand=function(self)
+				if personal_score[pn] then
+					local award = personal_score[pn] and FormatAward(personal_score[pn]:GetStageAward());
+					if award == "" then 
+						if personal_score[pn]:GetGrade() == "Grade_Failed" then 
+							award = "Failed"
+						else
+							award = "Clear" 
+						end;
+					end;
+					self:settext(award);
+				else
+					self:settext("");
+				end
+			end;
+		},
+
+
+		-- personal best dp
+		Def.BitmapText{
+			Font = Fonts.highscores["Main"];
+			Text = "98.76%";
+			InitCommand=cmd(zoom,0.475;vertalign,top;x,-86;y,90+13;strokecolor,0.2,0.2,0.2,1);
+			UpdateScoresMessageCommand=function(self)
+				if personal_score[pn] then
+					self:settext(FormatDP(personal_score[pn]:GetPercentDP()));
+				else
+					self:settext("No Play");
+				end;
+			end;
+		},
+
+		-- machine best dp
+		Def.BitmapText{
+			Font = Fonts.highscores["Main"];
+			Text = "99.87%";
+			InitCommand=cmd(zoom,0.45;vertalign,top;x,-86;y,106+13;diffuse,2/3,2/3,2/3,0.5;strokecolor,0.2,0.2,0.2,1);
+			UpdateScoresMessageCommand=function(self)
+				if machine_score[pn] then
+					self:settext(FormatDP(machine_score[pn]:GetPercentDP()));
+				else
+					self:settext("No Play");
+				end;
+			end;
+		},
+
 	};
 
-	for i=1,3 do
+	local label_spacing = 15;
+	local label_size = 0.45;
+	local label_pos = 16;
+	for i=1,#hs_grade do 
 
-		t[#t+1] = Def.ActorFrame{
-			Name = "Highscores List "..pn;
-			InitCommand=cmd(x,SCREEN_CENTER_X+((gap*4)*pnSide(pn));y,SCREEN_CENTER_Y-164+(self:GetY()+((i-1)*spacing));diffusealpha,0;draworder,200);
-			GetScoresMessageCommand=function(self)
-				if Global.toggle then
-
-					local st = Global.steps[Global.pnsteps[pn]];
-					local top = nil;
-					local last = nil;
-
-					top = GetTopScoreForProfile(Global.song,st,GetMachineAndPlayerProfile(i,pn));
-					last = GetLatestScore(Global.song,st,PROFILEMAN:GetProfile(pn));
-
-					if i==3 then
-						scores[pn][3] = last;
-					else
-						scores[pn][i] = top;
-					end;
-
-					MESSAGEMAN:Broadcast("UpdateScores");
-				end;
+		-- labels
+		panel[#panel+1] = Def.BitmapText{
+			Font = Fonts.highscores["Main"];
+			Text = hs_grade[i].Label;
+			InitCommand=cmd(zoomx,label_size;zoomy,label_size*0.95;horizalign,right;vertalign,top;vertspacing,-6;x,8;y,label_pos + ((i-1)*label_spacing));
+			OnCommand=cmd(diffuse,hs_grade[i].Color;strokecolor,BoostColor(hs_grade[i].Color,0.3));
+			UpdateScoresMessageCommand=function(self)
+				self:diffusealpha(hs_grade[i].Enabled and (personal_score[pn] or machine_score[pn]) and 1 or 0.25);
 			end;
-			ToggleSelectMessageCommand=function(self)
-				self:stoptweening();
-				if Global.toggle and GAMESTATE:IsSideJoined(pn) then
-					MESSAGEMAN:Broadcast("GetScores");
-					self:decelerate(0.45-((i)/20));
-					self:x(SCREEN_CENTER_X+(gap*pnSide(pn))+(i*skewing*pnSide(pn)));
-					self:diffusealpha(1);
-				else
-					self:decelerate(0.15);
-					self:x(SCREEN_CENTER_X+((gap*4)*pnSide(pn)));
-					self:diffusealpha(0);
-				end;
+		};
+
+		-- personal best
+		panel[#panel+1] = Def.BitmapText{
+			Font = Fonts.highscores["Main"];
+			Text = CapDigits(1,0,4);
+			InitCommand=cmd(zoomx,label_size;zoomy,label_size*0.95;horizalign,left;vertalign,top;vertspacing,-6;x,36;y,label_pos + ((i-1)*label_spacing));
+			OnCommand=cmd(diffuse,hs_grade[i].Color;strokecolor,BoostColor(hs_grade[i].Color,0.3));
+			UpdateScoresMessageCommand=function(self)
+				self:diffusealpha(hs_grade[i].Enabled and personal_score[pn] and 1 or 0.25);
+				self:settext(CapDigits(GetHighScoreValue(personal_score[pn], hs_grade[i].Label),0,maxdigits));
 			end;
+		};
 
-			Def.Quad{
-				Name = "BOX";
-				InitCommand=cmd(zoomto,(854/3),spacing-2;horizalign,pnAlign(OtherPlayer[pn]);vertalign,top;y,-10;x,-8*pnSide(pn);playcommand,"UpdateScores");
-				UpdateScoresMessageCommand=function(self)
-					if pn == PLAYER_1 then
-						self:fadeleft(0.8);
-					else
-						self:faderight(0.8);
-					end;
-
-					if scores[pn][i] then
-						self:diffuse(0.2,0.2,0.2,0.333333);
-						self:diffusebottomedge(BoostColor(PlayerColor(pn,0.5),0.25));
-					else
-						self:diffuse(0.2,0.2,0.2,0.333333);
-						self:diffusebottomedge(0,0,0,0.3);
-					end;
-				end;
-			},
-
-			Def.BitmapText{
-				Font = Fonts.highscores["Main"];
-				Name = "TITLE";
-				InitCommand=cmd(horizalign,pnAlign(OtherPlayer[pn]);strokecolor,0.2,0.2,0.2,0.8;zoomx,0.4;zoomy,0.39;maxwidth,240/self:GetZoomX());
-				OnCommand=function(self)
-					if i==1 then
-						self:settext("Machine Best");
-					elseif i==2 then
-						local name = PROFILEMAN:GetProfile(pn):GetDisplayName();
-						if name == "" then
-							self:settext("Profile Best");
-						else
-							self:settext(name.."\'s Best");
-						end;
-					elseif i==3 then
-						self:settext("Last Score Run");
-					else
-						self:settext("Invalid case");
-					end;
-				end;
-			},
-
-			Def.BitmapText{
-				Font = Fonts.highscores["Grade"];
-				Name = "GRADE";
-				InitCommand=cmd(strokecolor,0.2,0.2,0.2,0.8;zoomy,0.45;zoomx,0.55;y,36;x,160*pnSide(pn);skewx,-0.15);
-				UpdateScoresMessageCommand=function(self)
-					if scores[pn][i] then 
-						self:settext(FormatGrade(scores[pn][i]:GetGrade()));
-						self:diffuse(PlayerColor(pn));
-						self:strokecolor(BoostColor(PlayerColor(pn),0.25)); 
-					else 
-						self:settext("")
-						self:diffuse(0.666666,0.666666,0.666666,0.75); 
-						self:strokecolor(0.2,0.2,0.2,0.9);
-					end;
-				end;
-			},
-
-			Def.BitmapText{
-				Font = Fonts.highscores["Main"];
-				Name = "AWARD";
-				InitCommand=cmd(strokecolor,0.2,0.2,0.2,0.8;zoom,0.4;y,14;x,160*pnSide(pn));
-				UpdateScoresMessageCommand=function(self)
-					if scores[pn][i] then 
-						self:settext(FormatAward(scores[pn][i]:GetStageAward()));
-						self:diffuseshift();
-						self:effectcolor1(PlayerColor(pn));
-						self:effectcolor2(1,1,1,1);
-						self:effectperiod(0.5);
-						self:strokecolor(BoostColor(PlayerColor(pn),0.25)); 
-					else 
-						self:settext("");
-						self:stopeffect();
-						self:diffuse(0.666666,0.666666,0.666666,0.75); 
-						self:strokecolor(0.2,0.2,0.2,0.9);
-					end;
-				end;
-			},
-
-			Def.BitmapText{
-				Font = Fonts.highscores["Main"];
-				Name = "PERCENTAGE";
-				InitCommand=cmd(horizalign,pnAlign(OtherPlayer[pn]);zoom,0.5;y,14);
-				UpdateScoresMessageCommand=function(self)
-					if scores[pn][i] then 
-						self:settext(FormatDP(scores[pn][i]:GetPercentDP()));
-						self:diffuse(PlayerColor(pn));
-						self:strokecolor(BoostColor(PlayerColor(pn),0.25)); 
-					else 
-						self:settext("00.00%")
-						self:diffuse(0.666666,0.666666,0.666666,0.75); 
-						self:strokecolor(0.2,0.2,0.2,0.9);
-					end;
-				end;
-			},
-
-			Def.BitmapText{
-				Font = Fonts.highscores["Main"];
-				Name = "MAX COMBO";
-				InitCommand=cmd(horizalign,pnAlign(OtherPlayer[pn]);strokecolor,0.2,0.2,0.2,0.8;zoom,0.38;y,29);
-				UpdateScoresMessageCommand=function(self)
-					if scores[pn][i] then
-						self:settext("Max Combo: "..scores[pn][i]:GetMaxCombo());
-						self:diffuse(BoostColor(PlayerColor(pn),1.25));
-						self:strokecolor(BoostColor(PlayerColor(pn),0.25)); 
-					else 
-						self:settext("")
-						self:diffuse(0.5,0.5,0.5,0.75); 
-						self:strokecolor(0.2,0.2,0.2,0.9);
-					end;
-				end;
-			},	
-
-			Def.BitmapText{
-				Font = Fonts.highscores["Main"];
-				Name = "DATE";
-				InitCommand=cmd(horizalign,pnAlign(OtherPlayer[pn]);strokecolor,0.2,0.2,0.2,0.8;zoom,0.38;y,43);
-				UpdateScoresMessageCommand=function(self)
-					if scores[pn][i] then
-						self:settext(FormatDate(scores[pn][i]:GetDate()));
-						self:diffuse(BoostColor(PlayerColor(pn),1.75));
-						self:strokecolor(BoostColor(PlayerColor(pn),0.25)); 
-					else 
-						self:settext("")
-						self:diffuse(0,0,0,0); 
-						self:strokecolor(0.2,0.2,0.2,0.9);
-					end;
-				end;
-			},			
-
+		-- machine best
+		panel[#panel+1] = Def.BitmapText{
+			Font = Fonts.highscores["Main"];
+			InitCommand=cmd(zoomx,label_size;zoomy,label_size*0.95;horizalign,left;vertalign,top;vertspacing,-6;x,84;y,label_pos + ((i-1)*label_spacing));
+			OnCommand=cmd(diffuse,2/3,2/3,2/3,1;strokecolor,0.25,0.25,0.25,1);
+			UpdateScoresMessageCommand=function(self)
+				self:diffusealpha(hs_grade[i].Enabled and machine_score[pn] and 1 or 0.25);
+				self:settext(CapDigits(GetHighScoreValue(machine_score[pn], hs_grade[i].Label),0,maxdigits));
+			end;
 		};
 
 	end;
 
+	t[#t+1] = panel;
+
+	t[#t+1] = Def.ActorFrame{
+		InitCommand=cmd(diffusealpha,0);
+        StateChangedMessageCommand=function(self) self:stoptweening():decelerate(0.3):diffusealpha(Global.state == "HighScores" and 1 or 0); end;
+
+        Def.Quad{
+            InitCommand=cmd(CenterX;y,SCREEN_CENTER_Y-148;zoomto,_screen.w * 0.5 * pnSide(pn),1;horizalign,left;fadeleft,0.75;cropleft,0.15;diffuse,PlayerColor(pn));
+        },
+
+        -- TEXT
+        Def.ActorFrame{
+            InitCommand=cmd(x,SCREEN_CENTER_X + (pnSide(pn)*(spacing+32));y,SCREEN_CENTER_Y-148);
+            StateChangedMessageCommand=function(self) 
+            	self:stoptweening();
+            	self:decelerate(0.4);
+            	local offset = Global.state == "HighScores" and -8 or 8;
+            	self:x(SCREEN_CENTER_X + (pnSide(pn)*(spacing + offset))); 
+            end;
+
+            -- title
+            Def.BitmapText{
+                Font = "regen strong";
+                Text = string.upper("Top  Accuracy  Score");
+                InitCommand=cmd(x,-48*pnSide(pn);zoomy,0.31;zoomx,0.3075;horizalign,pnAlign(OtherPlayer[pn]);strokecolor,BoostColor(PlayerColor(pn,0.9),1/3);diffusealpha,0);
+                StateChangedMessageCommand=function(self)
+                    self:stoptweening();
+                    self:decelerate(Global.state == "HighScores" and 0.2 or 0.3);
+                    self:diffusealpha(Global.state == "HighScores" and 0.75 or 0);
+                end;
+            },
+        },
+    };
+
 end;
 
+-- QUADS BG
+local bg = Def.ActorFrame{
+    InitCommand=cmd(CenterX;y,SCREEN_CENTER_Y-10.5;diffusealpha,0);
+    StateChangedMessageCommand=function(self)
+        self:stoptweening();
+        self:decelerate(0.25);
+        self:diffusealpha(Global.state == "HighScores" and 0.9 or 0);
+    end;
 
-return t;
+    Def.Quad{
+        InitCommand=cmd(zoomto,_screen.w,_screen.h;cropbottom,1/3;
+            diffuse,BoostColor(Global.bgcolor,0.75);diffusebottomedge,BoostColor(AlphaColor(Global.bgcolor,0.5),0.5);fadebottom,1/3);
+    },
+
+    Def.Quad{
+        InitCommand=cmd(zoomto,_screen.w,_screen.h;diffuse,BoostColor(Global.bgcolor,0.6);cropbottom,1/25;fadetop,0.5);
+    },
+
+    LoadActor(THEME:GetPathG("","_pattern"))..{
+        InitCommand=cmd(zoomto,_screen.w,_screen.h;blend,Blend.Add;
+            diffuse,BoostColor(HighlightColor(1),0.1);diffusebottomedge,0.1,0.1,0.1,0;fadetop,1;
+                customtexturerect,0,0,_screen.w / 384 * 2.5 ,_screen.h / 384 * 2.5;texcoordvelocity,0,-0.075);
+    },
+};
+
+return Def.ActorFrame{ bg, t };

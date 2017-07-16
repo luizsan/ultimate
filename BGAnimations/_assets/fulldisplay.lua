@@ -100,8 +100,8 @@ t[#t+1] = LoadActor(THEME:GetPathG("","bg"))..{
 	StateChangedMessageCommand=function(self)
 		self:stoptweening();
 		self:decelerate(0.2);
-		if 	Global.state == "GroupSelect" then
-			--Global.state == "SelectSteps" then
+		if 	Global.state == "GroupSelect" or
+			Global.state == "SelectSteps" then
 			--Global.state == "OptionsMenu" then
 			self:diffusealpha(0.85);
 		else

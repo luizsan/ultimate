@@ -47,6 +47,7 @@ Fonts = {
     },
     stepslist = {
         ["Main"] = "regen small",
+        ["Percentage"] = "regen small",
     },
     mainmenu = {
         ["Main"] = "titillium regular",

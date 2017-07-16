@@ -3,7 +3,6 @@ local originY = SCREEN_CENTER_Y+82;
 local textbanner = 30;
 local spacing = 31;
 local numcharts = 18;
-local panespacing = 296;
 
 local voffset = 0;
 local paneLabels = {"Taps","Jumps","Holds","Hands","Mines","Other"};
@@ -136,29 +135,31 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 --//  RADAR VALUES
 --//==========================================
 
-local iconspacing = 38;
+local iconspacing = 36;
 local iconadjust = 20;
 
 
 local radaritems = 5;
+local panespacing = 300;
 
 for num=0,radaritems do
 
     --// radar item
     t[#t+1] = Def.ActorFrame{
-            InitCommand=cmd(y,SCREEN_CENTER_Y+110;x,SCREEN_CENTER_X+(panespacing*pnSide(pn)));
+            InitCommand=cmd(y,SCREEN_CENTER_Y+112;x,SCREEN_CENTER_X+(panespacing*pnSide(pn));draworder,num);
             OnCommand=cmd(visible,SideJoined(pn));
 
             --// ICONS ==================
-            LoadActor(THEME:GetPathG("","radar"))..{
-                InitCommand=cmd(zoom,0.4125;animate,false;halign,0.5;valign,0.5;setstate,num;diffuse,PlayerColor(pn);y,12;diffusebottomedge,0.2,0.2,0.2,0.5;diffusealpha,0;);
-                OnCommand=cmd(playcommand,"StateChanged");
+            Def.Sprite{
+                Texture = THEME:GetPathG("","radar");
+                InitCommand=cmd(zoom,0.375;animate,false;halign,0.5;valign,0.5;diffuse,PlayerColor(pn);y,12;diffusebottomedge,0.2,0.2,0.2,0.5;diffusealpha,0;);
+                OnCommand=cmd(setstate,self:GetNumStates() > num and num or 0;playcommand,"StateChanged");
                 StateChangedMessageCommand=function(self)
                     self:stoptweening();
                     self:decelerate(0.15);
 
                     if Global.state == "SelectSteps" then
-                        self:diffusealpha(0.45);
+                        self:diffusealpha(0.5);
                     else
                         self:diffusealpha(0);
                     end;
@@ -175,7 +176,7 @@ for num=0,radaritems do
             --// LABELS ==================
             Def.BitmapText{
                 Font = Fonts.radar["Label"];
-                InitCommand=cmd(zoomx,0.31;zoomy,0.3;halign,0.5;valign,0.5;diffuse,PlayerColor(pn);strokecolor,0.1,0.1,0.1,1;vertspacing,-30.9;diffusealpha,0);
+                InitCommand=cmd(zoomx,0.31;zoomy,0.3;halign,0.5;valign,0.5;diffuse,PlayerColor(pn);strokecolor,BoostColor(PlayerColor(pn),0.3);vertspacing,-30.9;diffusealpha,0);
                 OnCommand=cmd(playcommand,"StateChanged");
                 StateChangedMessageCommand=function(self)
                     self:stoptweening();
@@ -195,7 +196,7 @@ for num=0,radaritems do
                         self:x((-radaritems*iconspacing) + (num*iconspacing)-iconadjust);
                     end;
 
-                    self:settext(string.upper(paneLabels[num+1]));
+                    self:settext(string.upper((num+1) <= #paneLabels and paneLabels[num+1] or ""));
                 end;
             };
 
@@ -203,7 +204,7 @@ for num=0,radaritems do
             --// NUMBERS ==================
             Def.BitmapText{
                 Font = Fonts.radar["Number"];
-                InitCommand=cmd(zoomx,0.425;zoomy,0;halign,0.5;valign,0.5;strokecolor,0.15,0.15,0.15,0.75;maxwidth,72;diffusealpha,0);
+                InitCommand=cmd(zoomx,0.425;zoomy,0;halign,0.5;valign,0.5;maxwidth,72;diffusealpha,0);
                 OnCommand=cmd(playcommand,"StateChanged");
                 StateChangedMessageCommand=function(self)
                     self:stoptweening();
@@ -234,9 +235,11 @@ for num=0,radaritems do
                     if value == 0 then
                         self:diffusetopedge(1,0.5,0.5,1);
                         self:diffusebottomedge(0.5,0.5,0.5,1);
+                        self:strokecolor(0.3,0.175,0.175,0.8);
                     else
                         self:diffusetopedge(1,1,1,1);
                         self:diffusebottomedge(BoostColor(PlayerColor(pn),1.5));
+                        self:strokecolor(BoostColor(PlayerColor(pn,0.8),0.25))
                     end;
                 end;
 
@@ -246,6 +249,138 @@ for num=0,radaritems do
 
 end;
 
+--//==========================================
+--//  SCORES
+--//==========================================
+
+-- personal
+
+local score_width = 120;
+local score_height = 0.35;
+local score_size = 0.35;
+local score_pos = originY + 42;
+
+-- personal
+local hs_p = Def.ActorFrame{
+    InitCommand=cmd(x,_screen.cx - 12;y,score_pos;diffusealpha,0);
+    StateChangedMessageCommand=function(self)
+        self:stoptweening();
+        self:decelerate(Global.state == "SelectSteps" and 0.3 or 0.15);
+        self:x(Global.state == "SelectSteps" and _screen.cx or _screen.cx - 12);
+        self:diffusealpha(Global.state == "SelectSteps" and 1 or 0);
+    end;
+
+    LoadActor(THEME:GetPathG("","litepane"))..{
+        InitCommand=cmd(zoomto,score_width,score_height*self:GetHeight();animate,false;setstate,1)
+    },
+    LoadActor(THEME:GetPathG("","litepane"))..{
+        InitCommand=cmd(zoom,score_height;x,-score_width/2;horizalign,right;animate,false;setstate,0);
+    },   
+    LoadActor(THEME:GetPathG("","litepane"))..{
+        InitCommand=cmd(zoom,score_height;x,score_width/2;horizalign,left;animate,false;setstate,2);
+    },
+    LoadActor(THEME:GetPathG("","separator"))..{
+        InitCommand=cmd(zoom,0.3;diffuse,0.1,0.1,0.1,1);
+        OnCommand=cmd(visible,GAMESTATE:GetNumSidesJoined() > 1);
+    },
+    Def.BitmapText{
+        Font = Fonts.radar["Label"];
+        Text = string.upper("Personal Best");
+        InitCommand=cmd(zoomx,0.31;zoomy,0.3;diffuse,HighlightColor();strokecolor,BoostColor(HighlightColor(),0.3);y,-18);
+    },
+};
+
+-- machine
+local hs_m = Def.ActorFrame{
+    InitCommand=cmd(x,_screen.cx + 12;y,score_pos+22);
+    StateChangedMessageCommand=function(self)
+        self:stoptweening();
+        self:decelerate(Global.state == "SelectSteps" and 0.3 or 0.15);
+        self:x(Global.state == "SelectSteps" and _screen.cx or _screen.cx + 12);
+        self:diffusealpha(Global.state == "SelectSteps" and 1 or 0);
+    end;
+
+    LoadActor(THEME:GetPathG("","litepane"))..{
+        InitCommand=cmd(zoomto,score_width,score_height*self:GetHeight();animate,false;setstate,1)
+    },
+    LoadActor(THEME:GetPathG("","litepane"))..{
+        InitCommand=cmd(zoom,score_height;x,-score_width/2;horizalign,right;animate,false;setstate,0);
+    },   
+    LoadActor(THEME:GetPathG("","litepane"))..{
+        InitCommand=cmd(zoom,score_height;x,score_width/2;horizalign,left;animate,false;setstate,2);
+    },
+    LoadActor(THEME:GetPathG("","separator"))..{
+        InitCommand=cmd(zoom,0.3;diffuse,0.1,0.1,0.1,1);
+        OnCommand=cmd(visible,GAMESTATE:GetNumSidesJoined() > 1);
+    },
+    Def.BitmapText{
+        Font = Fonts.radar["Label"];
+        Text = string.upper("Machine Best");
+        InitCommand=cmd(zoomx,0.31;zoomy,0.3;diffuse,HighlightColor();strokecolor,BoostColor(HighlightColor(),0.3);y,18);
+    },
+};
+
+for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
+    if SideJoined(pn) then
+
+    -- personal best dp
+    hs_p[#hs_p+1] = Def.BitmapText{
+        Font = Fonts.stepslist["Percentage"];
+        InitCommand=cmd(x,GAMESTATE:GetNumSidesJoined() == 1 and 0 or (score_width-8) * 0.5 * pnSide(pn);horizalign,GAMESTATE:GetNumSidesJoined() == 1 and center or pnAlign(pn));
+        OnCommand=cmd(zoomx,score_size;zoomy,score_size);
+        UpdateScoresMessageCommand=function(self)
+            local song = Global.song or GAMESTATE:GetCurrentSong();
+            local steps = Global.pncursteps[pn] or GAMESTATE:GetCurrentSteps(pn);
+            local hs = GetTopScoreForProfile(song,steps,PROFILEMAN:GetProfile(pn));
+
+            self:stoptweening();
+            self:diffuse(BoostColor(PlayerColor(pn),1));
+            --self:diffusetopedge(BoostColor(PlayerColor(pn),1.25));
+            self:strokecolor(BoostColor(PlayerColor(pn,0.75),0.15));
+
+            if hs then 
+                self:settext(FormatDP(hs:GetPercentDP())) 
+                self:diffusealpha(1);
+            else 
+                self:settext("0%");
+                self:diffusealpha(0.3);
+            end
+        end;
+    };
+
+    -- machine best dp
+    hs_m[#hs_m+1] = Def.BitmapText{
+        Font = Fonts.stepslist["Percentage"];
+        InitCommand=cmd(x,GAMESTATE:GetNumSidesJoined() == 1 and 0 or (score_width-8) * 0.5 * pnSide(pn);horizalign,GAMESTATE:GetNumSidesJoined() == 1 and center or pnAlign(pn));
+        OnCommand=cmd(zoomx,score_size;zoomy,score_size);
+        UpdateScoresMessageCommand=function(self)
+            local song = Global.song or GAMESTATE:GetCurrentSong();
+            local steps = Global.pncursteps[pn] or GAMESTATE:GetCurrentSteps(pn);
+            local hs = GetTopScoreForProfile(song,steps,PROFILEMAN:GetMachineProfile());
+
+            self:stoptweening();
+            self:diffuse(0.6,0.6,0.6,1);
+            --self:diffusetopedge(0.85,0.85,0.85,1);
+            self:strokecolor(0.1,0.1,0.1,1);
+
+            if hs then 
+                self:settext(FormatDP(hs:GetPercentDP())) 
+                self:diffusealpha(1);
+            else 
+                self:settext("0%");
+                self:diffusealpha(0.3);
+            end
+        end;
+    };
+
+
+    end;
+end;
+
+
+
+t[#t+1] = hs_p;
+t[#t+1] = hs_m;
 
 --//==========================================
 --//  CURSOR

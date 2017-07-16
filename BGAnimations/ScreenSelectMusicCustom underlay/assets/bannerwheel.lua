@@ -313,7 +313,7 @@ for i=1,maxitems do
 						self:decelerate(tweenSpeed);
 					end;
 
-					if Global.state~="MusicWheel" then 
+					if Global.state ~= "MusicWheel" then 
 						self:diffuse(0.5,0.5,0.5,1); 
 					else 
 						self:diffuse(1,1,1,1);
@@ -325,13 +325,13 @@ for i=1,maxitems do
 					local item;
 
 					if i == minIndex then
-						item = offset-7
+						item = offset-math.floor(maxitems/2)
 						reload = true;
 					elseif i == maxIndex then
-						item = offset+7
+						item = offset+math.floor(maxitems/2)
 						reload = true;
 					else
-						item = offset-8+i
+						item = offset-math.ceil(maxitems/2)+i
 						reload = false;
 						if param then 
 							reload = param.Reload; 
@@ -386,17 +386,16 @@ end;
 
 -- cover
 t[#t+1] = LoadActor(THEME:GetPathG("","bg"))..{
-	InitCommand=cmd(Center;croptop,0.5;fadetop,0.25;diffuse,Global.bgcolor;diffusealpha,0);
+	InitCommand=cmd(Center;croptop,0.475;fadetop,0.275;diffuse,Global.bgcolor;diffusealpha,0);
 	StateChangedMessageCommand=function(self)
 		self:stoptweening();
 		self:decelerate(0.2);
-		if Global.state == "GroupSelect" or Global.state == "SelectSteps" then
+		if Global.state == "GroupSelect" or Global.state == "SelectSteps" or Global.state == "HighScores" then
 			self:diffusealpha(0.925);
 		else
 			self:diffusealpha(0);
 		end
 	end;
 };
-
 
 return t

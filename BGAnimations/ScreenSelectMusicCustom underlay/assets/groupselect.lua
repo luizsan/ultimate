@@ -325,7 +325,23 @@ end;
 
 
 
-		
+-- QUADS BG
+local bg = Def.ActorFrame{
+    InitCommand=cmd(CenterX;y,SCREEN_CENTER_Y-10.5;diffusealpha,0);
+    StateChangedMessageCommand=function(self)
+        self:stoptweening();
+        self:decelerate(0.2);
+        self:diffusealpha(Global.state == "GroupSelect" and 1 or 0);
+    end;
 
 
-return t
+    LoadActor(THEME:GetPathG("","_pattern"))..{
+        InitCommand=cmd(zoomto,_screen.w,_screen.h;blend,Blend.Add;
+            diffuse,BoostColor(HighlightColor(0.5),0.125);diffusebottomedge,0.1,0.1,0.1,0;cropbottom,1/3;
+                customtexturerect,0,0,_screen.w / 384 * 2,_screen.h / 384 * 2;texcoordvelocity,0,-0.075);
+    },
+};
+
+
+
+return Def.ActorFrame{ bg, t }

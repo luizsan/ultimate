@@ -72,7 +72,11 @@ t[#t+1] = LoadActor(THEME:GetPathS("","Difficulty"))..{
 };	
 	
 t[#t+1] = LoadActor(THEME:GetPathS("","Confirm"))..{
-	FinalDecisionMessageCommand=cmd(play);
+	FinalDecisionMessageCommand=function(self)
+		local scr = SCREENMAN:GetTopScreen()
+		if scr and scr:IsTransitioning() then return end;
+		self:play();
+	end;
 };	
 
 t[#t+1] = LoadActor(THEME:GetPathS("","Group"))..{

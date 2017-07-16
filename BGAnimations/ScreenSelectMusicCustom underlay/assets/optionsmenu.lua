@@ -269,11 +269,13 @@ t[#t+1] = Def.ActorFrame{
         Font = Fonts.options["Main"];
         InitCommand=cmd(y,window_h/2-18;zoom,0.39;diffuse,HighlightColor();wrapwidthpixels,(window_w-20)/self:GetZoom();vertspacing,-12);
         OptionMenuDescriptionMessageCommand=function(self,param)
-            self:stoptweening();
-            self:cropright(1);
-            self:settext(param and param.Description or "");
-            self:linear(string.len(param and param.Description or "")/150);
-            self:cropright(0);
+            if not currentoption and param.Description ~= self:GetText() then
+                self:stoptweening();
+                self:cropright(1);
+                self:settext(param and param.Description or "");
+                self:linear(string.len(param and param.Description or "")/150);
+                self:cropright(0);
+            end;
         end;
     },
 
@@ -416,8 +418,7 @@ local bg = Def.ActorFrame{
     },
 
     Def.Quad{
-        InitCommand=cmd(zoomto,_screen.h*(16/9)*(2/3),_screen.h;
-            diffuse,0.15,0.15,0.15,1;diffuse,0.2,0.2,0.2,0.75;cropbottom,1/3;fadeleft,0.25;faderight,0.25);
+        InitCommand=cmd(zoomto,_screen.h*(16/9)*(2/3),_screen.h;diffuse,0.2,0.2,0.2,0.75;cropbottom,1/3;fadeleft,0.25;faderight,0.25);
     },
 
     LoadActor(THEME:GetPathG("","_pattern"))..{
