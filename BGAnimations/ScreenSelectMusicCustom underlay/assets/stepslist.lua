@@ -136,7 +136,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 --//==========================================
 
 local iconspacing = 36;
-local iconadjust = 20;
+local iconadjust = 24;
 
 
 local radaritems = 5;
@@ -255,7 +255,7 @@ end;
 
 -- personal
 
-local score_width = 120;
+local score_width = 112;
 local score_height = 0.35;
 local score_size = 0.35;
 local score_pos = originY + 42;
@@ -320,8 +320,65 @@ local hs_m = Def.ActorFrame{
     },
 };
 
+local grade_size = 0.1;
 for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
     if SideJoined(pn) then
+
+--[[
+
+    -- personal best grade
+    hs_p[#hs_p+1] = Def.Sprite{
+        UpdateScoresMessageCommand=function(self)
+            local song = Global.song or GAMESTATE:GetCurrentSong();
+            local steps = Global.pncursteps[pn] or GAMESTATE:GetCurrentSteps(pn);
+            local hs = GetTopScoreForProfile(song,steps,PROFILEMAN:GetProfile(pn));
+            local grade = nil;
+
+            if hs then
+                if IsGame("pump") then
+                    grade = PIUHighScoreGrade(hs);
+                    grade = FormatGradePIU(grade);
+                else
+                    grade = hs:GetGrade();
+                    grade = FormatGrade(grade);
+                end;
+            end;
+            self:Load(grade and THEME:GetPathG("","eval/"..string.gsub(grade,"+","").."_normal") or nil);
+            self:horizalign(pnAlign(OtherPlayer[pn]));
+            self:diffuse(GradeColor(grade));
+            self:diffusetopedge(1,1,1,1);
+            self:diffusealpha(1/3);
+            self:zoom(grade_size);
+        end;
+    };
+
+    -- machine best grade
+    hs_m[#hs_m+1] = Def.Sprite{
+        UpdateScoresMessageCommand=function(self)
+            local song = Global.song or GAMESTATE:GetCurrentSong();
+            local steps = Global.pncursteps[pn] or GAMESTATE:GetCurrentSteps(pn);
+            local hs = GetTopScoreForProfile(song,steps,PROFILEMAN:GetMachineProfile());
+            local grade = nil;
+
+            if hs then
+                if IsGame("pump") then
+                    grade = PIUHighScoreGrade(hs);
+                    grade = FormatGradePIU(grade);
+                else
+                    grade = hs:GetGrade();
+                    grade = FormatGrade(grade);
+                end;
+            end;
+            self:Load(grade and THEME:GetPathG("","eval/"..string.gsub(grade,"+","").."_normal") or nil);
+            self:horizalign(pnAlign(OtherPlayer[pn]));
+            self:diffuse(GradeColor(grade));
+            self:diffusetopedge(1,1,1,1);
+            self:diffusealpha(1/3);
+            self:zoom(grade_size);
+        end;
+    };
+
+]]
 
     -- personal best dp
     hs_p[#hs_p+1] = Def.BitmapText{

@@ -34,11 +34,12 @@ local options = {
             end;
         end;
     },
+    --[[
     {
         Name = "Details",
         Action = function(param)
         end;
-    },
+    },]]
     {
         Name = "Screenshot",
         Action = function(param)

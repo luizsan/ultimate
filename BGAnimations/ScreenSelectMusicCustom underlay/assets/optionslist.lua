@@ -328,7 +328,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
         local scroller_item = OptionScrollerItem(lineheight,scroller_actor);
         scroller_item.__index.transform = function(self, item_index, num_items, is_focus)
             self.container:stoptweening();
-            self.container:x(item_index * 1.25 * pnSide(pn));
+            self.container:x(item_index * (1+(1/3)) * pnSide(pn));
             self.container:y(item_index * self.spacing);
             self.prev_index = item_index;
         end;

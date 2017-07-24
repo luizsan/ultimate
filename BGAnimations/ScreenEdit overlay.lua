@@ -91,8 +91,9 @@ local function ResetTrackers()
 	oldbeat = GAMESTATE:GetSongBeat();
 end;
 
-t[#t+1] = LoadFont("Common normal")..{
-	InitCommand=cmd(diffuse,1,1,1,1;strokecolor,0.1,0.1,0.1,1;zoom,0.75;x,SCREEN_LEFT+20;y,SCREEN_TOP+3;horizalign,left;vertalign,top);
+t[#t+1] = Def.BitmapText{
+	Font = Fonts.editor["Main"];
+	InitCommand=cmd(diffuse,1,1,1,1;strokecolor,0.1,0.1,0.1,1;zoom,0.75;x,SCREEN_LEFT+8;y,SCREEN_TOP+8;horizalign,left;vertalign,top;zoom,0.575);
 	UpdateMessageCommand=function(self)
 		if SCREENMAN:GetTopScreen():GetScreenType() == "ScreenType_Gameplay" then
 			self:visible(true);

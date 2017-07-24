@@ -79,5 +79,8 @@ Fonts = {
         ["Options"] = "regen strong",
         ["Award"] = "titillium regular",
         ["Scores"] = "titillium regular",
-    }
+    },
+    editor = {
+        ["Main"] = "titillium regular",
+    },
 }

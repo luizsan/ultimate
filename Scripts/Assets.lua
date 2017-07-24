@@ -12,8 +12,8 @@ function LoadBanner(self,item)
 
         path = Global.songlist[item]:GetBannerPath(); 
         if path ~= nil --[[and FILEMAN:DoesFileExist(path)]] then
-            self:LoadFromCachedBanner(path)
-            --self:Load(path)
+            --self:LoadFromCachedBanner(path)
+            self:Load(path)
         else
             self:Load(THEME:GetPathG("Common fallback","banner"));  
             --self:Load(THEME:GetPathG("Common fallback","banner"));

@@ -193,6 +193,15 @@ end;
 
 --//================================================================
 
+function FormatSpeedType(t)
+    if t == "maximum" then return "Automatic";
+    elseif t == "constant" then return "Constant"
+    elseif t == "multiple" then return "Multiple"
+    else return "" end;
+end;
+
+--//================================================================
+
 local function dict_bool(val)
     return val and "On" or "Off";
 end;
@@ -252,7 +261,7 @@ function FormatOptionConfigs(str, val, pn)
         ["LifeDifficulty"]      = dict_life[val],
 
         ["speed_mod"]           = prefs and FormatSpeed(prefs.speed_mod, prefs.speed_type) or val,
-        ["speed_type"]          = prefs and UppercaseFirst(prefs.speed_type) or val,
+        ["speed_type"]          = prefs and FormatSpeedType(prefs.speed_type) or val,
         ["hidden"]              = dict_bool(val),
         ["sudden"]              = dict_bool(val),
         ["glow_during_fade"]    = dict_bool(val),
