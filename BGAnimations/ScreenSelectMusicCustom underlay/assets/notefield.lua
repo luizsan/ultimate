@@ -6,17 +6,7 @@ local curskin = {
     [PLAYER_2] = "",
 }
 
-local startup = GetTimeSinceStart()
-local function UnscaledDelta()
-    local dt = GetTimeSinceStart() - startup;
-    startup = GetTimeSinceStart();
-    return dt;
-end;
-
 local function UpdateTime(self, delta)
-    --local _start = Global.song:GetSampleStart();
-    --local _length = Global.song:GetSampleLength();
-    --local _end = Global.song:MusicLengthSeconds();
     curTime = GAMESTATE:GetCurMusicSeconds();
     MESSAGEMAN:Broadcast("UpdateNotefield");
 end
@@ -62,21 +52,21 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
         SpeedChangedMessageCommand=cmd(playcommand,"Refresh");
         FolderChangedMessageCommand=cmd(playcommand,"Refresh");
         PropertyChangedMessageCommand=cmd(playcommand,"Refresh");
-        OptionsListSelectedMessageCommand=cmd(playcommand,"Refresh");
         NoteskinChangedMessageCommand=function(self,param)
             if param and param.noteskin and param.Player == pn then
                 self:set_skin(param.noteskin, {});
             end;
         end;
 
-        StateChangedMessageCommand=function(self)
-            if Global.state == "Noteskins" then self:playcommand("Refresh"); end;
-        end;
-
         RefreshCommand=function(self)
             if GAMESTATE:IsSideJoined(pn) and Global.pncursteps[pn] then
-                local steps = Global.pncursteps[pn];
+                if Global.state ~= "SelectSteps" then
+                    self:visible(Global.oplist[pn]);
+                else
+                    self:visible(true);
+                end;
 
+                local steps = Global.pncursteps[pn];
                 local skin = GetPreferredNoteskin(pn);
                 local prefs = notefield_prefs_config:get_data(pn);
 
@@ -84,7 +74,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
 
                 if curskin[pn] ~= skin then
                     self:set_skin(skin, {});
-                    curskin = skin;
+                    curskin[pn] = skin;
                 end;
 
                 self:set_steps(steps);
@@ -120,8 +110,6 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
         UpdateNotefieldMessageCommand=function(self)
             if GAMESTATE:IsSideJoined(pn) and Global.pncursteps[pn] then
                 self:set_curr_second(curTime);
-            else
-
             end;
         end;
     };

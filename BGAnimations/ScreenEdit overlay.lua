@@ -148,5 +148,6 @@ t[#t+1] = Def.BitmapText{
 	end;
 };
 
+t[#t+1] = LoadActor(THEME:GetPathG("", "editor_mods_preview.lua"))
 
 return t;

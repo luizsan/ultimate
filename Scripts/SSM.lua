@@ -363,7 +363,7 @@ function SetNoteskinByIndex(pn, num)
     local st = GAMEMAN:GetFirstStepsTypeForGame(g);
     local noteskins = GetNoteskins();
     local index = clamp(num,1,#noteskins)
-    PROFILEMAN:GetProfile(pn):set_preferred_noteskin(st, noteskins[index])
+    PROFILEMAN:GetProfile(pn):set_preferred_noteskin(noteskins[index])
     return noteskins[index];
 end;
 
@@ -378,7 +378,7 @@ function SetNoteskin(pn, ns)
     else
         st = GAMEMAN:GetFirstStepsTypeForGame(g)
     end;
-    PROFILEMAN:GetProfile(pn):set_preferred_noteskin(st, ns)
+    PROFILEMAN:GetProfile(pn):set_preferred_noteskin(ns)
 end;
 
 --//================================================================

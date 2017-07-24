@@ -34,10 +34,7 @@ local function NoteskinMenu(pn)
     selection[pn] = GetNoteskinSelection(pn);
     MESSAGEMAN:Broadcast("OptionsListSelected", { Player = pn, silent = true });
     MESSAGEMAN:Broadcast("OptionsListChanged", { Player = pn, silent = true });
-
 end;
-
-
 
 local option_tree = { 
     {
@@ -142,8 +139,8 @@ function OptionsListController(self,param)
     if param.Input == "Prev" then
         if currentoption[pn] then
             if currentoption[pn].Field == "speed_mod" then currentoption[pn].Range.Step = PLAYERCONFIG:get_data(pn).SpeedModifier; end;
-            MESSAGEMAN:Broadcast("ChangeProperty", { Player = param.Player, Input = param.Input, Option = currentoption[pn] });
-            MESSAGEMAN:Broadcast("OptionsListChanged", { Player = param.Player, Direction = "Prev", silent = true });
+            MESSAGEMAN:Broadcast("ChangeProperty", { Player = pn, Input = param.Input, Option = currentoption[pn] });
+            MESSAGEMAN:Broadcast("OptionsListChanged", { Player = pn, Direction = "Prev", silent = true });
             return;
         else
             selection[pn] = selection[pn]-1;
@@ -152,19 +149,19 @@ function OptionsListController(self,param)
 
             local topstack = option_stack[pn][#option_stack[pn]][selection[pn]]
             if topstack and topstack.Type and topstack.Type == "noteskin" then
-                MESSAGEMAN:Broadcast("NoteskinChanged", { Player = param.Player, noteskin = GetNoteskins()[selection[pn]], silent = true });
+                MESSAGEMAN:Broadcast("NoteskinChanged", { Player = pn, noteskin = GetNoteskins()[selection[pn]], silent = true });
             end;
 
-            MESSAGEMAN:Broadcast("OptionsListChanged", { Player = param.Player, Direction = "Prev", silent = false });
+            MESSAGEMAN:Broadcast("OptionsListChanged", { Player = pn, Direction = "Prev", silent = false });
             return;
         end;
     end;
     
     if param.Input == "Next" then
         if currentoption[pn] then
-            if currentoption[pn].Field == "speed_mod" then currentoption[pn].Range.Step = PLAYERCONFIG:get_data(pn).SpeedModifier;end;
-            MESSAGEMAN:Broadcast("ChangeProperty", { Player = param.Player, Input = param.Input, Option = currentoption[pn] });
-            MESSAGEMAN:Broadcast("OptionsListChanged", { Player = param.Player, Direction = "Next", silent = true });
+            if currentoption[pn].Field == "speed_mod" then currentoption[pn].Range.Step = PLAYERCONFIG:get_data(pn).SpeedModifier; end;
+            MESSAGEMAN:Broadcast("ChangeProperty", { Player = pn, Input = param.Input, Option = currentoption[pn] });
+            MESSAGEMAN:Broadcast("OptionsListChanged", { Player = pn, Direction = "Next", silent = true });
             return;
         else
             selection[pn] = selection[param.Player]+1;
@@ -173,16 +170,15 @@ function OptionsListController(self,param)
 
             local topstack = option_stack[pn][#option_stack[pn]][selection[pn]];
             if topstack and topstack.Type and topstack.Type == "noteskin" then
-                MESSAGEMAN:Broadcast("NoteskinChanged", { Player = param.Player, noteskin = GetNoteskins()[selection[pn]], silent = true });
+                MESSAGEMAN:Broadcast("NoteskinChanged", { Player = pn, noteskin = GetNoteskins()[selection[pn]], silent = true });
             end;
 
-            MESSAGEMAN:Broadcast("OptionsListChanged", { Player = param.Player, Direction = "Next", silent = false });
+            MESSAGEMAN:Broadcast("OptionsListChanged", { Player = pn, Direction = "Next", silent = false });
             return;
         end;
     end;
 
     if param.Input == "Cancel" or param.Input == "Back" then
-         MESSAGEMAN:Broadcast("NoteskinChanged", { Player = param.Player, noteskin = GetNoteskins()[GetNoteskinSelection(pn)], silent = true });
 
         if currentoption[pn] then
             selection[pn] = GetEntry(currentoption[pn], option_stack[pn][#option_stack[pn]]);
@@ -192,17 +188,19 @@ function OptionsListController(self,param)
             return;
 
         elseif #option_stack[pn] > 1 then
-
             selection[pn] = selection_stack[pn][#selection_stack[pn]];
             table.remove(selection_stack[pn], #selection_stack[pn]);
             table.remove(option_stack[pn], #option_stack[pn]);
             MESSAGEMAN:Broadcast("Return", param);
+            MESSAGEMAN:Broadcast("NoteskinChanged", { Player = pn, noteskin = GetNoteskins()[GetNoteskinSelection(pn)], silent = true });
             MESSAGEMAN:Broadcast("OptionsListChanged", { Player = pn, silent = true });
             return;
+
         else
             Global.oplist[param.Player] = false
             MESSAGEMAN:Broadcast("OptionsListClosed", param);
             return;
+            
         end;
     end;
 
@@ -309,7 +307,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
                 GainFocusCommand=cmd(stoptweening;glowshift;decelerate,0.15;diffuse,BoostColor(PlayerColor(pn),1.2);strokecolor,BoostColor(PlayerColor(pn),0.45);effectperiod,0.25);
                 LoseFocusCommand=cmd(stoptweening;stopeffect;decelerate,0.15;diffuse,BoostColor(PlayerColor(pn),1.0);strokecolor,BoostColor(PlayerColor(pn),0.4));
                 DisabledCommand=cmd(stoptweening;stopeffect;decelerate,0.15;diffuse,BoostColor(PlayerColor(pn,0.5),1.0);strokecolor,BoostColor(PlayerColor(pn,0.5),0.4));
-                OptionsListClosedMessageCommand=cmd(stopeffect);
+                OptionsListClosedMessageCommand=function(self,param) if param and param.Player == pn then self:stopeffect() end; end;
             },
             -- value
             Def.BitmapText{
@@ -319,7 +317,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
                 GainFocusCommand=cmd(stoptweening;decelerate,0.15;diffuse,1,0.85,0.4,1;strokecolor,BoostColor({1,0.85,0.4,1},0.4));
                 LoseFocusCommand=cmd(stoptweening;decelerate,0.15;diffuse,1,1,1,1;strokecolor,0.25,0.25,0.25,0.8);
                 DisabledCommand=cmd(stoptweening;decelerate,0.15;diffuse,0.6,0.6,0.6,0.5;strokecolor,0.2,0.2,0.2,0.5);
-                OptionsListClosedMessageCommand=cmd(stopeffect);
+                OptionsListClosedMessageCommand=function(self,param) if param and param.Player == pn then self:stopeffect() end; end;
             },  
         }
 
