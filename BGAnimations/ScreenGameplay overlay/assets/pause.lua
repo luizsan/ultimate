@@ -12,8 +12,8 @@ local menu_choices= {
 	"Retry",
 	"Quit",
 }
-local menu_spacing= 20
-local menu_bg_width= SCREEN_WIDTH/4
+local menu_spacing = 20
+local menu_bg_width = 240
 
 local elem = {
 	[PLAYER_1] = "PlayerP1",
@@ -69,6 +69,8 @@ local function create_menu_frame(pn, x, y)
 				self:setsize(menu_bg_width, menu_spacing)
 				self:y(-menu_spacing*2)
 				self:vertalign(top)
+				self:fadeleft(0.25)
+				self:faderight(0.25)
 				self:diffuse{0, 0, 0, 0.75}
 				self:playcommand("Hide")
 			end,
@@ -83,6 +85,8 @@ local function create_menu_frame(pn, x, y)
 				self:setsize(menu_bg_width, menu_spacing * (#menu_choices + 1))
 				self:y(-menu_spacing)
 				self:vertalign(top)
+				self:fadeleft(0.25)
+				self:faderight(0.25)
 				self:diffuse{0, 0, 0, 0.5}
 				self:playcommand("Hide")
 			end,
@@ -145,7 +149,7 @@ local menu_actions= {
 		elseif choice_name == "Retry" then
 			backout("ScreenGameplay")
 		elseif choice_name == "Quit" then
-			backout(ToSelectMusicFromGameplay())
+			backout(ToSelectMusic())
 		end;
 	end,
 	Left= function(pn)

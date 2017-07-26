@@ -93,7 +93,7 @@ end;
 
 t[#t+1] = Def.BitmapText{
 	Font = Fonts.editor["Main"];
-	InitCommand=cmd(diffuse,1,1,1,1;strokecolor,0.1,0.1,0.1,1;zoom,0.75;x,SCREEN_LEFT+8;y,SCREEN_TOP+8;horizalign,left;vertalign,top;zoom,0.575);
+	InitCommand=cmd(diffuse,1,1,1,1;strokecolor,0.1,0.1,0.1,1;zoom,0.6;x,SCREEN_LEFT+8;y,SCREEN_TOP+8;horizalign,left;vertalign,top;zoom,0.575);
 	UpdateMessageCommand=function(self)
 		if SCREENMAN:GetTopScreen():GetScreenType() == "ScreenType_Gameplay" then
 			self:visible(true);
@@ -105,7 +105,7 @@ t[#t+1] = Def.BitmapText{
 			self:visible(false);
 		end;
 
-		self:settext("Note count: "..notecount);
+		self:settext("Notes judged: "..notecount);
 		
 	end;
 
@@ -132,7 +132,7 @@ t[#t+1] = Def.BitmapText{
 			cur_dp = cur_dp + HNS_weights[param.HoldNoteScore];
 		end;	
 
-		self:settext("Note count: "..notecount);
+		self:settext("Notes judged: "..notecount);
 
 		local comboparams = { 
 			Combo = ValueOrNil(hits),
@@ -148,6 +148,6 @@ t[#t+1] = Def.BitmapText{
 	end;
 };
 
-t[#t+1] = LoadActor(THEME:GetPathG("", "editor_mods_preview.lua"))
+--t[#t+1] = LoadActor(THEME:GetPathG("", "editor_mods_preview"))
 
 return t;

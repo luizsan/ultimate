@@ -8,7 +8,7 @@ t[#t+1] = LoadActor(THEME:GetPathG("","border"))..{
 for pn in ivalues({PLAYER_1,PLAYER_2}) do
 	
 	t[#t+1] = LoadActor(THEME:GetPathG("","profileslot"))..{
-		InitCommand=cmd(vertalign,bottom;horizalign,left;y,-1;x,317*pnSide(pn);zoomy,0.445;zoomx,-0.445*pnSide(pn);playcommand,"Refresh");
+		InitCommand=cmd(vertalign,bottom;horizalign,left;y,-1;x,317*pnSide(pn);zoomy,0.445;zoomx,-0.445*pnSide(pn));
 	};
 
 	--minilabel
@@ -17,6 +17,7 @@ for pn in ivalues({PLAYER_1,PLAYER_2}) do
 		InitCommand=cmd(vertalign,bottom;y,-26;x,279*pnSide(pn);horizalign,pnAlign(OtherPlayer[pn]);zoom,0.28;diffuse,PlayerColor(pn));
 		OnCommand=cmd(playcommand,"Refresh");
 		PlayerJoinedMessageCommand=cmd(playcommand,"Refresh");
+		PlayerUnjoinedMessageCommand=cmd(playcommand,"Refresh");
 		RefreshCommand=function(self)
 			self:settext(ToEnumShortString(pn));
 			if SideJoined(pn) then
@@ -35,16 +36,19 @@ end;
 
 
 
-for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
+for pn in ivalues({PLAYER_1,PLAYER_2}) do
 
 --player name
 t[#t+1] = Def.BitmapText{
 	Font = Fonts.common["ProfileName"];
-	InitCommand=cmd(vertalign,bottom;y,-34;x,147*pnSide(pn);horizalign,pnAlign(OtherPlayer[pn]);zoom,0.444;strokecolor,0.15,0.15,0.15,0.4;settext,"Absent");
+	InitCommand=cmd(y,-38;x,147*pnSide(pn);horizalign,pnAlign(OtherPlayer[pn]);zoom,0.444;strokecolor,0.15,0.15,0.15,0.4);
 	OnCommand=cmd(playcommand,"Refresh");
 	PlayerJoinedMessageCommand=cmd(playcommand,"Refresh");
+	PlayerUnjoinedMessageCommand=cmd(playcommand,"Refresh");
 	RefreshCommand=function(self)
+
 		if SideJoined(pn) then
+			self:stopeffect();
 			if IsRoutine() and Global.master ~= pn then
 				self:settext("");
 			else
@@ -53,13 +57,24 @@ t[#t+1] = Def.BitmapText{
 					self:diffusealpha(0.33);
 					self:settext("No Profile");
 				else
-					self:diffusealpha(1)
+					self:diffusealpha(1);
 					self:settext(name);
 				end;
 			end;
 		else 
-			self:diffusealpha(0.33); 
-			self:settext("");
+
+			if not GAMESTATE:PlayersCanJoin() then
+				self:stopeffect();
+				self:diffusealpha(0.33);
+				self:settext("");
+			else
+				self:diffuseshift(); 
+				self:effectcolor1(0.5,0.5,0.5,0.5);
+				self:effectcolor2(1,1,1,0.5);
+				self:effectperiod(1);
+				self:settext("Press &START; to join");
+			end;
+
 		end
 	end;
 };

@@ -113,9 +113,9 @@ function pnCrop(pn,self,amount) if pn == PLAYER_1 or pn == 1 then self:cropright
 --//================================================================
 
 function Setup()
-	PREFSMAN:SetPreference("EventMode",true);
-	PREFSMAN:SetPreference("MenuTimer",false);
-	PREFSMAN:SetPreference("PercentageScoring",true);
+	PREFSMAN:SetPreference("EventMode", true);
+	PREFSMAN:SetPreference("MenuTimer", false);
+	PREFSMAN:SetPreference("PercentageScoring", true);
 end
 
 --//================================================================
@@ -141,6 +141,7 @@ function ToSelectMusic()
 		if SONGMAN:GetNumSongs() == 0 and SONGMAN:GetNumAdditionalSongs() == 0 then
 			return "ScreenHowToInstallSongs"
 		else
+			if IsRoutine() then return "ScreenUnjoin" end;
 			return "ScreenSelectMusicCustom" 
 		end
 	else 
@@ -156,25 +157,9 @@ function ToGameplay()
 	end 
 end
 
-function ToSelectMusicFromGameplay() 
-	if GAMESTATE:GetCoinMode() == 'CoinMode_Home' then 
-		if IsRoutine() then
-			GAMESTATE:UnjoinPlayer(OtherPlayer[Global.master]);
-        	GAMESTATE:SetCurrentStyle("single");
-		end;
-		return "ScreenSelectMusicCustom"
-	else 
-		return "ScreenExit" 
-	end; 
-end;
-
 function AfterGameplay() 
 	if GAMESTATE:GetCoinMode() == 'CoinMode_Home' then 
-		if IsRoutine() then
-			return "ScreenUnjoin" 
-		else
-			return "ScreenProfileSave"
-		end
+		return "ScreenProfileSave"
 	else 
 		return "ScreenExit" 
 	end; 
@@ -215,5 +200,19 @@ function TextBannerAfterSet(self,param)
 	end
 	(cmd(visible,false))(Subtitle);
 	(cmd(visible,false))(Artist);
+end
+
+--//================================================================
+
+function EditMenuTransform(self,offsetFromCenter,itemIndex,numItems) 
+	local indexOffset = itemIndex-(numItems-1)/2; 
+	self:zoom(0.7);
+	self:x(numItems-itemIndex);
+	self:y( SCREEN_CENTER_Y + indexOffset * 17 ); 
+end
+
+function EditHelpTransform(self,offsetFromCenter,itemIndex,numItems) 
+	local indexOffset = itemIndex-(numItems-1)/2; 
+	self:y( SCREEN_CENTER_Y + indexOffset * 17 ); 
 end
 

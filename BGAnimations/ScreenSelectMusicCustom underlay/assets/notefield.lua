@@ -52,6 +52,7 @@ for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
         SpeedChangedMessageCommand=cmd(playcommand,"Refresh");
         FolderChangedMessageCommand=cmd(playcommand,"Refresh");
         PropertyChangedMessageCommand=cmd(playcommand,"Refresh");
+        OptionsListChangedMessageCommand=cmd(playcommand,"Refresh");
         NoteskinChangedMessageCommand=function(self,param)
             if param and param.noteskin and param.Player == pn then
                 self:set_skin(param.noteskin, {});

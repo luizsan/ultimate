@@ -18,6 +18,8 @@ local t = MouseInputActor()..{
 --NAVIGATION ICONS
 --=======================================================================================================================
 
+--[[
+
 local icon_spacing = 27
 for i=1,#Navigation do
     t[#t+1] = LoadActor(THEME:GetPathG("","navigation"))..{
@@ -32,5 +34,7 @@ for i=1,#Navigation do
         end;
     };
 end;
+
+]]
 
 return t

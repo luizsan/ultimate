@@ -2,7 +2,7 @@ local t = MenuInputActor()..{
 	InitCommand=function(self) 
 		ResetState();
 		SetGroups(); 
-		SetSSM(); 
+		SetSSM();
 	end;
 
 	OnCommand=cmd(sleep,1;queuecommand,"Unlock");
@@ -12,6 +12,7 @@ local t = MenuInputActor()..{
 		GAMESTATE:SetCurrentStyle("versus");
 		SCREENMAN:SetNewScreen("ScreenSelectMusicCustom");
 	end;
+
 	MenuInputMessageCommand=function(self,param) 
 		if param and param.Player and SideJoined(param.Player) and not Global.lockinput then
 			InputController(self,param);
