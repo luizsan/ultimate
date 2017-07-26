@@ -130,6 +130,7 @@ PLAYERCONFIG = create_lua_config{
 }
 
 add_standard_lua_config_save_load_hooks(PLAYERCONFIG);
+set_notefield_default_yoffset(170)
 
 --//================================================================
 
@@ -180,7 +181,7 @@ end;
 function ResetPlayerView(pn)
     local nconf = NOTESCONFIG:get_data(pn);
     nconf.reverse = 1;
-    nconf.yoffset = 140;
+    nconf.yoffset = 170;
     nconf.fov = 60;
 
     NOTESCONFIG:set_dirty(pn);
@@ -206,93 +207,5 @@ function ResetPlayerTransform(pn)
     ResetPlayerRotation(pn)
     ResetPlayerView(pn)
 end;
-
-
---//================================================================
-
--- modified functions from _fallback/Scripts/03 notefield_prefs.lua
--- bring xmods a bit closer in scale  to cmod and mmod so they don't go 
--- unreasonably fast under the same values. tl;dr: xmods/100.
-function apply_notefield_prefs_nopn(read_bpm, field, prefs)
-    local torad= math.pi / 180
-    if prefs.speed_type then
-        if prefs.speed_type == "maximum" then
-            field:set_speed_mod(false, prefs.speed_mod, read_bpm)
-        elseif prefs.speed_type == "constant" then
-            field:set_speed_mod(true, prefs.speed_mod)
-        else
-            field:set_speed_mod(false, prefs.speed_mod/100)
-        end
-    end
-    field:set_base_values{
-        fov_x= prefs.vanish_x,
-        fov_y= prefs.vanish_y,
-        fov_z= prefs.fov,
-        transform_rot_x= prefs.rotation_x*torad,
-        transform_rot_y= prefs.rotation_y*torad,
-        transform_rot_z= prefs.rotation_z*torad,
-        transform_zoom= prefs.zoom,
-        transform_zoom_x= prefs.zoom_x,
-        transform_zoom_y= prefs.zoom_y,
-        transform_zoom_z= prefs.zoom_z,
-    }
-    -- Use the y zoom to adjust the y offset to put the receptors in the same
-    -- place.
-    local adjusted_offset= prefs.yoffset / (prefs.zoom * prefs.zoom_y)
-    for i, col in ipairs(field:get_columns()) do
-        col:set_base_values{
-            reverse= prefs.reverse,
-            reverse_offset= adjusted_offset,
-        }
-    end
-    if prefs.hidden then
-        field:set_hidden_mod(prefs.hidden_offset, prefs.fade_dist, prefs.glow_during_fade)
-    else
-        field:clear_hidden_mod()
-    end
-    if prefs.sudden then
-        field:set_sudden_mod(prefs.sudden_offset, prefs.fade_dist, prefs.glow_during_fade)
-    else
-        field:clear_sudden_mod()
-    end
-end
-
-function apply_notefield_prefs(pn, field, prefs)
-    local pstate= GAMESTATE:GetPlayerState(pn)
-    apply_notefield_prefs_nopn(pstate:get_read_bpm(), field, prefs)
-    local poptions= pstate:get_player_options_no_defect("ModsLevel_Song")
-    if prefs.speed_type == "maximum" then
-        poptions:MMod(prefs.speed_mod, 1000)
-    elseif prefs.speed_type == "constant" then
-        poptions:CMod(prefs.speed_mod, 1000)
-    else
-        poptions:XMod(prefs.speed_mod/100, 1000)
-    end
-    local reverse= scale(prefs.reverse, 1, -1, 0, 1)
-    poptions:Reverse(reverse, 1000)
-    -- -1 tilt = +30 rotation_x
-    local tilt= prefs.rotation_x / -30
-    if prefs.reverse < 0 then
-        tilt = tilt * -1
-    end
-    poptions:Tilt(tilt, 1000)
-    local mini= (1 - prefs.zoom) * 2, 1000
-    if tilt > 0 then
-        mini = mini * scale(tilt, 0, 1, 1, .9)
-    else
-        mini = mini * scale(tilt, 0, -1, 1, .9)
-    end
-    poptions:Mini(mini, 1000)
-    local steps= GAMESTATE:GetCurrentSteps(pn)
-    if steps and steps:HasAttacks() then
-        pstate:set_needs_defective_field(true)
-    end
-    if GAMESTATE:IsCourseMode() then
-        local course= GAMESTATE:GetCurrentCourse()
-        if course and course:HasMods() or course:HasTimedMods() then
-            pstate:set_needs_defective_field(true)
-        end
-    end
-end
 
 
