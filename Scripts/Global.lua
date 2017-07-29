@@ -86,5 +86,6 @@ function ResetState()
     };
     Global.volume = 1;
     Global.disqualify = false;
+    Global.blockjoin = false;
 
 end;

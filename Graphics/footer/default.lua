@@ -63,7 +63,7 @@ t[#t+1] = Def.BitmapText{
 			end;
 		else 
 
-			if not GAMESTATE:PlayersCanJoin() then
+			if not GAMESTATE:PlayersCanJoin() or Global.blockjoin then
 				self:stopeffect();
 				self:diffusealpha(0.33);
 				self:settext("");

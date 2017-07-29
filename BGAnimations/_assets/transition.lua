@@ -6,7 +6,7 @@ local t = Def.ActorFrame{}
 --//==================================================================
 t[#t+1] = Def.Quad{
 	InitCommand=cmd(FullScreen;diffusealpha,0);
-	FolderChangedMessageCommand=cmd(diffusealpha,1;sleep,0.15;linear,0.25;diffusealpha,0);
+	FolderChangedMessageCommand=cmd(stoptweening;diffusealpha,1;sleep,0.15;linear,0.25;diffusealpha,0);
 };
 
 t[#t+1] = LoadActor(THEME:GetPathG("","bg"))..{

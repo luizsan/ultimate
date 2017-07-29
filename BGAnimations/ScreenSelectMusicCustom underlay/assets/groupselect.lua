@@ -76,6 +76,7 @@ function SelectFolder()
 		MESSAGEMAN:Broadcast("StateChanged");
 	else
 		
+		MESSAGEMAN:Broadcast("FolderChanged"); 
 		Global.songgroup = Global.allgroups[Global.selection]["Name"];
 		Global.songlist = FilterSongList(SONGMAN:GetSongsInGroup(Global.songgroup));
 		MESSAGEMAN:Broadcast("MainMenu");
@@ -97,7 +98,6 @@ function SelectFolder()
 
 		MESSAGEMAN:Broadcast("BuildMusicList"); 
 		MESSAGEMAN:Broadcast("StateChanged"); 
-		MESSAGEMAN:Broadcast("FolderChanged"); 
 		MESSAGEMAN:Broadcast("MusicWheel", { silent = true });
 
 

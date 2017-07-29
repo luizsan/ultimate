@@ -147,7 +147,11 @@ local menu_actions= {
 		if choice_name == "Continue" then
 			close_menu(pn)
 		elseif choice_name == "Retry" then
-			backout("ScreenGameplay")
+			if IsRoutine() then
+				backout("ScreenGameplayShared")
+			else
+				backout("ScreenGameplay")
+			end
 		elseif choice_name == "Quit" then
 			backout(ToSelectMusic())
 		end;

@@ -20,7 +20,7 @@ function SetSSM()
             if Global.pncursteps[pn] ~= Global.steps[Global.pnsteps[pn]] then
                 Global.pnsteps[pn] = entry;
                 Global.pncursteps[pn] = Global.steps[Global.pnsteps[pn]];
-                GAMESTATE:SetCurrentSteps(pn, Global.pncursteps[pn]);
+                --GAMESTATE:SetCurrentSteps(pn, Global.pncursteps[pn]);
             end;
         --end
     end;
