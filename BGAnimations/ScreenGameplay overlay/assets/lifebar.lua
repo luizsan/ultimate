@@ -23,7 +23,10 @@ local t = Def.ActorFrame{
 
         self:x(player:GetX());
         self:y(SCREEN_TOP+24);
+        self:queuecommand("Animate");
     end;
+
+    AnimateCommand=cmd(zoomx,0;sleep,0.75;decelerate,0.3;zoomx,1);
 
     -- base
     Def.Quad{

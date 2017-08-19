@@ -2,7 +2,12 @@ local t = Def.ActorFrame{
     OnCommand=function(self)
         for pn in ivalues(GAMESTATE:GetHumanPlayers()) do
             local field = find_pactor_in_gameplay(SCREENMAN:GetTopScreen(), pn);
-            field:stoptweening();
+            --[[
+                field:addy(-128);
+                field:sleep(0.5);
+                field:decelerate(0.3);
+                field:addy(128);
+            ]]
         end;
 
         if IsRoutine() then
