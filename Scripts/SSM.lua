@@ -262,29 +262,6 @@ end;
 
 --//================================================================
 
-function GetFolder(song)
-
-    local path = song:GetSongDir();
-    local index;
-    local str = path;
-
-    str = string.reverse(str)
-    str = string.sub(str, 2)
-    str = string.reverse(str)
-    str = string.sub(str, 2)
-
-    index = string.find(str,"/")
-    str = string.sub(str, index+1)
-    
-    index = string.find(str,"/")
-    str = string.sub(str, index+1)
-
-    return str;
-
-end
-
---//================================================================
-
 function TotalNotes(steps,pn)
     local player = pn;
     if not pn then player = Global.master or GAMESTATE:GetMasterPlayerNumber(); end;

@@ -26,15 +26,15 @@ end;
 
 function LoadBackground(self,song)
 
-    local mov = FindRandomMovie(Global.song)
-    local bga = Global.song:GetSongDir()..FindBGA(FILEMAN:GetDirListing(Global.song:GetSongDir()));
-    local vid = Global.song:GetPreviewVidPath();
-    local path = Global.song:GetBackgroundPath();
+    local rmov = FindRandomMovie(song)
+    local bga = song:GetSongDir()..FindBGA(FILEMAN:GetDirListing(song:GetSongDir()));
+    local vid = song:GetPreviewVidPath();
+    local path = song:GetBackgroundPath();
     --SCREENMAN:SystemMessage(mov)
 
     if vid ~= nil and FILEMAN:DoesFileExist(vid) then
         self:Load(vid);
-    elseif mov ~= nil and FILEMAN:DoesFileExist(mov) then
+    elseif rmov ~= nil and FILEMAN:DoesFileExist(mov) then
         self:Load(mov);
     elseif bga ~= nil and FILEMAN:DoesFileExist(bga) then
         self:Load(bga);
@@ -70,9 +70,9 @@ end;
 function FindRandomMovie(song)
     local rmovies = FILEMAN:GetDirListing("/RandomMovies/",false,true);
     local path = nil;
-    local file = nil;
 
     for i=1,#rmovies do
+        local file = nil;
 
         file = rmovies[i];
         file = string.gsub(file,".avi","")
@@ -83,7 +83,7 @@ function FindRandomMovie(song)
         file = string.gsub(file,".m2v","")
         file = string.gsub(file,"/RandomMovies/","")
 
-        if file == GetFolder(song) then
+        if file == GetFolder(song) or file == GetSimfile(song) then
             path = rmovies[i];
             break;
         end;
@@ -112,3 +112,42 @@ function LoadJacket(self,song)
 end;
 
 --//================================================================
+
+function GetFolder(song)
+    local str = song:GetSongDir();
+
+    str = string.reverse(str)
+    str = string.sub(str, 2)
+    str = string.reverse(str)
+    str = string.sub(str, 2)
+
+    while (string.find(str,"/")) do
+        local index = string.find(str,"/")
+        str = string.sub(str, index+1)
+    end
+
+    return str;
+end
+
+--//================================================================
+
+function GetSimfile(song)
+    local str = song:GetSongFilePath();
+
+    local formats = {
+        ".ssc",".sm",".dwi"
+    }
+
+    str = string.sub(str, 2)
+
+    while (string.find(str,"/")) do
+        local index = string.find(str,"/")
+        str = string.sub(str, index+1)
+    end
+
+    for i=1,#formats do
+        str = string.gsub(str, formats[i], "");
+    end
+
+    return str;
+end
