@@ -35,7 +35,7 @@ function LoadBackground(self,song)
     if vid ~= nil and FILEMAN:DoesFileExist(vid) then
         self:Load(vid);
     elseif rmov ~= nil and FILEMAN:DoesFileExist(mov) then
-        self:Load(mov);
+        self:Load(rmov);
     elseif bga ~= nil and FILEMAN:DoesFileExist(bga) then
         self:Load(bga);
     elseif path ~= nil and FILEMAN:DoesFileExist(path) then
