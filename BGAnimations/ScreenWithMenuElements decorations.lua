@@ -89,4 +89,14 @@ t[#t+1] = Def.Actor{
 	end;
 };
 
+--=======================================================================================================================
+--BLANK TRANSITION
+--=======================================================================================================================
+
+t[#t+1] = LoadActor(THEME:GetPathG("","bg"))..{
+	InitCommand=cmd(Center;diffuse,Global.bgcolor;diffusealpha,0);
+	FinalDecisionMessageCommand=cmd(diffusealpha,0;sleep,0.1;linear,0.5;diffusealpha,1);
+};
+
+
 return t;

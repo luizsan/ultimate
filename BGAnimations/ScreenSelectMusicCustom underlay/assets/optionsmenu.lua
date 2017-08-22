@@ -388,6 +388,7 @@ local scroller_actor = Def.ActorFrame{
         LoseFocusCommand=cmd(stoptweening;decelerate,0.15;diffuse,1,1,1,1;strokecolor,0.2,0.2,0.2,0.8);
         DisabledCommand=cmd(stoptweening;decelerate,0.15;diffuse,0.6,0.6,0.6,0.5;strokecolor,0.2,0.2,0.2,0.8);
     },
+
     -- value
     Def.BitmapText{
         Name = "Value";
@@ -396,7 +397,8 @@ local scroller_actor = Def.ActorFrame{
         GainFocusCommand=cmd(stoptweening;decelerate,0.15;diffuse,HighlightColor();strokecolor,BoostColor(HighlightColor(),0.2));
         LoseFocusCommand=cmd(stoptweening;decelerate,0.15;diffuse,1,1,1,1;strokecolor,0.2,0.2,0.2,0.8);
         DisabledCommand=cmd(stoptweening;decelerate,0.15;diffuse,0.6,0.6,0.6,0.5;strokecolor,0.2,0.2,0.2,0.8);
-    },  
+    }, 
+
 }
 
 local scroller_item = OptionScrollerItem(16,scroller_actor);
