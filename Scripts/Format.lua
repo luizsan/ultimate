@@ -252,6 +252,7 @@ function FormatOptionConfigs(str, val, pn)
     local format = {
         ["BGBrightness"]        = tostring(val).."%",
         ["DefaultBG"]           = dict_bool(val),
+        ["DisableBGA"]          = dict_bool(val),
         ["CenterPlayer"]        = dict_bool(val),
         ["MusicRate"]           = dict_float(val,"x"),
         ["FailType"]            = dict_fail[val],

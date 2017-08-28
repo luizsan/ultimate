@@ -1,6 +1,6 @@
 --//================================================================
 
-local maxitems = 5;
+local maxitems = 6;
 local currentoption = nil;  
 local option_stack = {};
 local selection_stack = {};
@@ -11,6 +11,7 @@ local option_tree = {
         Options = {
             ConfigRange(THEMECONFIG, "BGBrightness", 100, 0, 100, 5),
             ConfigBool(THEMECONFIG, "DefaultBG", false),
+            ConfigBool(THEMECONFIG, "DisableBGA", false),
             ConfigBool(THEMECONFIG, "CenterPlayer", false),
             ConfigAction("Reset", function() ResetDisplayOptions() end),
             ConfigExit("Back"),
@@ -189,8 +190,8 @@ end;
 --//================================================================
 
 -- panel
-local window_w = 300;
-local window_h = 164;
+local window_w = 320;
+local window_h = 182;
 
 local itemspacing = 16;
 local sidespacing = window_w/2-24;
@@ -201,7 +202,7 @@ local scroller = setmetatable({disable_wrapping = true}, item_scroller_mt)
 --//================================================================
 
 local t = PropertyActor()..{
-    InitCommand=cmd(CenterX;y,SCREEN_CENTER_Y-106;diffusealpha,0;zoom,0.8);
+    InitCommand=cmd(CenterX;y,SCREEN_CENTER_Y-116;diffusealpha,0;zoom,0.8);
     StateChangedMessageCommand=function(self)
         self:stoptweening();
         self:decelerate(0.125);
@@ -402,7 +403,7 @@ local scroller_actor = Def.ActorFrame{
 }
 
 local scroller_item = OptionScrollerItem(16,scroller_actor);
-t[#t+1] = scroller:create_actors("OptionsMenu", 5, scroller_item, 0, 0);
+t[#t+1] = scroller:create_actors("OptionsMenu", maxitems, scroller_item, 0, 0);
 
 
 -- QUADS BG

@@ -3,6 +3,7 @@
 local theme_conf_default = {
     BGBrightness = 100,
     DefaultBG = false,
+    DisableBGA = false,
     CenterPlayer = false,
     MusicRate = 1.0,
     FailType = "delayed",
@@ -28,6 +29,7 @@ function ResetThemeSettings()
     local tconf = THEMECONFIG:get_data("ProfileSlot_Invalid");
     tconf.BGBrightness = 100;
     tconf.DefaultBackground = false;
+    tconf.DisableBGA = false;
     tconf.CenterPlayer = false;
     tconf.MusicRate = 1.0;
     tconf.FailType = "delayed";
@@ -44,6 +46,7 @@ function ResetDisplayOptions()
     local tconf = THEMECONFIG:get_data("ProfileSlot_Invalid");
     tconf.BGBrightness = 100;
     tconf.DefaultBG = false;
+    tconf.DisableBGA = false;
     tconf.CenterPlayer = false;
     THEMECONFIG:save();
 end;
@@ -92,6 +95,7 @@ function ApplyThemeSettings()
     -------------------------------------------------------------------------------------------------------
     local sops= GAMESTATE:GetSongOptionsObject("ModsLevel_Preferred");
     sops:MusicRate(tconf.MusicRate);
+    sops:StaticBackground(tconf.DisableBGA);
     GAMESTATE:ApplyPreferredSongOptionsToOtherLevels();
 
     -------------------------------------------------------------------------------------------------------

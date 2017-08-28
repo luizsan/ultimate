@@ -15,18 +15,23 @@ local t = Def.ActorFrame{
         local dist = math.abs(player:GetX() - _screen.cx);
         local style = string.lower(GAMESTATE:GetCurrentStyle():GetName());
     
-        if style == "double" or style == "routine" or (GAMESTATE:GetNumSidesJoined() == 1 and PREFSMAN:GetPreference("Center1Player")) then
-            width = _screen.w - (spacing*4);
-        else
-            width = (dist*2) - (spacing*2);
-        end;
-
         self:x(player:GetX());
         self:y(SCREEN_TOP+24);
-        self:queuecommand("Animate");
+
+        self:zoomx(0);
+        self:sleep(0.75);
+        self:decelerate(0.3);
+
+        if style == "double" or style == "routine" or (GAMESTATE:GetNumSidesJoined() == 1 and PREFSMAN:GetPreference("Center1Player")) then
+            width = _screen.w - (spacing*4);
+            self:zoomx(1*-pnSide(pn));
+        else
+            width = (dist*2) - (spacing*2);
+            self:zoomx(1);
+        end;
+        
     end;
 
-    AnimateCommand=cmd(zoomx,0;sleep,0.75;decelerate,0.3;zoomx,1);
 
     -- base
     Def.Quad{

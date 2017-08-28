@@ -25,6 +25,7 @@ end;
 --//================================================================
 
 function LoadBackground(self,song)
+    local tconf = THEMECONFIG:get_data("ProfileSlot_Invalid");
 
     local rmov = FindRandomMovie(song)
     local bga = song:GetSongDir()..FindBGA(FILEMAN:GetDirListing(song:GetSongDir()));
@@ -32,11 +33,11 @@ function LoadBackground(self,song)
     local path = song:GetBackgroundPath();
     --SCREENMAN:SystemMessage(mov)
 
-    if vid ~= nil and FILEMAN:DoesFileExist(vid) then
+    if not tconf.DisableBGA and vid ~= nil and FILEMAN:DoesFileExist(vid) then
         self:Load(vid);
-    elseif rmov ~= nil and FILEMAN:DoesFileExist(rmov) then
+    elseif not tconf.DisableBGA and rmov ~= nil and FILEMAN:DoesFileExist(rmov) then
         self:Load(rmov);
-    elseif bga ~= nil and FILEMAN:DoesFileExist(bga) then
+    elseif not tconf.DisableBGA and bga ~= nil and FILEMAN:DoesFileExist(bga) then
         self:Load(bga);
     elseif path ~= nil and FILEMAN:DoesFileExist(path) then
         self:Load(path);
